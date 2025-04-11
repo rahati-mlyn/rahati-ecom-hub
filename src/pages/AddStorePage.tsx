@@ -12,6 +12,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { generateId } from '@/lib/utils';
+import { CartItem } from '@/types/cart';
 
 type StoreType = 'store' | 'restaurant' | 'realestate' | 'car' | 'clothes' | 'electronics' | 'homegoods';
 
@@ -80,6 +81,9 @@ const AddStorePage = () => {
     }
   };
   
+  // Empty cart items for the header
+  const emptyCartItems: CartItem[] = [];
+  
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
@@ -87,6 +91,7 @@ const AddStorePage = () => {
         onOpenSidebar={() => {}} 
         onOpenCart={() => {}}
         onSearch={() => {}}
+        cartItems={emptyCartItems}
       />
       
       {/* Navigation */}
@@ -231,11 +236,14 @@ const AddStorePage = () => {
                     <SelectValue placeholder="اختر المدينة" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="riyadh">الرياض</SelectItem>
-                    <SelectItem value="jeddah">جدة</SelectItem>
-                    <SelectItem value="dammam">الدمام</SelectItem>
-                    <SelectItem value="mecca">مكة المكرمة</SelectItem>
-                    <SelectItem value="medina">المدينة المنورة</SelectItem>
+                    <SelectItem value="nouakchott">نواكشوط</SelectItem>
+                    <SelectItem value="nouadhibou">نواذيبو</SelectItem>
+                    <SelectItem value="rosso">روصو</SelectItem>
+                    <SelectItem value="kaedi">كيهيدي</SelectItem>
+                    <SelectItem value="kiffa">كيفة</SelectItem>
+                    <SelectItem value="zouerate">ازويرات</SelectItem>
+                    <SelectItem value="atar">آطار</SelectItem>
+                    <SelectItem value="nema">النعمة</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -251,6 +259,68 @@ const AddStorePage = () => {
                 />
               </div>
             </div>
+            
+            {/* Restaurant-specific fields */}
+            {storeType === 'restaurant' && (
+              <div className="p-4 border rounded-md space-y-4 bg-gray-50">
+                <h3 className="font-medium text-rahati-purple">معلومات المطعم</h3>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="cuisineType">نوع المطبخ</Label>
+                  <Select defaultValue="mauritanian">
+                    <SelectTrigger>
+                      <SelectValue placeholder="اختر نوع المطبخ" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="mauritanian">موريتاني</SelectItem>
+                      <SelectItem value="arabic">عربي</SelectItem>
+                      <SelectItem value="african">أفريقي</SelectItem>
+                      <SelectItem value="international">عالمي</SelectItem>
+                      <SelectItem value="fast-food">وجبات سريعة</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label>خدمات إضافية</Label>
+                  <div className="flex flex-wrap gap-2">
+                    <Button type="button" variant="outline" size="sm" className="rounded-full">توصيل</Button>
+                    <Button type="button" variant="outline" size="sm" className="rounded-full">جلسات خارجية</Button>
+                    <Button type="button" variant="outline" size="sm" className="rounded-full">واي فاي مجاني</Button>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Real Estate specific fields */}
+            {storeType === 'realestate' && (
+              <div className="p-4 border rounded-md space-y-4 bg-gray-50">
+                <h3 className="font-medium text-rahati-purple">معلومات العقارات</h3>
+                
+                <div className="space-y-2">
+                  <Label>نوع العقار</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button type="button" variant="outline" className="justify-start">للإيجار</Button>
+                    <Button type="button" variant="outline" className="justify-start">للبيع</Button>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Car specific fields */}
+            {storeType === 'car' && (
+              <div className="p-4 border rounded-md space-y-4 bg-gray-50">
+                <h3 className="font-medium text-rahati-purple">معلومات السيارات</h3>
+                
+                <div className="space-y-2">
+                  <Label>نوع العرض</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button type="button" variant="outline" className="justify-start">للإيجار</Button>
+                    <Button type="button" variant="outline" className="justify-start">للبيع</Button>
+                  </div>
+                </div>
+              </div>
+            )}
             
             {/* Submit Button */}
             <Button type="submit" className="w-full bg-rahati-purple hover:bg-rahati-purple/90 text-white">

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Home, Building, Utensils, TagsIcon, Car, ShoppingBag, Tv, Shirt, Sofa } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Home, Building, Utensils, TagsIcon, Car, ShoppingBag, Tv, Shirt, Sofa, DollarSign, KeyRound } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import AddStoreButton from './AddStoreButton';
@@ -23,10 +23,26 @@ const navigationItems: NavigationItem[] = [
       { id: 'home-goods', label: 'المستلزمات المنزلية', icon: Sofa },
     ]
   },
-  { id: 'real-estate', label: 'العقارات', icon: Building },
+  { 
+    id: 'real-estate', 
+    label: 'العقارات', 
+    icon: Building,
+    subCategories: [
+      { id: 'rent', label: 'للإيجار', icon: KeyRound },
+      { id: 'sale', label: 'للبيع', icon: DollarSign },
+    ]
+  },
   { id: 'restaurants', label: 'المطاعم', icon: Utensils },
   { id: 'discounts', label: 'الخصومات', icon: TagsIcon },
-  { id: 'cars', label: 'السيارات', icon: Car },
+  { 
+    id: 'cars', 
+    label: 'السيارات', 
+    icon: Car,
+    subCategories: [
+      { id: 'rent', label: 'للإيجار', icon: KeyRound },
+      { id: 'sale', label: 'للبيع', icon: DollarSign },
+    ]
+  },
 ];
 
 interface NavigationProps {
@@ -40,19 +56,24 @@ const Navigation: React.FC<NavigationProps> = ({
   currentCategory,
   currentSubCategory 
 }) => {
-  const [showSubCategories, setShowSubCategories] = useState<boolean>(false);
+  const [showSubCategories, setShowSubCategories] = useState<{ [key: string]: boolean }>({
+    shopping: false,
+    'real-estate': false,
+    cars: false
+  });
   
   const handleCategoryClick = (categoryId: string) => {
     onSelectCategory(categoryId);
-    if (categoryId === 'shopping') {
-      setShowSubCategories(true);
-    } else {
-      setShowSubCategories(false);
-    }
+    
+    // Toggle subcategories for the clicked category
+    setShowSubCategories(prev => ({
+      ...prev,
+      [categoryId]: !prev[categoryId]
+    }));
   };
 
-  const handleSubCategoryClick = (subCategoryId: string) => {
-    onSelectCategory('shopping', subCategoryId);
+  const handleSubCategoryClick = (categoryId: string, subCategoryId: string) => {
+    onSelectCategory(categoryId, subCategoryId);
   };
 
   // Find current category object
@@ -86,28 +107,30 @@ const Navigation: React.FC<NavigationProps> = ({
           </div>
         </div>
 
-        {/* Sub Categories for Shopping */}
-        {showSubCategories && currentCategoryObj?.subCategories && (
-          <div className="bg-rahati-purple/5 py-2 px-4 overflow-x-auto">
-            <div className="flex gap-2 min-w-max">
-              {currentCategoryObj.subCategories.map((subItem) => (
-                <Button
-                  key={subItem.id}
-                  variant={currentSubCategory === subItem.id ? "secondary" : "ghost"}
-                  size="sm"
-                  className={cn(
-                    "flex items-center gap-1",
-                    currentSubCategory === subItem.id ? "bg-rahati-yellow text-rahati-dark" : "text-rahati-dark hover:text-rahati-purple"
-                  )}
-                  onClick={() => handleSubCategoryClick(subItem.id)}
-                >
-                  <subItem.icon className="h-3 w-3" />
-                  <span>{subItem.label}</span>
-                </Button>
-              ))}
+        {/* Sub Categories */}
+        {navigationItems.map((category) => (
+          category.subCategories && showSubCategories[category.id] && (
+            <div key={category.id} className="bg-rahati-purple/5 py-2 px-4 overflow-x-auto">
+              <div className="flex gap-2 min-w-max">
+                {category.subCategories.map((subItem) => (
+                  <Button
+                    key={`${category.id}-${subItem.id}`}
+                    variant={currentCategory === category.id && currentSubCategory === subItem.id ? "secondary" : "ghost"}
+                    size="sm"
+                    className={cn(
+                      "flex items-center gap-1",
+                      currentCategory === category.id && currentSubCategory === subItem.id ? "bg-rahati-yellow text-rahati-dark" : "text-rahati-dark hover:text-rahati-purple"
+                    )}
+                    onClick={() => handleSubCategoryClick(category.id, subItem.id)}
+                  >
+                    <subItem.icon className="h-3 w-3" />
+                    <span>{subItem.label}</span>
+                  </Button>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )
+        ))}
       </div>
     </div>
   );

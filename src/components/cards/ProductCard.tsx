@@ -1,11 +1,12 @@
 
 import React from 'react';
-import { ShoppingCart, Heart, Plus } from 'lucide-react';
+import { ShoppingCart, Heart, Share2 } from 'lucide-react';
 import { Product } from '@/types/product';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { formatPrice } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProductCardProps {
   product: Product;
@@ -18,6 +19,30 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onAddToCart,
   onViewDetails
 }) => {
+  const { toast } = useToast();
+  
+  const handleShare = () => {
+    // Create share text
+    const shareText = `${product.name} - ${formatPrice(product.price)}`;
+    
+    // Check if Web Share API is available
+    if (navigator.share) {
+      navigator.share({
+        title: product.name,
+        text: `تحقق من هذا المنتج: ${shareText}`,
+        url: window.location.href,
+      }).catch((error) => console.log('Error sharing', error));
+    } else {
+      // Fallback: Copy to clipboard
+      navigator.clipboard.writeText(`${product.name} - ${formatPrice(product.price)} - ${window.location.href}`);
+      toast({
+        title: "تم النسخ",
+        description: "تم نسخ رابط المنتج",
+        duration: 2000,
+      });
+    }
+  };
+
   return (
     <Card className="overflow-hidden card-hover border border-gray-200">
       <div className="aspect-square relative overflow-hidden bg-gray-100">
@@ -62,6 +87,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
         >
           <ShoppingCart className="mr-2 h-4 w-4" />
           <span>أضف للسلة</span>
+        </Button>
+        <Button variant="outline" size="icon" onClick={handleShare}>
+          <Share2 className="h-4 w-4" />
         </Button>
         <Button variant="outline" size="icon">
           <Heart className="h-4 w-4" />
