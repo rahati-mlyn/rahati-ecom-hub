@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Home, Building, Utensils, TagsIcon, Car, ShoppingBag, Tv, Shirt, Sofa } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import AddStoreButton from './AddStoreButton';
 
 interface NavigationItem {
   id: string;
@@ -62,21 +63,26 @@ const Navigation: React.FC<NavigationProps> = ({
       <div className="container mx-auto">
         {/* Main Categories */}
         <div className="overflow-x-auto pb-1">
-          <div className="flex gap-2 py-2 px-4 min-w-max">
-            {navigationItems.map((item) => (
-              <Button
-                key={item.id}
-                variant={currentCategory === item.id ? "default" : "outline"}
-                className={cn(
-                  "flex items-center gap-2 min-w-fit",
-                  currentCategory === item.id ? "bg-rahati-purple text-white" : "text-rahati-dark hover:text-rahati-purple"
-                )}
-                onClick={() => handleCategoryClick(item.id)}
-              >
-                <item.icon className="h-4 w-4" />
-                <span>{item.label}</span>
-              </Button>
-            ))}
+          <div className="flex justify-between items-center py-2 px-4">
+            <div className="flex gap-2 min-w-max">
+              {navigationItems.map((item) => (
+                <Button
+                  key={item.id}
+                  variant={currentCategory === item.id ? "default" : "outline"}
+                  className={cn(
+                    "flex items-center gap-2 min-w-fit",
+                    currentCategory === item.id ? "bg-rahati-purple text-white" : "text-rahati-dark hover:text-rahati-purple"
+                  )}
+                  onClick={() => handleCategoryClick(item.id)}
+                >
+                  <item.icon className="h-4 w-4" />
+                  <span>{item.label}</span>
+                </Button>
+              ))}
+            </div>
+            
+            {/* Add Store Button */}
+            <AddStoreButton />
           </div>
         </div>
 

@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
+import AddStorePage from "./pages/AddStorePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,10 @@ const App = () => {
             <Route 
               path="/" 
               element={<HomePage language={language} onLanguageChange={setLanguage} />} 
+            />
+            <Route 
+              path="/add-store" 
+              element={<AddStorePage />} 
             />
             <Route path="*" element={<NotFound />} />
           </Routes>
