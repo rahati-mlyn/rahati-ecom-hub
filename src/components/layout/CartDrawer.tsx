@@ -31,6 +31,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
   onSendOrder
 }) => {
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -38,7 +39,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
             <ShoppingCart className="h-5 w-5 text-rahati-purple" />
-            <span>سلة المشتريات</span>
+            <span>سلة المشتريات ({totalItems})</span>
             <div className="ml-auto">
               <Button variant="ghost" size="icon" onClick={onClose}>
                 <X className="h-5 w-5" />

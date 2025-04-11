@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/layout/Header';
 import Navigation from '@/components/layout/Navigation';
@@ -397,6 +396,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         onOpenSidebar={() => setIsSidebarOpen(true)} 
         onOpenCart={() => setIsCartOpen(true)}
         onSearch={handleSearch}
+        cartItems={cartItems}
       />
       
       {/* Navigation */}

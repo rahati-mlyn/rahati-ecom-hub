@@ -1,19 +1,27 @@
-
 import React, { useState } from 'react';
 import { Menu, Search, ShoppingCart } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { CartItem } from '@/types/cart';
 
 interface HeaderProps {
   onOpenSidebar: () => void;
   onOpenCart: () => void;
   onSearch: (query: string) => void;
+  cartItems: CartItem[];
 }
 
-const Header: React.FC<HeaderProps> = ({ onOpenSidebar, onOpenCart, onSearch }) => {
+const Header: React.FC<HeaderProps> = ({ 
+  onOpenSidebar, 
+  onOpenCart, 
+  onSearch, 
+  cartItems 
+}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
+  
+  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,8 +65,13 @@ const Header: React.FC<HeaderProps> = ({ onOpenSidebar, onOpenCart, onSearch }) 
         
         {/* Icons */}
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={onOpenCart} className="hover:bg-white/10">
+          <Button variant="ghost" size="icon" onClick={onOpenCart} className="hover:bg-white/10 relative">
             <ShoppingCart className="h-5 w-5" />
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-rahati-yellow text-rahati-dark rounded-full text-xs w-5 h-5 flex items-center justify-center">
+                {totalItems}
+              </span>
+            )}
           </Button>
           <Button variant="ghost" size="icon" onClick={onOpenSidebar} className="hover:bg-white/10">
             <Menu className="h-5 w-5" />
