@@ -11,12 +11,13 @@ export function generateId(): string {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
 
-// Format price to local currency (Mauritanian Ouguiya)
+// Format price to local currency (Mauritanian Ouguiya) with less prominent symbol
 export function formatPrice(price: number): string {
+  // Use a custom formatter to style the currency symbol
   return new Intl.NumberFormat('ar-MR', {
     style: 'currency',
     currency: 'MRU',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(price);
+  }).format(price).replace('MRU', `<span class="text-gray-400">أ.م</span>`);
 }
