@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Menu, Search, ShoppingCart } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -9,14 +10,14 @@ interface HeaderProps {
   onOpenSidebar: () => void;
   onOpenCart: () => void;
   onSearch: (query: string) => void;
-  cartItems: CartItem[];
+  cartItems?: CartItem[]; // Make cartItems optional
 }
 
 const Header: React.FC<HeaderProps> = ({ 
   onOpenSidebar, 
   onOpenCart, 
   onSearch, 
-  cartItems 
+  cartItems = [] // Provide a default empty array
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();

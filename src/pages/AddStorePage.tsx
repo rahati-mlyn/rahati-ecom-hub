@@ -87,6 +87,7 @@ const AddStorePage = () => {
         onOpenSidebar={() => {}} 
         onOpenCart={() => {}}
         onSearch={() => {}}
+        cartItems={[]} // Pass an empty array to fix the error
       />
       
       {/* Navigation */}
