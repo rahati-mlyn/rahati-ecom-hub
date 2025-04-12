@@ -1,23 +1,37 @@
 
-import { type ClassValue, clsx } from "clsx"
+import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
- 
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-// Generate a random ID
-export function generateId(): string {
-  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+export function formatPrice(price: number): string {
+  return new Intl.NumberFormat('ar-SA', {
+    style: 'currency',
+    currency: 'SAR',
+  }).format(price)
 }
 
-// Format price to local currency (Mauritanian Ouguiya) with less prominent symbol
-export function formatPrice(price: number): string {
-  // Use a custom formatter to style the currency symbol
-  return new Intl.NumberFormat('ar-MR', {
-    style: 'currency',
-    currency: 'MRU',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(price).replace('MRU', `<span class="text-gray-400">أ.م</span>`);
+export function generateId(length: number = 8): string {
+  return Math.random().toString(36).substring(2, 2 + length)
+}
+
+export function truncateText(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text
+  return text.slice(0, maxLength) + '...'
+}
+
+export function getRandomInt(min: number, max: number): number {
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+export function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat('ar-SA', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(date)
 }

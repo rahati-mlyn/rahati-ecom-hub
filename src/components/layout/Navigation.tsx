@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Home, Building, Utensils, TagsIcon, Car, ShoppingBag, Tv, Shirt, Sofa, DollarSign, KeyRound, Smartphone, Apple, Pizza, Coffee, BookOpen, Gift, Baby, Watch } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Home, Building, Utensils, TagsIcon, Car, ShoppingBag, Tv, Shirt, Sofa } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import AddStoreButton from './AddStoreButton';
@@ -20,37 +20,13 @@ const navigationItems: NavigationItem[] = [
     subCategories: [
       { id: 'clothes', label: 'الملابس', icon: Shirt },
       { id: 'electronics', label: 'الإلكترونيات', icon: Tv },
-      { id: 'mobile', label: 'الجوالات', icon: Smartphone },
-      { id: 'computers', label: 'الحواسيب', icon: Apple },
-      { id: 'food', label: 'الأطعمة', icon: Pizza },
-      { id: 'drinks', label: 'المشروبات', icon: Coffee },
-      { id: 'books', label: 'الكتب', icon: BookOpen },
-      { id: 'gifts', label: 'الهدايا', icon: Gift },
-      { id: 'kids', label: 'منتجات الأطفال', icon: Baby },
-      { id: 'watches', label: 'الساعات', icon: Watch },
       { id: 'home-goods', label: 'المستلزمات المنزلية', icon: Sofa },
     ]
   },
-  { 
-    id: 'real-estate', 
-    label: 'العقارات', 
-    icon: Building,
-    subCategories: [
-      { id: 'rent', label: 'للإيجار', icon: KeyRound },
-      { id: 'sale', label: 'للبيع', icon: DollarSign },
-    ]
-  },
+  { id: 'real-estate', label: 'العقارات', icon: Building },
   { id: 'restaurants', label: 'المطاعم', icon: Utensils },
   { id: 'discounts', label: 'الخصومات', icon: TagsIcon },
-  { 
-    id: 'cars', 
-    label: 'السيارات', 
-    icon: Car,
-    subCategories: [
-      { id: 'rent', label: 'للإيجار', icon: KeyRound },
-      { id: 'sale', label: 'للبيع', icon: DollarSign },
-    ]
-  },
+  { id: 'cars', label: 'السيارات', icon: Car },
 ];
 
 interface NavigationProps {
@@ -64,24 +40,19 @@ const Navigation: React.FC<NavigationProps> = ({
   currentCategory,
   currentSubCategory 
 }) => {
-  const [showSubCategories, setShowSubCategories] = useState<{ [key: string]: boolean }>({
-    shopping: false,
-    'real-estate': false,
-    cars: false
-  });
+  const [showSubCategories, setShowSubCategories] = useState<boolean>(false);
   
   const handleCategoryClick = (categoryId: string) => {
     onSelectCategory(categoryId);
-    
-    // Toggle subcategories for the clicked category
-    setShowSubCategories(prev => ({
-      ...prev,
-      [categoryId]: !prev[categoryId]
-    }));
+    if (categoryId === 'shopping') {
+      setShowSubCategories(true);
+    } else {
+      setShowSubCategories(false);
+    }
   };
 
-  const handleSubCategoryClick = (categoryId: string, subCategoryId: string) => {
-    onSelectCategory(categoryId, subCategoryId);
+  const handleSubCategoryClick = (subCategoryId: string) => {
+    onSelectCategory('shopping', subCategoryId);
   };
 
   // Find current category object
@@ -115,30 +86,28 @@ const Navigation: React.FC<NavigationProps> = ({
           </div>
         </div>
 
-        {/* Sub Categories */}
-        {navigationItems.map((category) => (
-          category.subCategories && showSubCategories[category.id] && (
-            <div key={category.id} className="bg-rahati-purple/5 py-2 px-4 overflow-x-auto">
-              <div className="flex gap-2 min-w-max">
-                {category.subCategories.map((subItem) => (
-                  <Button
-                    key={`${category.id}-${subItem.id}`}
-                    variant={currentCategory === category.id && currentSubCategory === subItem.id ? "secondary" : "ghost"}
-                    size="sm"
-                    className={cn(
-                      "flex items-center gap-1",
-                      currentCategory === category.id && currentSubCategory === subItem.id ? "bg-rahati-yellow text-rahati-dark" : "text-rahati-dark hover:text-rahati-purple"
-                    )}
-                    onClick={() => handleSubCategoryClick(category.id, subItem.id)}
-                  >
-                    <subItem.icon className="h-3 w-3" />
-                    <span>{subItem.label}</span>
-                  </Button>
-                ))}
-              </div>
+        {/* Sub Categories for Shopping */}
+        {showSubCategories && currentCategoryObj?.subCategories && (
+          <div className="bg-rahati-purple/5 py-2 px-4 overflow-x-auto">
+            <div className="flex gap-2 min-w-max">
+              {currentCategoryObj.subCategories.map((subItem) => (
+                <Button
+                  key={subItem.id}
+                  variant={currentSubCategory === subItem.id ? "secondary" : "ghost"}
+                  size="sm"
+                  className={cn(
+                    "flex items-center gap-1",
+                    currentSubCategory === subItem.id ? "bg-rahati-yellow text-rahati-dark" : "text-rahati-dark hover:text-rahati-purple"
+                  )}
+                  onClick={() => handleSubCategoryClick(subItem.id)}
+                >
+                  <subItem.icon className="h-3 w-3" />
+                  <span>{subItem.label}</span>
+                </Button>
+              ))}
             </div>
-          )
-        ))}
+          </div>
+        )}
       </div>
     </div>
   );

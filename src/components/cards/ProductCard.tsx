@@ -1,12 +1,11 @@
 
 import React from 'react';
-import { ShoppingCart, Heart, Share2 } from 'lucide-react';
+import { ShoppingCart, Heart, Plus } from 'lucide-react';
 import { Product } from '@/types/product';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { FormattedPrice } from '@/components/ui/formatted-price';
-import { useToast } from '@/hooks/use-toast';
+import { formatPrice } from '@/lib/utils';
 
 interface ProductCardProps {
   product: Product;
@@ -19,30 +18,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onAddToCart,
   onViewDetails
 }) => {
-  const { toast } = useToast();
-  
-  const handleShare = () => {
-    // Create share text with FormattedPrice converted to string
-    const shareText = `${product.name} - ${product.price} أ.م`;
-    
-    // Check if Web Share API is available
-    if (navigator.share) {
-      navigator.share({
-        title: product.name,
-        text: `تحقق من هذا المنتج: ${shareText}`,
-        url: window.location.href,
-      }).catch((error) => console.log('Error sharing', error));
-    } else {
-      // Fallback: Copy to clipboard
-      navigator.clipboard.writeText(`${product.name} - ${product.price} أ.م - ${window.location.href}`);
-      toast({
-        title: "تم النسخ",
-        description: "تم نسخ رابط المنتج",
-        duration: 2000,
-      });
-    }
-  };
-
   return (
     <Card className="overflow-hidden card-hover border border-gray-200">
       <div className="aspect-square relative overflow-hidden bg-gray-100">
@@ -69,13 +44,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <div className="flex items-center gap-2">
             {product.originalPrice > 0 && (
               <span className="text-muted-foreground line-through text-sm">
-                <FormattedPrice price={product.originalPrice} />
+                {formatPrice(product.originalPrice)}
               </span>
             )}
-            <FormattedPrice 
-              price={product.price} 
-              className="font-medium text-rahati-purple"
-            />
+            <span className="font-medium text-rahati-purple">
+              {formatPrice(product.price)}
+            </span>
           </div>
           <p className="text-sm text-muted-foreground">{product.city}</p>
         </div>
@@ -88,9 +62,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
         >
           <ShoppingCart className="mr-2 h-4 w-4" />
           <span>أضف للسلة</span>
-        </Button>
-        <Button variant="outline" size="icon" onClick={handleShare}>
-          <Share2 className="h-4 w-4" />
         </Button>
         <Button variant="outline" size="icon">
           <Heart className="h-4 w-4" />

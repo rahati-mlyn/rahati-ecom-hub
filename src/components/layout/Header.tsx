@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Menu, Search, ShoppingCart, Share2 } from 'lucide-react';
+import { Menu, Search, ShoppingCart } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -48,7 +47,7 @@ const Header: React.FC<HeaderProps> = ({
             <Input
               type="text"
               placeholder="ابحث عن منتجات، مطاعم، عقارات..."
-              className="w-full border-rahati-yellow/50 bg-white/10 placeholder:text-white/70 text-white rounded-full pr-4"
+              className="w-full border-rahati-yellow/50 bg-white/10 placeholder:text-white/70 text-white"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               dir="rtl"
@@ -56,7 +55,7 @@ const Header: React.FC<HeaderProps> = ({
             <Button 
               type="submit" 
               size="icon" 
-              className="absolute left-1 top-1/2 -translate-y-1/2 bg-white text-rahati-purple hover:bg-rahati-yellow hover:text-rahati-dark transition-colors duration-300 rounded-full shadow-md"
+              className="absolute left-1 top-1/2 -translate-y-1/2 bg-rahati-yellow text-rahati-dark hover:bg-rahati-yellow/90"
               aria-label="Search"
             >
               <Search className="h-4 w-4" />
