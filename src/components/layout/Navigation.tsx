@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Home, Building, Utensils, TagsIcon, Car, ShoppingBag, Tv, Shirt, Sofa } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Home, Building, Utensils, TagsIcon, Car, ShoppingBag, Tv, Shirt, Sofa, Smartphone, Laptop, Coffee, Wine, BookOpen, Gift, Baby, Watch } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import AddStoreButton from './AddStoreButton';
@@ -20,13 +20,37 @@ const navigationItems: NavigationItem[] = [
     subCategories: [
       { id: 'clothes', label: 'الملابس', icon: Shirt },
       { id: 'electronics', label: 'الإلكترونيات', icon: Tv },
+      { id: 'phones', label: 'الجوالات', icon: Smartphone },
+      { id: 'computers', label: 'الحواسيب', icon: Laptop },
+      { id: 'food', label: 'الأطعمة', icon: Coffee },
+      { id: 'drinks', label: 'المشروبات', icon: Wine },
+      { id: 'books', label: 'الكتب', icon: BookOpen },
+      { id: 'gifts', label: 'الهدايا', icon: Gift },
+      { id: 'kids', label: 'منتجات الأطفال', icon: Baby },
+      { id: 'watches', label: 'الساعات', icon: Watch },
       { id: 'home-goods', label: 'المستلزمات المنزلية', icon: Sofa },
     ]
   },
-  { id: 'real-estate', label: 'العقارات', icon: Building },
+  { 
+    id: 'real-estate', 
+    label: 'العقارات', 
+    icon: Building,
+    subCategories: [
+      { id: 'sale', label: 'للبيع', icon: Building },
+      { id: 'rent', label: 'للإيجار', icon: Building },
+    ]
+  },
   { id: 'restaurants', label: 'المطاعم', icon: Utensils },
+  { 
+    id: 'cars', 
+    label: 'السيارات', 
+    icon: Car,
+    subCategories: [
+      { id: 'sale', label: 'للبيع', icon: Car },
+      { id: 'rent', label: 'للإيجار', icon: Car },
+    ]
+  },
   { id: 'discounts', label: 'الخصومات', icon: TagsIcon },
-  { id: 'cars', label: 'السيارات', icon: Car },
 ];
 
 interface NavigationProps {
@@ -44,7 +68,9 @@ const Navigation: React.FC<NavigationProps> = ({
   
   const handleCategoryClick = (categoryId: string) => {
     onSelectCategory(categoryId);
-    if (categoryId === 'shopping') {
+    // Check if this category has subcategories
+    const category = navigationItems.find(item => item.id === categoryId);
+    if (category?.subCategories?.length) {
       setShowSubCategories(true);
     } else {
       setShowSubCategories(false);
@@ -52,7 +78,7 @@ const Navigation: React.FC<NavigationProps> = ({
   };
 
   const handleSubCategoryClick = (subCategoryId: string) => {
-    onSelectCategory('shopping', subCategoryId);
+    onSelectCategory(currentCategory, subCategoryId);
   };
 
   // Find current category object
@@ -86,7 +112,7 @@ const Navigation: React.FC<NavigationProps> = ({
           </div>
         </div>
 
-        {/* Sub Categories for Shopping */}
+        {/* Sub Categories for the current category */}
         {showSubCategories && currentCategoryObj?.subCategories && (
           <div className="bg-rahati-purple/5 py-2 px-4 overflow-x-auto">
             <div className="flex gap-2 min-w-max">

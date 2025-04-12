@@ -239,9 +239,27 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
 
   const renderProducts = () => {
     let displayProducts;
+    let subcategoryLabel = '';
     
     if (currentSubCategory) {
       displayProducts = getProductsByCategory('shopping', currentSubCategory);
+      
+      // Map subcategory ID to its label
+      switch (currentSubCategory) {
+        case 'clothes': subcategoryLabel = 'الملابس'; break;
+        case 'electronics': subcategoryLabel = 'الإلكترونيات'; break;
+        case 'phones': subcategoryLabel = 'الجوالات'; break;
+        case 'computers': subcategoryLabel = 'الحواسيب'; break;
+        case 'food': subcategoryLabel = 'الأطعمة'; break;
+        case 'drinks': subcategoryLabel = 'المشروبات'; break;
+        case 'books': subcategoryLabel = 'الكتب'; break;
+        case 'gifts': subcategoryLabel = 'الهدايا'; break;
+        case 'kids': subcategoryLabel = 'منتجات الأطفال'; break;
+        case 'watches': subcategoryLabel = 'الساعات'; break;
+        case 'home-goods': subcategoryLabel = 'المستلزمات المنزلية'; break;
+        default: subcategoryLabel = '';
+      }
+      
     } else {
       displayProducts = getProductsByCategory('shopping');
     }
@@ -249,10 +267,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     return (
       <div className="container mx-auto px-4 py-8">
         <h2 className="text-2xl font-semibold mb-6 text-rahati-dark">
-          {currentSubCategory === 'clothes' && 'الملابس'}
-          {currentSubCategory === 'electronics' && 'الإلكترونيات'}
-          {currentSubCategory === 'home-goods' && 'المستلزمات المنزلية'}
-          {!currentSubCategory && 'منتجات التسوق'}
+          {subcategoryLabel || 'منتجات التسوق'}
         </h2>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -270,41 +285,77 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   };
 
   const renderRealEstate = () => {
-    const forSale = getRealEstateByType('sale');
-    const forRent = getRealEstateByType('rent');
+    let displayProperties;
+    let title = 'عقارات';
+    
+    if (currentSubCategory === 'sale') {
+      displayProperties = getRealEstateByType('sale');
+      title = 'عقارات للبيع';
+    } else if (currentSubCategory === 'rent') {
+      displayProperties = getRealEstateByType('rent');
+      title = 'عقارات للإيجار';
+    } else {
+      // If no subcategory, show both types but divided into sections
+      return (
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-12">
+            <div className="flex items-center justify-between mb-6">
+              <Button 
+                variant="outline" 
+                className="text-rahati-purple"
+                onClick={() => handleSelectCategory('real-estate', 'sale')}
+              >
+                عرض المزيد
+              </Button>
+              <h2 className="text-2xl font-semibold text-rahati-dark">عقارات للبيع</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {getRealEstateByType('sale').slice(0, 4).map(property => (
+                <RealEstateCard 
+                  key={property.id} 
+                  property={property} 
+                  onViewDetails={() => {}}
+                />
+              ))}
+            </div>
+          </div>
+          
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <Button 
+                variant="outline" 
+                className="text-rahati-purple"
+                onClick={() => handleSelectCategory('real-estate', 'rent')}
+              >
+                عرض المزيد
+              </Button>
+              <h2 className="text-2xl font-semibold text-rahati-dark">عقارات للإيجار</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {getRealEstateByType('rent').slice(0, 4).map(property => (
+                <RealEstateCard 
+                  key={property.id} 
+                  property={property} 
+                  onViewDetails={() => {}}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
     
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <Button variant="outline" className="text-rahati-purple">عرض المزيد</Button>
-            <h2 className="text-2xl font-semibold text-rahati-dark">عقارات للبيع</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {forSale.slice(0, 4).map(property => (
-              <RealEstateCard 
-                key={property.id} 
-                property={property} 
-                onViewDetails={() => {}}
-              />
-            ))}
-          </div>
-        </div>
-        
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <Button variant="outline" className="text-rahati-purple">عرض المزيد</Button>
-            <h2 className="text-2xl font-semibold text-rahati-dark">عقارات للإيجار</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {forRent.slice(0, 4).map(property => (
-              <RealEstateCard 
-                key={property.id} 
-                property={property} 
-                onViewDetails={() => {}}
-              />
-            ))}
-          </div>
+        <h2 className="text-2xl font-semibold mb-6 text-rahati-dark">{title}</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {displayProperties.map(property => (
+            <RealEstateCard 
+              key={property.id} 
+              property={property} 
+              onViewDetails={() => {}}
+            />
+          ))}
         </div>
       </div>
     );
@@ -328,41 +379,77 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   };
 
   const renderCars = () => {
-    const forSale = getCarsByType('sale');
-    const forRent = getCarsByType('rent');
+    let displayCars;
+    let title = 'سيارات';
+    
+    if (currentSubCategory === 'sale') {
+      displayCars = getCarsByType('sale');
+      title = 'سيارات للبيع';
+    } else if (currentSubCategory === 'rent') {
+      displayCars = getCarsByType('rent');
+      title = 'سيارات للإيجار';
+    } else {
+      // If no subcategory, show both types but divided into sections
+      return (
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-12">
+            <div className="flex items-center justify-between mb-6">
+              <Button 
+                variant="outline" 
+                className="text-rahati-purple"
+                onClick={() => handleSelectCategory('cars', 'sale')}
+              >
+                عرض المزيد
+              </Button>
+              <h2 className="text-2xl font-semibold text-rahati-dark">سيارات للبيع</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {getCarsByType('sale').slice(0, 4).map(car => (
+                <CarCard 
+                  key={car.id} 
+                  car={car} 
+                  onViewDetails={() => {}}
+                />
+              ))}
+            </div>
+          </div>
+          
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <Button 
+                variant="outline" 
+                className="text-rahati-purple"
+                onClick={() => handleSelectCategory('cars', 'rent')}
+              >
+                عرض المزيد
+              </Button>
+              <h2 className="text-2xl font-semibold text-rahati-dark">سيارات للإيجار</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {getCarsByType('rent').slice(0, 4).map(car => (
+                <CarCard 
+                  key={car.id} 
+                  car={car} 
+                  onViewDetails={() => {}}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
     
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <Button variant="outline" className="text-rahati-purple">عرض المزيد</Button>
-            <h2 className="text-2xl font-semibold text-rahati-dark">سيارات للبيع</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {forSale.slice(0, 4).map(car => (
-              <CarCard 
-                key={car.id} 
-                car={car} 
-                onViewDetails={() => {}}
-              />
-            ))}
-          </div>
-        </div>
-        
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <Button variant="outline" className="text-rahati-purple">عرض المزيد</Button>
-            <h2 className="text-2xl font-semibold text-rahati-dark">سيارات للإيجار</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {forRent.slice(0, 4).map(car => (
-              <CarCard 
-                key={car.id} 
-                car={car} 
-                onViewDetails={() => {}}
-              />
-            ))}
-          </div>
+        <h2 className="text-2xl font-semibold mb-6 text-rahati-dark">{title}</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {displayCars.map(car => (
+            <CarCard 
+              key={car.id} 
+              car={car} 
+              onViewDetails={() => {}}
+            />
+          ))}
         </div>
       </div>
     );
