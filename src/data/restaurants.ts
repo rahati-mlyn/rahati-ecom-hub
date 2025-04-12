@@ -11,14 +11,14 @@ export const restaurants: Restaurant[] = [
     cuisine: ["شرقي", "عربي", "لبناني"],
     rating: 4.7,
     reviewCount: 253,
-    city: "الرياض",
-    location: "حي العليا",
+    city: "نواكشوط",
+    location: "حي المينة",
     menu: [
       {
         id: generateId(),
         name: "المشاوي المشكلة",
         description: "تشكيلة من المشاوي اللذيذة تقدم مع الأرز والخضروات",
-        price: 85,
+        price: 2200,
         image: "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=2069&auto=format&fit=crop",
         category: "أطباق رئيسية"
       },
@@ -26,7 +26,7 @@ export const restaurants: Restaurant[] = [
         id: generateId(),
         name: "حمص بالطحينة",
         description: "حمص طازج مع الطحينة وزيت الزيتون",
-        price: 18,
+        price: 600,
         image: "https://images.unsplash.com/photo-1585937421612-70a008356c36?q=80&w=2036&auto=format&fit=crop",
         category: "مقبلات"
       },
@@ -34,7 +34,7 @@ export const restaurants: Restaurant[] = [
         id: generateId(),
         name: "كنافة بالجبن",
         description: "حلوى شرقية تقليدية بالجبن والقطر",
-        price: 25,
+        price: 850,
         image: "https://images.unsplash.com/photo-1566897963861-8f54a25da290?q=80&w=2070&auto=format&fit=crop",
         category: "حلويات"
       }
@@ -50,14 +50,14 @@ export const restaurants: Restaurant[] = [
     cuisine: ["برجر", "أمريكي", "سريع"],
     rating: 4.5,
     reviewCount: 187,
-    city: "جدة",
-    location: "شارع التحلية",
+    city: "نواذيبو",
+    location: "شارع الاستقلال",
     menu: [
       {
         id: generateId(),
         name: "برجر كلاسيك",
         description: "برجر لحم بقري مع الجبن والخضار الطازجة",
-        price: 35,
+        price: 950,
         image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1899&auto=format&fit=crop",
         category: "برجر"
       },
@@ -65,7 +65,7 @@ export const restaurants: Restaurant[] = [
         id: generateId(),
         name: "بطاطس مقلية",
         description: "بطاطس مقرمشة مع صلصة خاصة",
-        price: 15,
+        price: 450,
         image: "https://images.unsplash.com/photo-1576107232684-1279f390859f?q=80&w=1935&auto=format&fit=crop",
         category: "جانبية"
       },
@@ -73,7 +73,7 @@ export const restaurants: Restaurant[] = [
         id: generateId(),
         name: "ميلك شيك شوكولاتة",
         description: "ميلك شيك كريمي بالشوكولاتة",
-        price: 22,
+        price: 600,
         image: "https://images.unsplash.com/photo-1541658016709-82535e94bc69?q=80&w=2069&auto=format&fit=crop",
         category: "مشروبات"
       }
@@ -89,14 +89,14 @@ export const restaurants: Restaurant[] = [
     cuisine: ["مأكولات بحرية", "سمك", "مشويات"],
     rating: 4.8,
     reviewCount: 326,
-    city: "الدمام",
-    location: "كورنيش الدمام",
+    city: "روصو",
+    location: "شارع الشاطئ",
     menu: [
       {
         id: generateId(),
         name: "سمك مشوي",
         description: "سمك طازج مشوي مع الأعشاب والليمون",
-        price: 75,
+        price: 1900,
         image: "https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?q=80&w=2070&auto=format&fit=crop",
         category: "أطباق رئيسية"
       },
@@ -104,7 +104,7 @@ export const restaurants: Restaurant[] = [
         id: generateId(),
         name: "روبيان مقلي",
         description: "روبيان مقلي بالثوم والليمون",
-        price: 65,
+        price: 1800,
         image: "https://images.unsplash.com/photo-1625943553852-781c7d513089?q=80&w=2070&auto=format&fit=crop",
         category: "أطباق رئيسية"
       },
@@ -112,7 +112,7 @@ export const restaurants: Restaurant[] = [
         id: generateId(),
         name: "سلطة يونانية",
         description: "سلطة طازجة مع جبن الفيتا والزيتون",
-        price: 30,
+        price: 800,
         image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?q=80&w=1965&auto=format&fit=crop",
         category: "سلطات"
       }
@@ -128,14 +128,14 @@ export const restaurants: Restaurant[] = [
     cuisine: ["إيطالي", "بيتزا", "معجنات"],
     rating: 4.3,
     reviewCount: 145,
-    city: "الرياض",
-    location: "حي الوزارات",
+    city: "كيفة",
+    location: "شارع المدينة",
     menu: [
       {
         id: generateId(),
         name: "بيتزا مارجريتا",
         description: "بيتزا كلاسيكية مع صلصة الطماطم وجبن الموزاريلا وأوراق الريحان",
-        price: 45,
+        price: 1400,
         image: "https://images.unsplash.com/photo-1588315029754-2dd089d39a1a?q=80&w=2071&auto=format&fit=crop",
         category: "بيتزا"
       },
@@ -143,7 +143,7 @@ export const restaurants: Restaurant[] = [
         id: generateId(),
         name: "بيتزا بيبروني",
         description: "بيتزا مع شرائح البيبروني الحار وجبن الموزاريلا",
-        price: 55,
+        price: 1600,
         image: "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?q=80&w=2076&auto=format&fit=crop",
         category: "بيتزا"
       },
@@ -151,7 +151,7 @@ export const restaurants: Restaurant[] = [
         id: generateId(),
         name: "باستا ألفريدو",
         description: "باستا كريمية مع صلصة ألفريدو والدجاج",
-        price: 48,
+        price: 1400,
         image: "https://images.unsplash.com/photo-1645112411341-6c4fd023882c?q=80&w=2070&auto=format&fit=crop",
         category: "باستا"
       }

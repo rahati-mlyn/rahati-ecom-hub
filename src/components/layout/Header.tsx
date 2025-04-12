@@ -55,8 +55,7 @@ const Header: React.FC<HeaderProps> = ({
             />
             <Button 
               type="submit" 
-              size="icon" 
-              className="absolute left-1 top-1/2 -translate-y-1/2 bg-rahati-yellow text-rahati-dark hover:bg-rahati-yellow/90"
+              className="absolute left-1 top-1/2 -translate-y-1/2 bg-transparent hover:bg-transparent text-white"
               aria-label="Search"
             >
               <Search className="h-4 w-4" />

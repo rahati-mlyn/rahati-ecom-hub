@@ -7,9 +7,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPrice(price: number): string {
-  return new Intl.NumberFormat('ar-SA', {
+  return new Intl.NumberFormat('ar-MR', {
     style: 'currency',
-    currency: 'SAR',
+    currency: 'MRU',
   }).format(price)
 }
 

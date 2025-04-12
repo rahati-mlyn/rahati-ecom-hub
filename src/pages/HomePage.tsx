@@ -18,6 +18,7 @@ import { RealEstate } from '@/types/realEstate';
 import { Restaurant } from '@/types/restaurant';
 import { Car } from '@/types/car';
 import { CartItem } from '@/types/cart';
+import { MenuItem } from '@/types/restaurant';
 
 import { products, getProductsByCategory } from '@/data/products';
 import { realEstateListings, getRealEstateByType } from '@/data/realEstate';
@@ -90,6 +91,33 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     });
   };
 
+  // Handle adding menu item to cart
+  const handleAddMenuItemToCart = (menuItem: MenuItem, restaurantName: string) => {
+    const cartItemId = `menu-${menuItem.id}`;
+    const existingItemIndex = cartItems.findIndex(item => item.id === cartItemId);
+    
+    if (existingItemIndex !== -1) {
+      // Increment quantity if item already exists
+      const updatedItems = [...cartItems];
+      updatedItems[existingItemIndex].quantity += 1;
+      setCartItems(updatedItems);
+    } else {
+      // Add new item to cart
+      setCartItems([
+        ...cartItems,
+        {
+          id: cartItemId,
+          name: `${menuItem.name} (${restaurantName})`,
+          price: menuItem.price,
+          image: menuItem.image,
+          quantity: 1,
+          categoryId: 'restaurants',
+          storeId: restaurantName
+        }
+      ]);
+    }
+  };
+
   const handleRemoveFromCart = (id: string) => {
     setCartItems(cartItems.filter(item => item.id !== id));
   };
@@ -105,8 +133,8 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     // Format the order for WhatsApp
     const orderText = encodeURIComponent(
       `طلب جديد من راحتي:\n\n` +
-      cartItems.map(item => `${item.name} x ${item.quantity} - ${item.price * item.quantity} ريال`).join('\n') +
-      `\n\nالمجموع: ${cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)} ريال`
+      cartItems.map(item => `${item.name} x ${item.quantity} - ${item.price * item.quantity} أوقية`).join('\n') +
+      `\n\nالمجموع: ${cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)} أوقية`
     );
     
     window.open(`https://wa.me/31465497?text=${orderText}`, '_blank');
@@ -215,8 +243,9 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
               return (
                 <RestaurantCard 
                   key={item.id} 
-                  restaurant={item as Restaurant} 
+                  restaurant={restaurant as Restaurant} 
                   onViewDetails={() => {}}
+                  onAddToCart={handleAddMenuItemToCart}
                 />
               );
             }
@@ -247,16 +276,9 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
       // Map subcategory ID to its label
       switch (currentSubCategory) {
         case 'clothes': subcategoryLabel = 'الملابس'; break;
+        case 'home-goods': subcategoryLabel = 'الأثاث المنزلي'; break;
         case 'electronics': subcategoryLabel = 'الإلكترونيات'; break;
-        case 'phones': subcategoryLabel = 'الجوالات'; break;
-        case 'computers': subcategoryLabel = 'الحواسيب'; break;
-        case 'food': subcategoryLabel = 'الأطعمة'; break;
-        case 'drinks': subcategoryLabel = 'المشروبات'; break;
-        case 'books': subcategoryLabel = 'الكتب'; break;
-        case 'gifts': subcategoryLabel = 'الهدايا'; break;
-        case 'kids': subcategoryLabel = 'منتجات الأطفال'; break;
-        case 'watches': subcategoryLabel = 'الساعات'; break;
-        case 'home-goods': subcategoryLabel = 'المستلزمات المنزلية'; break;
+        case 'other': subcategoryLabel = 'غير ذلك'; break;
         default: subcategoryLabel = '';
       }
       
@@ -361,23 +383,6 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     );
   };
 
-  const renderRestaurants = () => {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <h2 className="text-2xl font-semibold mb-6 text-rahati-dark">المطاعم</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {restaurants.map(restaurant => (
-            <RestaurantCard 
-              key={restaurant.id} 
-              restaurant={restaurant} 
-              onViewDetails={() => {}}
-            />
-          ))}
-        </div>
-      </div>
-    );
-  };
-
   const renderCars = () => {
     let displayCars;
     let title = 'سيارات';
@@ -469,6 +474,24 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
               product={product} 
               onAddToCart={handleAddToCart}
               onViewDetails={() => {}} 
+            />
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderRestaurants = () => {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h2 className="text-2xl font-semibold mb-6 text-rahati-dark">المطاعم</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {restaurants.map(restaurant => (
+            <RestaurantCard 
+              key={restaurant.id} 
+              restaurant={restaurant} 
+              onViewDetails={() => {}}
+              onAddToCart={handleAddMenuItemToCart}
             />
           ))}
         </div>

@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Home, Building, Utensils, TagsIcon, Car, ShoppingBag, Tv, Shirt, Sofa, Smartphone, Laptop, Coffee, Wine, BookOpen, Gift, Baby, Watch } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Home, Building, Utensils, TagsIcon, Car, ShoppingBag, Tv, Shirt, Sofa, Smartphone, Laptop, Coffee, Wine, BookOpen, Gift, Baby, Watch, MoreHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import AddStoreButton from './AddStoreButton';
@@ -19,16 +18,9 @@ const navigationItems: NavigationItem[] = [
     icon: ShoppingBag,
     subCategories: [
       { id: 'clothes', label: 'الملابس', icon: Shirt },
+      { id: 'home-goods', label: 'الأثاث المنزلي', icon: Sofa },
       { id: 'electronics', label: 'الإلكترونيات', icon: Tv },
-      { id: 'phones', label: 'الجوالات', icon: Smartphone },
-      { id: 'computers', label: 'الحواسيب', icon: Laptop },
-      { id: 'food', label: 'الأطعمة', icon: Coffee },
-      { id: 'drinks', label: 'المشروبات', icon: Wine },
-      { id: 'books', label: 'الكتب', icon: BookOpen },
-      { id: 'gifts', label: 'الهدايا', icon: Gift },
-      { id: 'kids', label: 'منتجات الأطفال', icon: Baby },
-      { id: 'watches', label: 'الساعات', icon: Watch },
-      { id: 'home-goods', label: 'المستلزمات المنزلية', icon: Sofa },
+      { id: 'other', label: 'غير ذلك', icon: MoreHorizontal },
     ]
   },
   { 
