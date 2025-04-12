@@ -22,8 +22,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const { toast } = useToast();
   
   const handleShare = () => {
-    // Create share text
-    const shareText = `${product.name} - ${formatPrice(product.price)}`;
+    // Create share text with FormattedPrice converted to string
+    const shareText = `${product.name} - ${product.price} أ.م`;
     
     // Check if Web Share API is available
     if (navigator.share) {
@@ -34,7 +34,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       }).catch((error) => console.log('Error sharing', error));
     } else {
       // Fallback: Copy to clipboard
-      navigator.clipboard.writeText(`${product.name} - ${formatPrice(product.price)} - ${window.location.href}`);
+      navigator.clipboard.writeText(`${product.name} - ${product.price} أ.م - ${window.location.href}`);
       toast({
         title: "تم النسخ",
         description: "تم نسخ رابط المنتج",

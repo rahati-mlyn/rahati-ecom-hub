@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Home, Building, Utensils, TagsIcon, Car, ShoppingBag, Tv, Shirt, Sofa, DollarSign, KeyRound } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Home, Building, Utensils, TagsIcon, Car, ShoppingBag, Tv, Shirt, Sofa, DollarSign, KeyRound, Smartphone, Apple, Pizza, Coffee, BookOpen, Gift, Baby, Watch } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import AddStoreButton from './AddStoreButton';
@@ -20,6 +20,14 @@ const navigationItems: NavigationItem[] = [
     subCategories: [
       { id: 'clothes', label: 'الملابس', icon: Shirt },
       { id: 'electronics', label: 'الإلكترونيات', icon: Tv },
+      { id: 'mobile', label: 'الجوالات', icon: Smartphone },
+      { id: 'computers', label: 'الحواسيب', icon: Apple },
+      { id: 'food', label: 'الأطعمة', icon: Pizza },
+      { id: 'drinks', label: 'المشروبات', icon: Coffee },
+      { id: 'books', label: 'الكتب', icon: BookOpen },
+      { id: 'gifts', label: 'الهدايا', icon: Gift },
+      { id: 'kids', label: 'منتجات الأطفال', icon: Baby },
+      { id: 'watches', label: 'الساعات', icon: Watch },
       { id: 'home-goods', label: 'المستلزمات المنزلية', icon: Sofa },
     ]
   },
