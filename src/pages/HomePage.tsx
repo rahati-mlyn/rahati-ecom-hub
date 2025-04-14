@@ -10,6 +10,7 @@ import CarCard from '@/components/cards/CarCard';
 import LoginModal from '@/components/modals/LoginModal';
 import SignupModal from '@/components/modals/SignupModal';
 import LanguageModal from '@/components/modals/LanguageModal';
+import ProductDetailsModal from '@/components/modals/ProductDetailsModal';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
@@ -32,44 +33,36 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
-  // State for UI components
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   
-  // Add product details modal state
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isProductDetailsModalOpen, setIsProductDetailsModalOpen] = useState(false);
   
-  // Category state
   const [currentCategory, setCurrentCategory] = useState('shopping');
   const [currentSubCategory, setCurrentSubCategory] = useState<string | undefined>(undefined);
   
-  // Cart state
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   
-  // Search state
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredItems, setFilteredItems] = useState<any[]>([]);
   
   const { toast } = useToast();
 
-  // Handle navigation
   const handleSelectCategory = (category: string, subCategory?: string) => {
     setCurrentCategory(category);
     setCurrentSubCategory(subCategory);
     setSearchQuery('');
   };
 
-  // Handle product selection for details
   const handleViewProductDetails = (product: Product) => {
     setSelectedProduct(product);
     setIsProductDetailsModalOpen(true);
   };
 
-  // Get similar products based on selected product
   const getSimilarProducts = (product: Product | null): Product[] => {
     if (!product) return [];
     
@@ -81,17 +74,14 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
       .slice(0, 3);
   };
 
-  // Handle cart operations
   const handleAddToCart = (product: Product) => {
     const existingItemIndex = cartItems.findIndex(item => item.id === product.id);
     
     if (existingItemIndex !== -1) {
-      // Increment quantity if item already exists
       const updatedItems = [...cartItems];
       updatedItems[existingItemIndex].quantity += 1;
       setCartItems(updatedItems);
     } else {
-      // Add new item to cart
       setCartItems([
         ...cartItems,
         {
@@ -113,18 +103,15 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     });
   };
 
-  // Handle adding menu item to cart
   const handleAddMenuItemToCart = (menuItem: MenuItem, restaurantName: string) => {
     const cartItemId = `menu-${menuItem.id}`;
     const existingItemIndex = cartItems.findIndex(item => item.id === cartItemId);
     
     if (existingItemIndex !== -1) {
-      // Increment quantity if item already exists
       const updatedItems = [...cartItems];
       updatedItems[existingItemIndex].quantity += 1;
       setCartItems(updatedItems);
     } else {
-      // Add new item to cart
       setCartItems([
         ...cartItems,
         {
@@ -152,7 +139,6 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   };
 
   const handleSendOrder = () => {
-    // Format the order for WhatsApp
     const orderText = encodeURIComponent(
       `طلب جديد من راحتي:\n\n` +
       cartItems.map(item => `${item.name} x ${item.quantity} - ${item.price * item.quantity} أوقية`).join('\n') +
@@ -162,17 +148,14 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     window.open(`https://wa.me/31465497?text=${orderText}`, '_blank');
   };
 
-  // Handle search
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     
-    // If search query is empty, reset to regular view
     if (!query.trim()) {
       setFilteredItems([]);
       return;
     }
     
-    // Search through all data sources
     const searchResults = [
       ...products.filter(p => 
         p.name.toLowerCase().includes(query.toLowerCase()) || 
@@ -202,7 +185,6 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     setFilteredItems(searchResults);
   };
 
-  // Render content based on category
   const renderContent = () => {
     if (searchQuery) {
       return renderSearchResults();
@@ -239,7 +221,6 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         <h2 className="text-2xl font-semibold mb-6 text-rahati-dark">نتائج البحث: {searchQuery}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredItems.map(item => {
-            // Product
             if ('price' in item && 'name' in item && !('make' in item) && !('title' in item)) {
               return (
                 <ProductCard 
@@ -250,7 +231,6 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
                 />
               );
             }
-            // RealEstate
             else if ('title' in item && 'bedrooms' in item) {
               return (
                 <RealEstateCard 
@@ -260,18 +240,16 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
                 />
               );
             }
-            // Restaurant
             else if ('name' in item && 'menu' in item) {
               return (
                 <RestaurantCard 
                   key={item.id} 
-                  restaurant={restaurant as Restaurant} 
+                  restaurant={item as Restaurant} 
                   onViewDetails={() => {}}
                   onAddToCart={handleAddMenuItemToCart}
                 />
               );
             }
-            // Car
             else if ('make' in item && 'model' in item) {
               return (
                 <CarCard 
@@ -295,7 +273,6 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     if (currentSubCategory) {
       displayProducts = getProductsByCategory('shopping', currentSubCategory);
       
-      // Map subcategory ID to its label
       switch (currentSubCategory) {
         case 'clothes': subcategoryLabel = 'الملابس'; break;
         case 'home-goods': subcategoryLabel = 'الأثاث المنزلي'; break;
@@ -339,7 +316,6 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
       displayProperties = getRealEstateByType('rent');
       title = 'عقارات للإيجار';
     } else {
-      // If no subcategory, show both types but divided into sections
       return (
         <div className="container mx-auto px-4 py-8">
           <div className="mb-12">
@@ -416,7 +392,6 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
       displayCars = getCarsByType('rent');
       title = 'سيارات للإيجار';
     } else {
-      // If no subcategory, show both types but divided into sections
       return (
         <div className="container mx-auto px-4 py-8">
           <div className="mb-12">
@@ -483,7 +458,6 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   };
 
   const renderDiscounts = () => {
-    // Filter products with discount > 0
     const discountProducts = products.filter(product => product.discount > 0);
     
     return (
@@ -523,7 +497,6 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
       <Header 
         onOpenSidebar={() => setIsSidebarOpen(true)} 
         onOpenCart={() => setIsCartOpen(true)}
@@ -531,19 +504,16 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         cartItems={cartItems}
       />
       
-      {/* Navigation */}
       <Navigation 
         onSelectCategory={handleSelectCategory}
         currentCategory={currentCategory}
         currentSubCategory={currentSubCategory}
       />
       
-      {/* Main Content */}
       <main className="flex-grow">
         {renderContent()}
       </main>
       
-      {/* Sidebar */}
       <Sidebar 
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
@@ -561,7 +531,6 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         }}
       />
       
-      {/* Cart Drawer */}
       <CartDrawer 
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
@@ -571,7 +540,6 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         onSendOrder={handleSendOrder}
       />
       
-      {/* Product Details Modal */}
       <ProductDetailsModal
         product={selectedProduct}
         isOpen={isProductDetailsModalOpen}
@@ -581,7 +549,6 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         onViewDetails={handleViewProductDetails}
       />
       
-      {/* Modals */}
       <LoginModal 
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
