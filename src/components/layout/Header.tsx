@@ -47,7 +47,7 @@ const Header: React.FC<HeaderProps> = ({
           <div className="relative flex">
             <Input
               type="text"
-              placeholder="ابحث عن منتجات، مطاعم، عقارات..."
+              placeholder="البحث عن"
               className="w-full border-rahati-yellow/50 bg-white/10 placeholder:text-white/70 text-white"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}

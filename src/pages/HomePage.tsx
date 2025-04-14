@@ -39,6 +39,10 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   
+  // Add product details modal state
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isProductDetailsModalOpen, setIsProductDetailsModalOpen] = useState(false);
+  
   // Category state
   const [currentCategory, setCurrentCategory] = useState('shopping');
   const [currentSubCategory, setCurrentSubCategory] = useState<string | undefined>(undefined);
@@ -57,6 +61,24 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     setCurrentCategory(category);
     setCurrentSubCategory(subCategory);
     setSearchQuery('');
+  };
+
+  // Handle product selection for details
+  const handleViewProductDetails = (product: Product) => {
+    setSelectedProduct(product);
+    setIsProductDetailsModalOpen(true);
+  };
+
+  // Get similar products based on selected product
+  const getSimilarProducts = (product: Product | null): Product[] => {
+    if (!product) return [];
+    
+    return products
+      .filter(p => 
+        p.id !== product.id && 
+        (p.subCategory === product.subCategory || p.category === product.category)
+      )
+      .slice(0, 3);
   };
 
   // Handle cart operations
@@ -224,7 +246,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
                   key={item.id} 
                   product={item as Product} 
                   onAddToCart={handleAddToCart}
-                  onViewDetails={() => {}} 
+                  onViewDetails={handleViewProductDetails} 
                 />
               );
             }
@@ -298,7 +320,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
               key={product.id} 
               product={product} 
               onAddToCart={handleAddToCart}
-              onViewDetails={() => {}} 
+              onViewDetails={handleViewProductDetails} 
             />
           ))}
         </div>
@@ -547,6 +569,16 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         onRemoveItem={handleRemoveFromCart}
         onUpdateQuantity={handleUpdateQuantity}
         onSendOrder={handleSendOrder}
+      />
+      
+      {/* Product Details Modal */}
+      <ProductDetailsModal
+        product={selectedProduct}
+        isOpen={isProductDetailsModalOpen}
+        onClose={() => setIsProductDetailsModalOpen(false)}
+        onAddToCart={handleAddToCart}
+        similarProducts={getSimilarProducts(selectedProduct)}
+        onViewDetails={handleViewProductDetails}
       />
       
       {/* Modals */}

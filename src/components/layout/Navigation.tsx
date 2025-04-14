@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Home, Building, Utensils, TagsIcon, Car, ShoppingBag, Tv, Shirt, Sofa, Smartphone, Laptop, Coffee, Wine, BookOpen, Gift, Baby, Watch, MoreHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -77,19 +78,21 @@ const Navigation: React.FC<NavigationProps> = ({
   const currentCategoryObj = navigationItems.find(item => item.id === currentCategory);
 
   return (
-    <div className="bg-white/10 border-b border-rahati-purple/10">
+    <div className="bg-white shadow-sm border-b border-rahati-purple/10">
       <div className="container mx-auto">
         {/* Main Categories */}
-        <div className="overflow-x-auto pb-1">
-          <div className="flex justify-between items-center py-2 px-4">
-            <div className="flex gap-2 min-w-max">
+        <div className="overflow-x-auto py-2">
+          <div className="flex justify-between items-center px-4">
+            <div className="flex gap-3 min-w-max">
               {navigationItems.map((item) => (
                 <Button
                   key={item.id}
-                  variant={currentCategory === item.id ? "default" : "outline"}
+                  variant={currentCategory === item.id ? "default" : "ghost"}
                   className={cn(
-                    "flex items-center gap-2 min-w-fit",
-                    currentCategory === item.id ? "bg-rahati-purple text-white" : "text-rahati-dark hover:text-rahati-purple"
+                    "flex items-center gap-2 min-w-fit rounded-full transition-all duration-300",
+                    currentCategory === item.id 
+                      ? "bg-rahati-purple text-white shadow-md" 
+                      : "text-rahati-dark hover:text-rahati-purple hover:bg-rahati-purple/10"
                   )}
                   onClick={() => handleCategoryClick(item.id)}
                 >
@@ -106,16 +109,18 @@ const Navigation: React.FC<NavigationProps> = ({
 
         {/* Sub Categories for the current category */}
         {showSubCategories && currentCategoryObj?.subCategories && (
-          <div className="bg-rahati-purple/5 py-2 px-4 overflow-x-auto">
-            <div className="flex gap-2 min-w-max">
+          <div className="bg-rahati-purple/5 py-2 px-4 overflow-x-auto border-t border-rahati-purple/10">
+            <div className="flex gap-2 min-w-max justify-center">
               {currentCategoryObj.subCategories.map((subItem) => (
                 <Button
                   key={subItem.id}
                   variant={currentSubCategory === subItem.id ? "secondary" : "ghost"}
                   size="sm"
                   className={cn(
-                    "flex items-center gap-1",
-                    currentSubCategory === subItem.id ? "bg-rahati-yellow text-rahati-dark" : "text-rahati-dark hover:text-rahati-purple"
+                    "flex items-center gap-1 rounded-full transition-all duration-300",
+                    currentSubCategory === subItem.id 
+                      ? "bg-rahati-yellow text-rahati-dark shadow-sm" 
+                      : "text-rahati-dark hover:text-rahati-purple hover:bg-rahati-purple/10"
                   )}
                   onClick={() => handleSubCategoryClick(subItem.id)}
                 >

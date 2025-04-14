@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Phone, Mail, Facebook, Instagram, Youtube, AlignRight, X } from 'lucide-react';
+import { Phone, Mail, Facebook, Instagram, Youtube, AlignRight, X, Snapchat, TiktokIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
@@ -12,6 +12,24 @@ interface SidebarProps {
   onSignupClick: () => void;
   onLanguageClick: () => void;
 }
+
+// Create a custom TikTok icon since it's not in Lucide by default
+const TikTok = () => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    width="24" 
+    height="24" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+    className="lucide lucide-tiktok"
+  >
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+  </svg>
+);
 
 const Sidebar: React.FC<SidebarProps> = ({
   isOpen,
@@ -65,7 +83,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             <h3 className="text-lg font-medium mb-3 text-right">تواصل معنا</h3>
             <div className="grid grid-cols-2 gap-3">
               <a 
-                href="https://wa.me/31465497" 
+                href="https://wa.me/22231465497" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-white hover:text-rahati-yellow transition-colors"
@@ -74,7 +92,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <span dir="ltr">31465497</span>
               </a>
               <a 
-                href="https://www.facebook.com/YourPage" 
+                href="https://www.facebook.com/profile.php?id=61575255866580" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-white hover:text-rahati-yellow transition-colors"
@@ -83,16 +101,25 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <span>فيسبوك</span>
               </a>
               <a 
-                href="https://www.instagram.com/YourProfile" 
+                href="https://www.tiktok.com/@rahati_mlyn?_t=ZM-8vX4m6NEPN1&_r=1" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-white hover:text-rahati-yellow transition-colors"
               >
-                <Instagram className="h-4 w-4" />
-                <span>إنستغرام</span>
+                <TikTok />
+                <span>تيك توك</span>
               </a>
               <a 
-                href="https://www.youtube.com/YourChannel" 
+                href="https://www.snapchat.com/add/rahati_mlyn?share_id=JXROvMOS70Y&locale=ar-MR" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-white hover:text-rahati-yellow transition-colors"
+              >
+                <Snapchat className="h-4 w-4" />
+                <span>سناب شات</span>
+              </a>
+              <a 
+                href="https://youtube.com/channel/UC2Ga1kALXLK03c11evnxTgA?si=koL3Kl2fW59tRdMB" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-white hover:text-rahati-yellow transition-colors"
@@ -101,13 +128,13 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <span>يوتيوب</span>
               </a>
               <a 
-                href="mailto:contact@rahati.com" 
+                href="https://www.tiktok.com/@rahati_mlyn?_t=ZM-8vX4m6NEPN1&_r=1" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-white hover:text-rahati-yellow transition-colors"
               >
-                <Mail className="h-4 w-4" />
-                <span>البريد</span>
+                <Instagram className="h-4 w-4" />
+                <span>إنستغرام</span>
               </a>
             </div>
           </div>
