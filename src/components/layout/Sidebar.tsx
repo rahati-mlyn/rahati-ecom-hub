@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Phone, Mail, Facebook, Instagram, Youtube, AlignRight, X, Snapchat, TiktokIcon } from 'lucide-react';
+import { Phone, Mail, Facebook, Instagram, Youtube, AlignRight, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
@@ -13,7 +13,7 @@ interface SidebarProps {
   onLanguageClick: () => void;
 }
 
-// Create a custom TikTok icon since it's not in Lucide by default
+// Create custom icons for those not available in Lucide
 const TikTok = () => (
   <svg 
     xmlns="http://www.w3.org/2000/svg" 
@@ -28,6 +28,24 @@ const TikTok = () => (
     className="lucide lucide-tiktok"
   >
     <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+  </svg>
+);
+
+const Snapchat = () => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    width="24" 
+    height="24" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+    className="lucide lucide-snapchat"
+  >
+    <path d="M12 2c-3.3 0-6 2.7-6 6v4c0 1.1-.9 2-2 2 0 0 0 2 2 2 0 0 0 4 6 4s6-4 6-4c2 0 2-2 2-2-1.1 0-2-.9-2-2V8c0-3.3-2.7-6-6-6Z" />
+    <path d="M8 14h8" />
   </svg>
 );
 
@@ -115,7 +133,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-white hover:text-rahati-yellow transition-colors"
               >
-                <Snapchat className="h-4 w-4" />
+                <Snapchat />
                 <span>سناب شات</span>
               </a>
               <a 
