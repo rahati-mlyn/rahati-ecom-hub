@@ -1,9 +1,19 @@
 
 import React from 'react';
-import { Phone, Mail, Facebook, Instagram, Youtube, AlignRight, X } from 'lucide-react';
+import { 
+  ShoppingBag, Building, Utensils, Car, 
+  Percent, Store, Globe, Mail, Info, 
+  Phone, X, AlignRight
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { 
+  Drawer, 
+  DrawerContent, 
+  DrawerHeader, 
+  DrawerTitle 
+} from '@/components/ui/drawer';
 import { Separator } from '@/components/ui/separator';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -57,131 +67,167 @@ const Sidebar: React.FC<SidebarProps> = ({
   onLanguageClick
 }) => {
   return (
-    <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <SheetContent side="right" className="bg-rahati-purple text-white border-l border-rahati-yellow/50 max-w-xs w-full">
-        <SheetHeader className="text-right">
-          <SheetTitle className="text-white flex justify-between items-center">
-            <Button variant="ghost" size="icon" onClick={onClose} className="hover:bg-white/10">
-              <X className="h-5 w-5" />
-            </Button>
-            <span className="text-rahati-yellow">قائمة راحتي</span>
-          </SheetTitle>
-        </SheetHeader>
-        
-        <div className="mt-6 flex flex-col gap-6">
-          {/* Login Section */}
-          <div className="flex flex-col gap-3">
+    <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DrawerContent className="bg-white text-rahati-dark h-full max-w-xs w-full border-0">
+        <div className="flex flex-col h-full">
+          {/* User Section */}
+          <div className="flex flex-col items-center text-center p-6 bg-gray-100">
+            <Avatar className="h-24 w-24 mb-3">
+              <AvatarImage src="/lovable-uploads/0950e701-254f-41c2-9f33-1fa067702b38.png" alt="User Avatar" />
+              <AvatarFallback className="bg-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+              </AvatarFallback>
+            </Avatar>
+            <h2 className="text-2xl font-medium mb-3">زائر</h2>
             <Button 
-              className="bg-rahati-yellow text-rahati-dark hover:bg-rahati-yellow/90 w-full" 
+              className="w-full bg-rahati-purple text-white hover:bg-rahati-purple/90 rounded-full py-6" 
               onClick={onLoginClick}
             >
               تسجيل الدخول
             </Button>
-            <Button 
-              variant="outline" 
-              className="border-white text-white hover:bg-white/10 w-full"
-              onClick={onSignupClick}
-            >
-              إنشاء حساب جديد
-            </Button>
-            <Button 
-              variant="ghost" 
-              className="text-white hover:bg-white/10 w-full"
-              onClick={onLanguageClick}
-            >
-              <AlignRight className="mr-2 h-4 w-4" />
-              تغيير اللغة
-            </Button>
           </div>
           
-          <Separator className="bg-white/20" />
+          <div className="flex-1 p-4 overflow-auto">
+            {/* Main Navigation */}
+            <div className="space-y-4">
+              <div className="py-4">
+                <Separator className="mb-4 bg-gray-200" />
+                
+                <nav className="space-y-6">
+                  {/* Shopping */}
+                  <div className="flex justify-between items-center">
+                    <ShoppingBag className="h-5 w-5" />
+                    <a href="#" className="text-lg font-medium hover:text-rahati-purple transition-colors">
+                      التسوق
+                    </a>
+                  </div>
+                  
+                  {/* Real Estate */}
+                  <div className="flex justify-between items-center">
+                    <Building className="h-5 w-5" />
+                    <a href="#" className="text-lg font-medium hover:text-rahati-purple transition-colors">
+                      العقارات
+                    </a>
+                  </div>
+                  
+                  {/* Restaurants */}
+                  <div className="flex justify-between items-center">
+                    <Utensils className="h-5 w-5" />
+                    <a href="#" className="text-lg font-medium hover:text-rahati-purple transition-colors">
+                      المطاعم
+                    </a>
+                  </div>
+                  
+                  {/* Cars */}
+                  <div className="flex justify-between items-center">
+                    <Car className="h-5 w-5" />
+                    <a href="#" className="text-lg font-medium hover:text-rahati-purple transition-colors">
+                      السيارات
+                    </a>
+                  </div>
+                  
+                  {/* Discounts */}
+                  <div className="flex justify-between items-center">
+                    <Percent className="h-5 w-5" />
+                    <a href="#" className="text-lg font-medium hover:text-rahati-purple transition-colors">
+                      التخفيضات
+                    </a>
+                  </div>
+
+                  <Separator className="bg-gray-200" />
+                  
+                  {/* Create Store */}
+                  <div className="flex justify-between items-center">
+                    <Store className="h-5 w-5" />
+                    <a href="/add-store" className="text-lg font-medium hover:text-rahati-purple transition-colors">
+                      إنشاء متجر
+                    </a>
+                  </div>
+                  
+                  {/* Change Language */}
+                  <div className="flex justify-between items-center">
+                    <Globe className="h-5 w-5" />
+                    <button 
+                      onClick={onLanguageClick}
+                      className="text-lg font-medium text-right hover:text-rahati-purple transition-colors"
+                    >
+                      تغيير اللغة
+                    </button>
+                  </div>
+                  
+                  {/* Contact Us */}
+                  <div className="flex justify-between items-center">
+                    <Mail className="h-5 w-5" />
+                    <a href="#" className="text-lg font-medium hover:text-rahati-purple transition-colors">
+                      اتصل بنا
+                    </a>
+                  </div>
+                  
+                  {/* About Us */}
+                  <div className="flex justify-between items-center">
+                    <Info className="h-5 w-5" />
+                    <a href="#" className="text-lg font-medium hover:text-rahati-purple transition-colors">
+                      من نحن
+                    </a>
+                  </div>
+                </nav>
+              </div>
+            </div>
+          </div>
           
           {/* Social Media Links */}
-          <div>
-            <h3 className="text-lg font-medium mb-3 text-right">تواصل معنا</h3>
-            <div className="grid grid-cols-2 gap-3">
+          <div className="p-6 border-t border-gray-200">
+            <div className="flex justify-between items-center">
               <a 
-                href="https://wa.me/22231465497" 
+                href="https://instagram.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-white hover:text-rahati-yellow transition-colors"
+                className="bg-rahati-purple text-white p-3 rounded-full hover:opacity-90 transition-opacity"
               >
-                <Phone className="h-4 w-4" />
-                <span dir="ltr">31465497</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-instagram"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
               </a>
               <a 
-                href="https://www.facebook.com/profile.php?id=61575255866580" 
+                href="https://tiktok.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-white hover:text-rahati-yellow transition-colors"
-              >
-                <Facebook className="h-4 w-4" />
-                <span>فيسبوك</span>
-              </a>
-              <a 
-                href="https://www.tiktok.com/@rahati_mlyn?_t=ZM-8vX4m6NEPN1&_r=1" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-white hover:text-rahati-yellow transition-colors"
+                className="bg-gray-100 text-gray-600 p-3 rounded-full hover:bg-gray-200 transition-colors"
               >
                 <TikTok />
-                <span>تيك توك</span>
               </a>
               <a 
-                href="https://www.snapchat.com/add/rahati_mlyn?share_id=JXROvMOS70Y&locale=ar-MR" 
+                href="https://youtube.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-white hover:text-rahati-yellow transition-colors"
+                className="bg-gray-100 text-gray-600 p-3 rounded-full hover:bg-gray-200 transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-youtube"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg>
+              </a>
+              <a 
+                href="https://snapchat.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-gray-100 text-gray-600 p-3 rounded-full hover:bg-gray-200 transition-colors"
               >
                 <Snapchat />
-                <span>سناب شات</span>
               </a>
               <a 
-                href="https://youtube.com/channel/UC2Ga1kALXLK03c11evnxTgA?si=koL3Kl2fW59tRdMB" 
+                href="https://whatsapp.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-white hover:text-rahati-yellow transition-colors"
+                className="bg-gray-100 text-gray-600 p-3 rounded-full hover:bg-gray-200 transition-colors"
               >
-                <Youtube className="h-4 w-4" />
-                <span>يوتيوب</span>
-              </a>
-              <a 
-                href="https://www.tiktok.com/@rahati_mlyn?_t=ZM-8vX4m6NEPN1&_r=1" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-white hover:text-rahati-yellow transition-colors"
-              >
-                <Instagram className="h-4 w-4" />
-                <span>إنستغرام</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-message-circle"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
               </a>
             </div>
           </div>
           
-          <Separator className="bg-white/20" />
-          
-          {/* Support */}
-          <div>
-            <h3 className="text-lg font-medium mb-3 text-right">الدعم الفني</h3>
-            <div className="flex flex-col gap-2">
-              <a 
-                href="tel:31465497" 
-                className="flex items-center gap-2 text-white hover:text-rahati-yellow transition-colors"
-              >
-                <Phone className="h-4 w-4" />
-                <span dir="ltr">31465497</span>
-              </a>
-              <a 
-                href="mailto:support@rahati.com" 
-                className="flex items-center gap-2 text-white hover:text-rahati-yellow transition-colors"
-              >
-                <Mail className="h-4 w-4" />
-                <span>support@rahati.com</span>
-              </a>
-            </div>
+          {/* Footer */}
+          <div className="py-4 px-6 text-center">
+            <p className="text-gray-500 text-sm">جميع © 2025 راحتي</p>
           </div>
         </div>
-      </SheetContent>
-    </Sheet>
+      </DrawerContent>
+    </Drawer>
   );
 };
 
