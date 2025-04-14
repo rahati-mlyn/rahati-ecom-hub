@@ -274,9 +274,9 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
       displayProducts = getProductsByCategory('shopping', currentSubCategory);
       
       switch (currentSubCategory) {
+        case 'electronics': subcategoryLabel = 'الإلكترونيات'; break;
         case 'clothes': subcategoryLabel = 'الملابس'; break;
         case 'home-goods': subcategoryLabel = 'الأثاث المنزلي'; break;
-        case 'electronics': subcategoryLabel = 'الإلكترونيات'; break;
         case 'other': subcategoryLabel = 'غير ذلك'; break;
         default: subcategoryLabel = '';
       }
@@ -469,7 +469,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
               key={product.id} 
               product={product} 
               onAddToCart={handleAddToCart}
-              onViewDetails={() => {}} 
+              onViewDetails={handleViewProductDetails} 
             />
           ))}
         </div>
