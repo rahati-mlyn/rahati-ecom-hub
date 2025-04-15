@@ -43,12 +43,17 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
           
           <div className="grid md:grid-cols-2 gap-6">
             {/* Product Image */}
-            <div className="bg-gray-100 rounded-lg overflow-hidden aspect-square">
+            <div className="bg-gray-100 rounded-lg overflow-hidden aspect-square relative">
               <img 
                 src={product.image} 
                 alt={product.name} 
                 className="w-full h-full object-cover"
               />
+              {product.discount > 0 && (
+                <Badge className="absolute top-2 left-2 bg-rahati-yellow text-rahati-dark">
+                  خصم {product.discount}%
+                </Badge>
+              )}
             </div>
             
             {/* Product Info */}
