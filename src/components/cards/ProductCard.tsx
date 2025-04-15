@@ -36,11 +36,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             onClick={() => onViewDetails(product)}
           />
-          {product.discount > 0 && (
-            <Badge className="absolute top-2 left-2 bg-rahati-yellow text-rahati-dark">
-              خصم {product.discount}%
-            </Badge>
-          )}
           <Button 
             className="absolute bottom-2 right-2 bg-white/80 text-rahati-purple hover:bg-white" 
             size="sm" 

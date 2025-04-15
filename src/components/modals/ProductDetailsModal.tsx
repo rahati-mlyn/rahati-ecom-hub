@@ -54,11 +54,6 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
             {/* Product Info */}
             <div className="text-right flex flex-col">
               <div className="mb-4">
-                {product.discount > 0 && (
-                  <Badge className="mb-2 bg-rahati-yellow text-rahati-dark">
-                    خصم {product.discount}%
-                  </Badge>
-                )}
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     {product.originalPrice > 0 && (
