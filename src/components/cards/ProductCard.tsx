@@ -1,9 +1,8 @@
 
 import React, { useState } from 'react';
-import { ShoppingCart, Heart, Plus, ZoomIn, X } from 'lucide-react';
+import { ShoppingCart, Heart, ZoomIn, X } from 'lucide-react';
 import { Product } from '@/types/product';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { formatPrice } from '@/lib/utils';
 import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
@@ -36,11 +35,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             onClick={() => onViewDetails(product)}
           />
-          {product.discount > 0 && (
-            <Badge className="absolute top-2 left-2 bg-rahati-yellow text-rahati-dark">
-              خصم {product.discount}%
-            </Badge>
-          )}
           <Button 
             className="absolute bottom-2 right-2 bg-white/80 text-rahati-purple hover:bg-white" 
             size="sm" 
@@ -58,16 +52,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
             {product.name}
           </h3>
           <div className="flex items-center justify-between mt-1">
-            <div className="flex items-center gap-2">
-              {product.originalPrice > 0 && (
-                <span className="text-muted-foreground line-through text-sm">
-                  {formatPrice(product.originalPrice)}
-                </span>
-              )}
-              <span className="font-medium text-rahati-purple">
-                {formatPrice(product.price)}
+            {product.originalPrice > 0 && (
+              <span className="text-muted-foreground line-through text-sm">
+                {formatPrice(product.originalPrice)}
               </span>
-            </div>
+            )}
+            <span className="font-medium text-rahati-purple">
+              {formatPrice(product.price)}
+            </span>
             <p className="text-sm text-muted-foreground">{product.city}</p>
           </div>
           <p className="text-muted-foreground text-sm mt-2 line-clamp-2">{product.description}</p>
