@@ -1,6 +1,12 @@
 
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogTitle, DialogClose } from '@/components/ui/dialog';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogTitle, 
+  DialogClose,
+  DialogDescription 
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -44,6 +50,9 @@ const LoginModal: React.FC<LoginModalProps> = ({
         <DialogTitle className="text-xl font-semibold text-rahati-dark text-right mb-4">
           تسجيل الدخول
         </DialogTitle>
+        <DialogDescription className="sr-only">
+          قم بتسجيل الدخول للوصول إلى حسابك
+        </DialogDescription>
         
         <DialogClose className="absolute left-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
           <X className="h-4 w-4" />

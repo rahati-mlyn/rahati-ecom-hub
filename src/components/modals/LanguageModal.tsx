@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from '@/components/ui/dialog';
 
 interface LanguageModalProps {
@@ -38,6 +39,9 @@ const LanguageModal: React.FC<LanguageModalProps> = ({
             <Languages className="h-5 w-5" />
             <span>اختر اللغة</span>
           </DialogTitle>
+          <DialogDescription className="sr-only">
+            اختر لغة التطبيق المفضلة لديك
+          </DialogDescription>
           <Button
             variant="ghost"
             size="icon"

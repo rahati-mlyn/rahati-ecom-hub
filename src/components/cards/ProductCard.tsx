@@ -5,7 +5,12 @@ import { Product } from '@/types/product';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { formatPrice } from '@/lib/utils';
-import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogClose, 
+  DialogTitle 
+} from '@/components/ui/dialog';
 
 interface ProductCardProps {
   product: Product;
@@ -78,9 +83,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </CardFooter>
       </Card>
 
-      {/* Image Modal */}
+      {/* Image Modal with fixed accessibility issues */}
       <Dialog open={showImageModal} onOpenChange={setShowImageModal}>
         <DialogContent className="sm:max-w-4xl p-0 bg-transparent border-none shadow-none">
+          <DialogTitle className="sr-only">
+            {product.name}
+          </DialogTitle>
           <div className="relative bg-white p-1 rounded-lg overflow-hidden">
             <DialogClose className="absolute top-2 right-2 z-10">
               <Button variant="ghost" size="icon" className="hover:bg-black/10 rounded-full h-8 w-8">
