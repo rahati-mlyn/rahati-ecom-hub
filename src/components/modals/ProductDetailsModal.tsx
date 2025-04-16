@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { X, ShoppingCart, Share2, Heart } from 'lucide-react';
+import { X, ShoppingCart, Share2, Heart, MessagesSquare } from 'lucide-react';
 import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -27,6 +27,10 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
   onViewDetails
 }) => {
   if (!product) return null;
+
+  const handleContactStore = () => {
+    window.open('https://wa.me/22231465497', '_blank');
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -89,6 +93,14 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                 >
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   <span>أضف للسلة</span>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="flex-1 border-green-500 text-green-600 hover:bg-green-50"
+                  onClick={handleContactStore}
+                >
+                  <MessagesSquare className="mr-2 h-4 w-4" />
+                  <span>تواصل مع المتجر</span>
                 </Button>
                 <Button variant="outline" size="icon">
                   <Heart className="h-4 w-4" />

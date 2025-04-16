@@ -34,38 +34,38 @@ const Navigation: React.FC<NavigationProps> = ({
           <TabsList className="h-14 w-full justify-evenly gap-4 bg-transparent">
             <TabsTrigger 
               value="shopping" 
-              className="flex gap-2 items-center data-[state=active]:text-rahati-purple data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              className="flex flex-col gap-1 items-center data-[state=active]:text-rahati-purple data-[state=active]:bg-transparent data-[state=active]:shadow-none"
             >
               <ShoppingBag className="h-5 w-5" />
-              <span className="hidden sm:inline">التسوق</span>
+              <span className="text-xs font-medium">التسوق</span>
             </TabsTrigger>
             <TabsTrigger 
               value="real-estate" 
-              className="flex gap-2 items-center data-[state=active]:text-rahati-purple data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              className="flex flex-col gap-1 items-center data-[state=active]:text-rahati-purple data-[state=active]:bg-transparent data-[state=active]:shadow-none"
             >
               <Building className="h-5 w-5" />
-              <span className="hidden sm:inline">العقارات</span>
+              <span className="text-xs font-medium">العقارات</span>
             </TabsTrigger>
             <TabsTrigger 
               value="restaurants" 
-              className="flex gap-2 items-center data-[state=active]:text-rahati-purple data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              className="flex flex-col gap-1 items-center data-[state=active]:text-rahati-purple data-[state=active]:bg-transparent data-[state=active]:shadow-none"
             >
               <Utensils className="h-5 w-5" />
-              <span className="hidden sm:inline">المطاعم</span>
+              <span className="text-xs font-medium">المطاعم</span>
             </TabsTrigger>
             <TabsTrigger 
               value="cars" 
-              className="flex gap-2 items-center data-[state=active]:text-rahati-purple data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              className="flex flex-col gap-1 items-center data-[state=active]:text-rahati-purple data-[state=active]:bg-transparent data-[state=active]:shadow-none"
             >
               <Car className="h-5 w-5" />
-              <span className="hidden sm:inline">السيارات</span>
+              <span className="text-xs font-medium">السيارات</span>
             </TabsTrigger>
             <TabsTrigger 
               value="discounts" 
-              className="flex gap-2 items-center data-[state=active]:text-rahati-purple data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              className="flex flex-col gap-1 items-center data-[state=active]:text-rahati-purple data-[state=active]:bg-transparent data-[state=active]:shadow-none"
             >
               <Percent className="h-5 w-5" />
-              <span className="hidden sm:inline">التخفيضات</span>
+              <span className="text-xs font-medium">التخفيضات</span>
             </TabsTrigger>
           </TabsList>
         </Tabs>

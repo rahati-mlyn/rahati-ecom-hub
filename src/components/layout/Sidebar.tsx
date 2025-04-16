@@ -3,7 +3,8 @@ import React from 'react';
 import { 
   ShoppingBag, Building, Utensils, Car, 
   Percent, Store, Globe, Mail, Info, 
-  Phone, X, AlignRight
+  Phone, X, AlignRight, Facebook, 
+  Instagram, Youtube, MessagesSquare
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -14,6 +15,7 @@ import {
 } from '@/components/ui/drawer';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Link } from 'react-router-dom';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -66,6 +68,10 @@ const Sidebar: React.FC<SidebarProps> = ({
   onSignupClick,
   onLanguageClick
 }) => {
+  const handleWhatsAppSupport = () => {
+    window.open('https://wa.me/22231465497', '_blank');
+  };
+
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent className="bg-white text-rahati-dark h-full max-w-xs w-full border-0">
@@ -97,41 +103,41 @@ const Sidebar: React.FC<SidebarProps> = ({
                   {/* Shopping */}
                   <div className="flex justify-between items-center">
                     <ShoppingBag className="h-5 w-5" />
-                    <a href="#" className="text-lg font-medium hover:text-rahati-purple transition-colors">
+                    <Link to="/" className="text-lg font-medium hover:text-rahati-purple transition-colors">
                       التسوق
-                    </a>
+                    </Link>
                   </div>
                   
                   {/* Real Estate */}
                   <div className="flex justify-between items-center">
                     <Building className="h-5 w-5" />
-                    <a href="#" className="text-lg font-medium hover:text-rahati-purple transition-colors">
+                    <Link to="/" className="text-lg font-medium hover:text-rahati-purple transition-colors">
                       العقارات
-                    </a>
+                    </Link>
                   </div>
                   
                   {/* Restaurants */}
                   <div className="flex justify-between items-center">
                     <Utensils className="h-5 w-5" />
-                    <a href="#" className="text-lg font-medium hover:text-rahati-purple transition-colors">
+                    <Link to="/" className="text-lg font-medium hover:text-rahati-purple transition-colors">
                       المطاعم
-                    </a>
+                    </Link>
                   </div>
                   
                   {/* Cars */}
                   <div className="flex justify-between items-center">
                     <Car className="h-5 w-5" />
-                    <a href="#" className="text-lg font-medium hover:text-rahati-purple transition-colors">
+                    <Link to="/" className="text-lg font-medium hover:text-rahati-purple transition-colors">
                       السيارات
-                    </a>
+                    </Link>
                   </div>
                   
                   {/* Discounts */}
                   <div className="flex justify-between items-center">
                     <Percent className="h-5 w-5" />
-                    <a href="#" className="text-lg font-medium hover:text-rahati-purple transition-colors">
+                    <Link to="/" className="text-lg font-medium hover:text-rahati-purple transition-colors">
                       التخفيضات
-                    </a>
+                    </Link>
                   </div>
 
                   <Separator className="bg-gray-200" />
@@ -139,9 +145,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                   {/* Create Store */}
                   <div className="flex justify-between items-center">
                     <Store className="h-5 w-5" />
-                    <a href="/add-store" className="text-lg font-medium hover:text-rahati-purple transition-colors">
+                    <Link to="/add-store" className="text-lg font-medium hover:text-rahati-purple transition-colors">
                       إنشاء متجر
-                    </a>
+                    </Link>
                   </div>
                   
                   {/* Change Language */}
@@ -158,7 +164,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   {/* Contact Us */}
                   <div className="flex justify-between items-center">
                     <Mail className="h-5 w-5" />
-                    <a href="#" className="text-lg font-medium hover:text-rahati-purple transition-colors">
+                    <a href="mailto:info@rahati.com" className="text-lg font-medium hover:text-rahati-purple transition-colors">
                       اتصل بنا
                     </a>
                   </div>
@@ -166,9 +172,20 @@ const Sidebar: React.FC<SidebarProps> = ({
                   {/* About Us */}
                   <div className="flex justify-between items-center">
                     <Info className="h-5 w-5" />
-                    <a href="#" className="text-lg font-medium hover:text-rahati-purple transition-colors">
+                    <Link to="/" className="text-lg font-medium hover:text-rahati-purple transition-colors">
                       من نحن
-                    </a>
+                    </Link>
+                  </div>
+
+                  {/* Technical Support */}
+                  <div className="flex justify-between items-center">
+                    <Phone className="h-5 w-5" />
+                    <button 
+                      onClick={handleWhatsAppSupport}
+                      className="text-lg font-medium text-right hover:text-rahati-purple transition-colors"
+                    >
+                      الدعم الفني: 31465497
+                    </button>
                   </div>
                 </nav>
               </div>
@@ -177,20 +194,32 @@ const Sidebar: React.FC<SidebarProps> = ({
           
           {/* Social Media Links */}
           <div className="p-6 border-t border-gray-200">
+            <h3 className="text-md font-medium mb-3 text-center">تواصل معنا</h3>
             <div className="flex justify-between items-center">
+              <a 
+                href="https://facebook.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-gray-100 text-gray-600 p-3 rounded-full hover:bg-gray-200 transition-colors"
+                aria-label="Facebook"
+              >
+                <Facebook className="h-5 w-5" />
+              </a>
               <a 
                 href="https://instagram.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="bg-rahati-purple text-white p-3 rounded-full hover:opacity-90 transition-opacity"
+                aria-label="Instagram"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-instagram"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                <Instagram className="h-5 w-5" />
               </a>
               <a 
                 href="https://tiktok.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="bg-gray-100 text-gray-600 p-3 rounded-full hover:bg-gray-200 transition-colors"
+                aria-label="TikTok"
               >
                 <TikTok />
               </a>
@@ -199,31 +228,36 @@ const Sidebar: React.FC<SidebarProps> = ({
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="bg-gray-100 text-gray-600 p-3 rounded-full hover:bg-gray-200 transition-colors"
+                aria-label="YouTube"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-youtube"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg>
+                <Youtube className="h-5 w-5" />
               </a>
               <a 
                 href="https://snapchat.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="bg-gray-100 text-gray-600 p-3 rounded-full hover:bg-gray-200 transition-colors"
+                aria-label="Snapchat"
               >
                 <Snapchat />
               </a>
-              <a 
-                href="https://whatsapp.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="bg-gray-100 text-gray-600 p-3 rounded-full hover:bg-gray-200 transition-colors"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-message-circle"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
-              </a>
             </div>
+          </div>
+
+          {/* WhatsApp Support */}
+          <div className="p-4 bg-green-50 border-t border-green-200">
+            <button 
+              onClick={handleWhatsAppSupport}
+              className="w-full flex items-center justify-center gap-2 bg-green-500 text-white p-3 rounded-lg hover:bg-green-600 transition-colors"
+            >
+              <MessagesSquare className="h-5 w-5" />
+              <span>تواصل معنا عبر واتساب</span>
+            </button>
           </div>
           
           {/* Footer */}
           <div className="py-4 px-6 text-center">
-            <p className="text-gray-500 text-sm">جميع © 2025 راحتي</p>
+            <p className="text-gray-500 text-sm">جميع الحقوق محفوظة © 2025 راحتي</p>
           </div>
         </div>
       </DrawerContent>

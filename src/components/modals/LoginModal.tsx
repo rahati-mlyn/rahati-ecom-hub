@@ -1,136 +1,101 @@
 
 import React, { useState } from 'react';
-import { AtSign, Lock, X } from 'lucide-react';
+import { Dialog, DialogContent, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog';
-import { useToast } from '@/hooks/use-toast';
+import { X } from 'lucide-react';
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSignupClick: () => void;
+  onLoginSuccess?: () => void;
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({
   isOpen,
   onClose,
-  onSignupClick
+  onSignupClick,
+  onLoginSuccess
 }) => {
-  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { toast } = useToast();
+  const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Simulate login process
-    toast({
-      title: "تم تسجيل الدخول",
-      description: "تم تسجيل الدخول بنجاح",
-      duration: 3000,
-    });
+    if (!email || !password) {
+      setError('الرجاء إدخال البريد الإلكتروني وكلمة المرور');
+      return;
+    }
     
+    // For demo purposes, we're just checking if the form isn't empty
+    if (onLoginSuccess) {
+      onLoginSuccess();
+    }
     onClose();
-  };
-  
-  const switchToSignup = () => {
-    onClose();
-    onSignupClick();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-md" dir="rtl">
-        <DialogHeader>
-          <DialogTitle className="text-center text-xl">تسجيل الدخول</DialogTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute left-4 top-4"
-            onClick={onClose}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-md p-6 gap-6">
+        <DialogTitle className="text-xl font-semibold text-rahati-dark text-right mb-4">
+          تسجيل الدخول
+        </DialogTitle>
+        
+        <DialogClose className="absolute left-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+          <X className="h-4 w-4" />
+          <span className="sr-only">Close</span>
+        </DialogClose>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="phone">رقم الهاتف</Label>
-            <div className="relative">
-              <AtSign className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="أدخل رقم الهاتف"
-                className="pl-3 pr-10"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                required
-              />
-            </div>
+            <Label htmlFor="email" className="text-right block">البريد الإلكتروني</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="أدخل البريد الإلكتروني"
+              dir="rtl"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="password">كلمة المرور</Label>
-            <div className="relative">
-              <Lock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="password"
-                type="password"
-                placeholder="أدخل كلمة المرور"
-                className="pl-3 pr-10"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
+            <Label htmlFor="password" className="text-right block">كلمة المرور</Label>
+            <Input
+              id="password"
+              type="password"
+              placeholder="أدخل كلمة المرور"
+              dir="rtl"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
           
-          <Button type="submit" className="w-full bg-rahati-purple hover:bg-rahati-purple/90">
+          {error && (
+            <p className="text-destructive text-sm text-right">{error}</p>
+          )}
+          
+          <Button type="submit" className="w-full bg-rahati-purple hover:bg-rahati-purple/90 py-6">
             تسجيل الدخول
           </Button>
+          
+          <div className="text-center mt-4">
+            <p className="text-sm text-gray-500">
+              ليس لديك حساب؟{" "}
+              <button
+                type="button"
+                onClick={onSignupClick}
+                className="text-rahati-purple hover:underline"
+              >
+                إنشاء حساب
+              </button>
+            </p>
+          </div>
         </form>
-        
-        <div className="relative my-4">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-muted-foreground/30" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              أو باستخدام
-            </span>
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-2 gap-3">
-          <Button variant="outline" className="w-full">
-            Google
-          </Button>
-          <Button variant="outline" className="w-full">
-            Facebook
-          </Button>
-        </div>
-        
-        <DialogFooter className="flex justify-center sm:justify-center">
-          <div className="text-center text-sm">
-            ليس لديك حساب؟{' '}
-            <button
-              type="button"
-              className="text-rahati-purple hover:underline font-medium"
-              onClick={switchToSignup}
-            >
-              إنشاء حساب
-            </button>
-          </div>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

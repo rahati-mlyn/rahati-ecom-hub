@@ -5,7 +5,7 @@ import Sidebar from '@/components/layout/Sidebar';
 import CartDrawer from '@/components/layout/CartDrawer';
 import ProductCard from '@/components/cards/ProductCard';
 import RealEstateCard from '@/components/cards/RealEstateCard';
-import RestaurantCard from '@/components/cards/RestaurantCard';
+import RestaurantCardWrapper from '@/components/cards/RestaurantCardWrapper';
 import CarCard from '@/components/cards/CarCard';
 import LoginModal from '@/components/modals/LoginModal';
 import SignupModal from '@/components/modals/SignupModal';
@@ -38,6 +38,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isProductDetailsModalOpen, setIsProductDetailsModalOpen] = useState(false);
@@ -125,6 +126,12 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         }
       ]);
     }
+    
+    toast({
+      title: "تمت الإضافة",
+      description: `تمت إضافة ${menuItem.name} من ${restaurantName} إلى السلة`,
+      duration: 2000,
+    });
   };
 
   const handleRemoveFromCart = (id: string) => {
@@ -145,7 +152,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
       `\n\nالمجموع: ${cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)} أوقية`
     );
     
-    window.open(`https://wa.me/31465497?text=${orderText}`, '_blank');
+    window.open(`https://wa.me/22231465497?text=${orderText}`, '_blank');
   };
 
   const handleSearch = (query: string) => {
@@ -183,6 +190,16 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     ];
     
     setFilteredItems(searchResults);
+  };
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+    setShowLoginModal(false);
+    toast({
+      title: "تم تسجيل الدخول",
+      description: "مرحباً بك في راحتي",
+      duration: 2000,
+    });
   };
 
   const renderContent = () => {
@@ -242,11 +259,12 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
             }
             else if ('name' in item && 'menu' in item) {
               return (
-                <RestaurantCard 
+                <RestaurantCardWrapper 
                   key={item.id} 
                   restaurant={item as Restaurant} 
                   onViewDetails={() => {}}
                   onAddToCart={handleAddMenuItemToCart}
+                  isLoggedIn={isLoggedIn}
                 />
               );
             }
@@ -483,11 +501,12 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         <h2 className="text-2xl font-semibold mb-6 text-rahati-dark">المطاعم</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {restaurants.map(restaurant => (
-            <RestaurantCard 
+            <RestaurantCardWrapper 
               key={restaurant.id} 
               restaurant={restaurant} 
               onViewDetails={() => {}}
               onAddToCart={handleAddMenuItemToCart}
+              isLoggedIn={isLoggedIn}
             />
           ))}
         </div>
@@ -556,6 +575,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
           setShowLoginModal(false);
           setShowSignupModal(true);
         }}
+        onLoginSuccess={handleLogin}
       />
       
       <SignupModal 
