@@ -1,14 +1,11 @@
 
 import React from 'react';
 import { Plus } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 const AddStoreButton = () => {
-  const navigate = useNavigate();
-  
   const handleClick = () => {
-    navigate('/add-store');
+    window.open('https://wa.me/22231465497', '_blank');
   };
   
   return (
