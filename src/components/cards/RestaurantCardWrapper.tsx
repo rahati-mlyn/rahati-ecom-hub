@@ -4,6 +4,7 @@ import RestaurantCard from './RestaurantCard';
 import RestaurantRating from '../restaurants/RestaurantRating';
 import { Restaurant } from '@/types/restaurant';
 import { MenuItem } from '@/types/restaurant';
+import { MessagesSquare } from 'lucide-react';
 
 interface RestaurantCardWrapperProps {
   restaurant: Restaurant;
@@ -40,9 +41,9 @@ const RestaurantCardWrapper: React.FC<RestaurantCardWrapperProps> = ({
         
         <button
           onClick={handleWhatsApp}
-          className="w-full mt-2 py-2 px-4 bg-green-500 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-green-600 transition-colors"
+          className="w-full mt-2 py-2 px-4 bg-green-500 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-green-600 transition-colors shadow-sm hover:shadow"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-message-circle"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+          <MessagesSquare className="h-4 w-4" />
           <span className="text-sm">تواصل عبر واتساب</span>
         </button>
       </div>

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ShoppingBag, Building, Utensils, Car, Percent } from 'lucide-react';
+import { ShoppingBag, Building, Utensils, Car, Percent, Tv, Shirt, Sofa, Package } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   NavigationMenu,
@@ -79,55 +79,60 @@ const Navigation: React.FC<NavigationProps> = ({
                 <NavigationMenuItem>
                   <NavigationMenuLink
                     className={cn(
-                      "px-4 py-2 text-sm font-medium", 
+                      "px-4 py-2 text-sm font-medium flex items-center gap-2", 
                       !currentSubCategory ? "text-rahati-purple" : "text-muted-foreground"
                     )}
                     onClick={() => onSelectCategory('shopping')}
                   >
+                    <Package className="h-4 w-4" />
                     الكل
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuLink
                     className={cn(
-                      "px-4 py-2 text-sm font-medium", 
+                      "px-4 py-2 text-sm font-medium flex items-center gap-2", 
                       currentSubCategory === 'electronics' ? "text-rahati-purple" : "text-muted-foreground"
                     )}
                     onClick={() => onSelectCategory('shopping', 'electronics')}
                   >
+                    <Tv className="h-4 w-4" />
                     الإلكترونيات
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuLink
                     className={cn(
-                      "px-4 py-2 text-sm font-medium", 
+                      "px-4 py-2 text-sm font-medium flex items-center gap-2", 
                       currentSubCategory === 'clothes' ? "text-rahati-purple" : "text-muted-foreground"
                     )}
                     onClick={() => onSelectCategory('shopping', 'clothes')}
                   >
+                    <Shirt className="h-4 w-4" />
                     الملابس
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuLink
                     className={cn(
-                      "px-4 py-2 text-sm font-medium", 
+                      "px-4 py-2 text-sm font-medium flex items-center gap-2", 
                       currentSubCategory === 'home-goods' ? "text-rahati-purple" : "text-muted-foreground"
                     )}
                     onClick={() => onSelectCategory('shopping', 'home-goods')}
                   >
+                    <Sofa className="h-4 w-4" />
                     الأثاث المنزلي
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuLink
                     className={cn(
-                      "px-4 py-2 text-sm font-medium", 
+                      "px-4 py-2 text-sm font-medium flex items-center gap-2", 
                       currentSubCategory === 'other' ? "text-rahati-purple" : "text-muted-foreground"
                     )}
                     onClick={() => onSelectCategory('shopping', 'other')}
                   >
+                    <Package className="h-4 w-4" />
                     غير ذلك
                   </NavigationMenuLink>
                 </NavigationMenuItem>

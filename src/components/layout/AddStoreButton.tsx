@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Plus } from 'lucide-react';
+import { Store } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const AddStoreButton = () => {
@@ -11,10 +11,10 @@ const AddStoreButton = () => {
   return (
     <Button 
       variant="outline" 
-      className="bg-rahati-yellow text-rahati-dark hover:bg-rahati-yellow/90 flex items-center gap-1"
+      className="bg-rahati-yellow text-rahati-dark hover:bg-rahati-yellow/90 flex items-center gap-1 shadow-sm hover:shadow-md transition-all duration-300"
       onClick={handleClick}
     >
-      <Plus className="h-4 w-4" />
+      <Store className="h-4 w-4" />
       <span>إنشاء متجر</span>
     </Button>
   );
