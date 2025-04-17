@@ -6,7 +6,7 @@ import {
   Phone, X, AlignRight, Facebook, 
   Instagram, Youtube, MessagesSquare,
   Shirt, Tv, Sofa, Package, Home,
-  ChevronRight
+  ChevronRight, LogOut, User
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -25,6 +25,8 @@ interface SidebarProps {
   onLoginClick: () => void;
   onSignupClick: () => void;
   onLanguageClick: () => void;
+  isLoggedIn?: boolean;
+  onLogoutClick?: () => void;
 }
 
 // Create custom icons for those not available in Lucide
@@ -68,7 +70,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   onClose,
   onLoginClick,
   onSignupClick,
-  onLanguageClick
+  onLanguageClick,
+  isLoggedIn = false,
+  onLogoutClick = () => {}
 }) => {
   const handleWhatsAppSupport = () => {
     window.open('https://wa.me/22231465497', '_blank');
@@ -86,13 +90,35 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
               </AvatarFallback>
             </Avatar>
-            <h2 className="text-2xl font-medium mb-3">زائر</h2>
-            <Button 
-              className="w-full bg-rahati-purple text-white hover:bg-rahati-purple/90 rounded-full py-6 shadow-md transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px]" 
-              onClick={onLoginClick}
-            >
-              تسجيل الدخول
-            </Button>
+            <h2 className="text-2xl font-medium mb-3">{isLoggedIn ? 'مرحباً' : 'زائر'}</h2>
+            {isLoggedIn ? (
+              <div className="space-y-2 w-full">
+                <Button 
+                  className="w-full bg-rahati-purple text-white hover:bg-rahati-purple/90 rounded-full py-6 shadow-md transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px]"
+                  asChild
+                >
+                  <Link to="/account">
+                    <User className="h-4 w-4 mr-2" />
+                    <span>حسابي</span>
+                  </Link>
+                </Button>
+                <Button 
+                  variant="outline"
+                  className="w-full border-red-500 text-red-500 hover:bg-red-50 rounded-full py-6 shadow-sm"
+                  onClick={onLogoutClick}
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  <span>تسجيل الخروج</span>
+                </Button>
+              </div>
+            ) : (
+              <Button 
+                className="w-full bg-rahati-purple text-white hover:bg-rahati-purple/90 rounded-full py-6 shadow-md transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px]" 
+                onClick={onLoginClick}
+              >
+                تسجيل الدخول
+              </Button>
+            )}
           </div>
           
           <div className="flex-1 p-4 overflow-auto">
@@ -152,14 +178,28 @@ const Sidebar: React.FC<SidebarProps> = ({
                   {/* Create Store */}
                   <div className="flex justify-between items-center group hover:bg-gray-100 rounded-lg p-2 transition-all duration-200">
                     <Store className="h-5 w-5 text-green-600" />
-                    <button 
-                      onClick={handleWhatsAppSupport}
+                    <Link 
+                      to="/add-store"
                       className="text-lg font-medium text-gray-800 group-hover:text-green-600 transition-colors flex items-center justify-between w-full"
                     >
                       <span>إنشاء متجر</span>
                       <ChevronRight className="h-4 w-4 text-gray-400 rtl:rotate-180" />
-                    </button>
+                    </Link>
                   </div>
+                  
+                  {/* User Orders - Only show when logged in */}
+                  {isLoggedIn && (
+                    <div className="flex justify-between items-center group hover:bg-gray-100 rounded-lg p-2 transition-all duration-200">
+                      <Package className="h-5 w-5 text-rahati-purple" />
+                      <Link 
+                        to="/orders"
+                        className="text-lg font-medium text-gray-800 group-hover:text-rahati-purple transition-colors flex items-center justify-between w-full"
+                      >
+                        <span>طلباتي</span>
+                        <ChevronRight className="h-4 w-4 text-gray-400 rtl:rotate-180" />
+                      </Link>
+                    </div>
+                  )}
                   
                   {/* Change Language */}
                   <div className="flex justify-between items-center group hover:bg-gray-100 rounded-lg p-2 transition-all duration-200">
