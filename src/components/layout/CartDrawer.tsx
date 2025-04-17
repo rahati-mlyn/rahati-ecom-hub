@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ShoppingCart, Trash2, X } from 'lucide-react';
 import { 
   Sheet, 
@@ -12,6 +12,8 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { CartItem } from '@/types/cart';
 import { formatPrice } from '@/lib/utils';
+import { createOrder, isAuthenticated } from '@/services/api';
+import { useToast } from '@/hooks/use-toast';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -32,6 +34,48 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
 }) => {
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  const handleSendOrder = async () => {
+    // If user wants to use WhatsApp
+    if (!isAuthenticated()) {
+      onSendOrder();
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      const orderData = {
+        items: items.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          categoryId: item.categoryId
+        })),
+        total,
+        orderDate: new Date().toISOString()
+      };
+      
+      await createOrder(orderData);
+      toast({
+        title: "تم إرسال الطلب",
+        description: "سيتم التواصل معك قريباً",
+      });
+      
+      // Clear cart after successful order
+      items.forEach(item => onRemoveItem(item.id));
+      onClose();
+    } catch (error) {
+      console.error("Error sending order:", error);
+      // Fallback to WhatsApp if API fails
+      onSendOrder();
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -111,10 +155,12 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
             </div>
             <Button 
               className="w-full bg-rahati-purple hover:bg-rahati-purple/90"
-              disabled={items.length === 0}
-              onClick={onSendOrder}
+              disabled={items.length === 0 || isSubmitting}
+              onClick={handleSendOrder}
             >
-              إرسال الطلب عبر واتساب
+              {isSubmitting ? 'جاري إرسال الطلب...' : isAuthenticated() 
+                ? 'إرسال الطلب' 
+                : 'إرسال الطلب عبر واتساب'}
             </Button>
           </div>
         </SheetFooter>

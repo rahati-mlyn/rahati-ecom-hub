@@ -11,6 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { X } from 'lucide-react';
+import { loginUser } from '@/services/api';
+import { useToast } from '@/hooks/use-toast';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -28,8 +30,10 @@ const LoginModal: React.FC<LoginModalProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!email || !password) {
@@ -37,11 +41,25 @@ const LoginModal: React.FC<LoginModalProps> = ({
       return;
     }
     
-    // For demo purposes, we're just checking if the form isn't empty
-    if (onLoginSuccess) {
-      onLoginSuccess();
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      await loginUser({ email, password });
+      
+      if (onLoginSuccess) {
+        onLoginSuccess();
+      }
+      onClose();
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('حدث خطأ أثناء تسجيل الدخول');
+      }
+    } finally {
+      setIsLoading(false);
     }
-    onClose();
   };
 
   return (
@@ -69,6 +87,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
               dir="rtl"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={isLoading}
             />
           </div>
           
@@ -81,6 +100,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
               dir="rtl"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading}
             />
           </div>
           
@@ -88,8 +108,12 @@ const LoginModal: React.FC<LoginModalProps> = ({
             <p className="text-destructive text-sm text-right">{error}</p>
           )}
           
-          <Button type="submit" className="w-full bg-rahati-purple hover:bg-rahati-purple/90 py-6">
-            تسجيل الدخول
+          <Button 
+            type="submit" 
+            className="w-full bg-rahati-purple hover:bg-rahati-purple/90 py-6"
+            disabled={isLoading}
+          >
+            {isLoading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
           </Button>
           
           <div className="text-center mt-4">

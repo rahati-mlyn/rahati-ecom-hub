@@ -21,11 +21,23 @@ import { Car } from '@/types/car';
 import { CartItem } from '@/types/cart';
 import { MenuItem } from '@/types/restaurant';
 
-import { products, getProductsByCategory } from '@/data/products';
-import { realEstateListings, getRealEstateByType } from '@/data/realEstate';
-import { restaurants } from '@/data/restaurants';
-import { cars, getCarsByType } from '@/data/cars';
-import { generateId } from '@/lib/utils';
+// Import the mock data as fallback
+import { products as mockProducts, getProductsByCategory as getMockProductsByCategory } from '@/data/products';
+import { realEstateListings as mockRealEstate, getRealEstateByType as getMockRealEstateByType } from '@/data/realEstate';
+import { restaurants as mockRestaurants } from '@/data/restaurants';
+import { cars as mockCars, getCarsByType as getMockCarsByType } from '@/data/cars';
+
+// Import API services
+import {
+  getProducts,
+  getRealEstate,
+  getRestaurants,
+  getCars,
+  getOffers,
+  isAuthenticated,
+  getCurrentUser,
+  logoutUser
+} from '@/services/api';
 
 interface HomePageProps {
   language: string;
@@ -51,7 +63,86 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredItems, setFilteredItems] = useState<any[]>([]);
   
+  // State for API data
+  const [productsData, setProductsData] = useState<Product[]>([]);
+  const [realEstateData, setRealEstateData] = useState<RealEstate[]>([]);
+  const [restaurantsData, setRestaurantsData] = useState<Restaurant[]>([]);
+  const [carsData, setCarsData] = useState<Car[]>([]);
+  const [offersData, setOffersData] = useState<Product[]>([]);
+  
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+
+  // Check if user is logged in on component mount
+  useEffect(() => {
+    setIsLoggedIn(isAuthenticated());
+  }, []);
+
+  // Fetch data based on the current category
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      
+      try {
+        if (currentCategory === 'shopping' || currentCategory === 'all') {
+          const data = await getProducts(currentSubCategory);
+          setProductsData(data);
+        }
+        
+        if (currentCategory === 'real-estate' || currentCategory === 'all') {
+          const data = await getRealEstate(currentSubCategory);
+          setRealEstateData(data);
+        }
+        
+        if (currentCategory === 'restaurants' || currentCategory === 'all') {
+          const data = await getRestaurants();
+          setRestaurantsData(data);
+        }
+        
+        if (currentCategory === 'cars' || currentCategory === 'all') {
+          const data = await getCars(currentSubCategory);
+          setCarsData(data);
+        }
+        
+        if (currentCategory === 'discounts' || currentCategory === 'all') {
+          const data = await getOffers();
+          setOffersData(data);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Fallback to mock data if API fails
+        if (currentCategory === 'shopping' || currentCategory === 'all') {
+          setProductsData(getMockProductsByCategory(currentCategory, currentSubCategory));
+        }
+        
+        if (currentCategory === 'real-estate' || currentCategory === 'all') {
+          setRealEstateData(currentSubCategory ? 
+            getMockRealEstateByType(currentSubCategory as 'rent' | 'sale') : 
+            mockRealEstate
+          );
+        }
+        
+        if (currentCategory === 'restaurants' || currentCategory === 'all') {
+          setRestaurantsData(mockRestaurants);
+        }
+        
+        if (currentCategory === 'cars' || currentCategory === 'all') {
+          setCarsData(currentSubCategory ? 
+            getMockCarsByType(currentSubCategory as 'rent' | 'sale') : 
+            mockCars
+          );
+        }
+        
+        if (currentCategory === 'discounts' || currentCategory === 'all') {
+          setOffersData(mockProducts.filter(product => product.discount > 0));
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, [currentCategory, currentSubCategory]);
 
   const handleSelectCategory = (category: string, subCategory?: string) => {
     setCurrentCategory(category);
@@ -67,12 +158,14 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   const getSimilarProducts = (product: Product | null): Product[] => {
     if (!product) return [];
     
-    return products
-      .filter(p => 
-        p.id !== product.id && 
-        (p.subCategory === product.subCategory || p.category === product.category)
-      )
-      .slice(0, 3);
+    return productsData.length > 0 
+      ? productsData
+          .filter(p => 
+            p.id !== product.id && 
+            (p.subCategory === product.subCategory || p.category === product.category)
+          )
+          .slice(0, 3)
+      : [];
   };
 
   const handleAddToCart = (product: Product) => {
@@ -155,7 +248,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     window.open(`https://wa.me/22231465497?text=${orderText}`, '_blank');
   };
 
-  const handleSearch = (query: string) => {
+  const handleSearch = async (query: string) => {
     setSearchQuery(query);
     
     if (!query.trim()) {
@@ -163,25 +256,27 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
       return;
     }
     
+    // For a real implementation, we'd use a search API endpoint
+    // Here, we'll just search through the currently loaded data
     const searchResults = [
-      ...products.filter(p => 
+      ...productsData.filter(p => 
         p.name.toLowerCase().includes(query.toLowerCase()) || 
         p.description.toLowerCase().includes(query.toLowerCase()) ||
         p.city.toLowerCase().includes(query.toLowerCase())
       ),
-      ...realEstateListings.filter(r => 
+      ...realEstateData.filter(r => 
         r.title.toLowerCase().includes(query.toLowerCase()) || 
         r.description.toLowerCase().includes(query.toLowerCase()) ||
         r.city.toLowerCase().includes(query.toLowerCase()) ||
         r.location.toLowerCase().includes(query.toLowerCase())
       ),
-      ...restaurants.filter(r => 
+      ...restaurantsData.filter(r => 
         r.name.toLowerCase().includes(query.toLowerCase()) || 
         r.description.toLowerCase().includes(query.toLowerCase()) ||
         r.city.toLowerCase().includes(query.toLowerCase()) ||
-        r.cuisine.some(c => c.toLowerCase().includes(query.toLowerCase()))
+        (r.cuisine && r.cuisine.some(c => c.toLowerCase().includes(query.toLowerCase())))
       ),
-      ...cars.filter(c => 
+      ...carsData.filter(c => 
         c.make.toLowerCase().includes(query.toLowerCase()) || 
         c.model.toLowerCase().includes(query.toLowerCase()) ||
         c.description.toLowerCase().includes(query.toLowerCase()) ||
@@ -198,6 +293,16 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     toast({
       title: "تم تسجيل الدخول",
       description: "مرحباً بك في راحتي",
+      duration: 2000,
+    });
+  };
+
+  const handleLogout = () => {
+    logoutUser();
+    setIsLoggedIn(false);
+    toast({
+      title: "تم تسجيل الخروج",
+      description: "نتمنى رؤيتك قريباً",
       duration: 2000,
     });
   };
@@ -288,8 +393,16 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     let displayProducts;
     let subcategoryLabel = '';
     
+    if (isLoading) {
+      return (
+        <div className="container mx-auto px-4 py-16 text-center">
+          <p>جاري تحميل البيانات...</p>
+        </div>
+      );
+    }
+    
     if (currentSubCategory) {
-      displayProducts = getProductsByCategory('shopping', currentSubCategory);
+      displayProducts = productsData.filter(p => p.subCategory === currentSubCategory);
       
       switch (currentSubCategory) {
         case 'electronics': subcategoryLabel = 'الإلكترونيات'; break;
@@ -300,7 +413,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
       }
       
     } else {
-      displayProducts = getProductsByCategory('shopping');
+      displayProducts = productsData;
     }
     
     return (
@@ -310,14 +423,20 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         </h2>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {displayProducts.map(product => (
-            <ProductCard 
-              key={product.id} 
-              product={product} 
-              onAddToCart={handleAddToCart}
-              onViewDetails={handleViewProductDetails} 
-            />
-          ))}
+          {displayProducts.length > 0 ? (
+            displayProducts.map(product => (
+              <ProductCard 
+                key={product.id} 
+                product={product} 
+                onAddToCart={handleAddToCart}
+                onViewDetails={handleViewProductDetails} 
+              />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-8">
+              <p className="text-muted-foreground">لا توجد منتجات في هذه الفئة</p>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -328,10 +447,10 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     let title = 'عقارات';
     
     if (currentSubCategory === 'sale') {
-      displayProperties = getRealEstateByType('sale');
+      displayProperties = realEstateData.filter(r => r.type === 'sale');
       title = 'عقارات للبيع';
     } else if (currentSubCategory === 'rent') {
-      displayProperties = getRealEstateByType('rent');
+      displayProperties = realEstateData.filter(r => r.type === 'rent');
       title = 'عقارات للإيجار';
     } else {
       return (
@@ -348,7 +467,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
               <h2 className="text-2xl font-semibold text-rahati-dark">عقارات للبيع</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {getRealEstateByType('sale').slice(0, 4).map(property => (
+              {realEstateData.filter(r => r.type === 'sale').slice(0, 4).map(property => (
                 <RealEstateCard 
                   key={property.id} 
                   property={property} 
@@ -370,7 +489,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
               <h2 className="text-2xl font-semibold text-rahati-dark">عقارات للإيجار</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {getRealEstateByType('rent').slice(0, 4).map(property => (
+              {realEstateData.filter(r => r.type === 'rent').slice(0, 4).map(property => (
                 <RealEstateCard 
                   key={property.id} 
                   property={property} 
@@ -404,10 +523,10 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     let title = 'سيارات';
     
     if (currentSubCategory === 'sale') {
-      displayCars = getCarsByType('sale');
+      displayCars = carsData.filter(c => c.type === 'sale');
       title = 'سيارات للبيع';
     } else if (currentSubCategory === 'rent') {
-      displayCars = getCarsByType('rent');
+      displayCars = carsData.filter(c => c.type === 'rent');
       title = 'سيارات للإيجار';
     } else {
       return (
@@ -424,7 +543,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
               <h2 className="text-2xl font-semibold text-rahati-dark">سيارات للبيع</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {getCarsByType('sale').slice(0, 4).map(car => (
+              {carsData.filter(c => c.type === 'sale').slice(0, 4).map(car => (
                 <CarCard 
                   key={car.id} 
                   car={car} 
@@ -446,7 +565,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
               <h2 className="text-2xl font-semibold text-rahati-dark">سيارات للإيجار</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {getCarsByType('rent').slice(0, 4).map(car => (
+              {carsData.filter(c => c.type === 'rent').slice(0, 4).map(car => (
                 <CarCard 
                   key={car.id} 
                   car={car} 
@@ -476,13 +595,11 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   };
 
   const renderDiscounts = () => {
-    const discountProducts = products.filter(product => product.discount > 0);
-    
     return (
       <div className="container mx-auto px-4 py-8">
         <h2 className="text-2xl font-semibold mb-6 text-rahati-dark">الخصومات</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {discountProducts.map(product => (
+          {offersData.map(product => (
             <ProductCard 
               key={product.id} 
               product={product} 
@@ -500,7 +617,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
       <div className="container mx-auto px-4 py-8">
         <h2 className="text-2xl font-semibold mb-6 text-rahati-dark">المطاعم</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {restaurants.map(restaurant => (
+          {restaurantsData.map(restaurant => (
             <RestaurantCardWrapper 
               key={restaurant.id} 
               restaurant={restaurant} 
@@ -548,6 +665,8 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
           setIsSidebarOpen(false);
           setShowLanguageModal(true);
         }}
+        isLoggedIn={isLoggedIn}
+        onLogoutClick={handleLogout}
       />
       
       <CartDrawer 
