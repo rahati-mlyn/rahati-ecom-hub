@@ -12,6 +12,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuthContext';
 
 interface SignupModalProps {
   isOpen: boolean;
@@ -27,19 +28,45 @@ const SignupModal: React.FC<SignupModalProps> = ({
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     
-    // Simulate signup process
-    toast({
-      title: "تم إنشاء الحساب",
-      description: "تم إنشاء حسابك بنجاح",
-      duration: 3000,
-    });
-    
-    onClose();
+    try {
+      // Simulate signup process
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, phone, password }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        login(data.token, data.user);
+        toast({
+          title: "تم إنشاء الحساب",
+          description: "تم إنشاء حسابك بنجاح",
+        });
+        onClose();
+      } else {
+        throw new Error(data.message || 'حدث خطأ أثناء إنشاء الحساب');
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "خطأ",
+        description: error instanceof Error ? error.message : 'حدث خطأ أثناء إنشاء الحساب',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   const switchToLogin = () => {
@@ -75,6 +102,7 @@ const SignupModal: React.FC<SignupModalProps> = ({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -91,6 +119,7 @@ const SignupModal: React.FC<SignupModalProps> = ({
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -107,12 +136,17 @@ const SignupModal: React.FC<SignupModalProps> = ({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
           </div>
           
-          <Button type="submit" className="w-full bg-rahati-purple hover:bg-rahati-purple/90">
-            إنشاء حساب
+          <Button 
+            type="submit" 
+            className="w-full bg-rahati-purple hover:bg-rahati-purple/90"
+            disabled={isLoading}
+          >
+            {isLoading ? 'جاري إنشاء الحساب...' : 'إنشاء حساب'}
           </Button>
         </form>
         
@@ -143,6 +177,7 @@ const SignupModal: React.FC<SignupModalProps> = ({
               type="button"
               className="text-rahati-purple hover:underline font-medium"
               onClick={switchToLogin}
+              disabled={isLoading}
             >
               تسجيل الدخول
             </button>

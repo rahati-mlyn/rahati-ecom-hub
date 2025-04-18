@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Card, 
@@ -19,6 +18,8 @@ import { Package, Clock, CheckCircle, XCircle, ExternalLink } from 'lucide-react
 import { getUserOrders } from '@/services/api';
 import { OrderResponse } from '@/types/apiTypes';
 import { useAuth } from '@/hooks/useAuthContext';
+import { useQuery } from 'react-query';
+import { toast } from 'react-toastify';
 
 const OrdersPage = () => {
   const navigate = useNavigate();
@@ -27,23 +28,28 @@ const OrdersPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      setIsLoading(true);
-      try {
-        const ordersData = await getUserOrders();
-        setOrders(ordersData);
-      } catch (error) {
+  const { data: ordersData } = useQuery({
+    queryKey: ['orders'],
+    queryFn: getUserOrders,
+    meta: {
+      onError: (error: Error) => {
         console.error("Error fetching orders:", error);
-      } finally {
-        setIsLoading(false);
+        toast({
+          variant: "destructive",
+          title: "خطأ",
+          description: "حدث خطأ أثناء جلب الطلبات"
+        });
       }
-    };
+    }
+  });
 
-    fetchOrders();
-  }, []);
+  useEffect(() => {
+    if (ordersData) {
+      setOrders(ordersData);
+      setIsLoading(false);
+    }
+  }, [ordersData]);
 
-  // Filter orders based on active tab
   const filteredOrders = orders.filter(order => {
     if (activeTab === 'all') return true;
     if (activeTab === 'pending') return order.status === 'pending';

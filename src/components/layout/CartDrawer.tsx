@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ShoppingCart, Trash2, X } from 'lucide-react';
 import { 
@@ -14,6 +13,7 @@ import { CartItem } from '@/types/cart';
 import { formatPrice } from '@/lib/utils';
 import { createOrder, isAuthenticated } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuthContext';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -36,10 +36,10 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { isLoggedIn } = useAuth();
 
   const handleSendOrder = async () => {
-    // If user wants to use WhatsApp
-    if (!isAuthenticated()) {
+    if (!isLoggedIn) {
       onSendOrder();
       return;
     }
@@ -53,13 +53,15 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
           name: item.name,
           price: item.price,
           quantity: item.quantity,
-          categoryId: item.categoryId
+          categoryId: item.categoryId,
+          storeId: item.storeId
         })),
         total,
         orderDate: new Date().toISOString()
       };
       
       await createOrder(orderData);
+      
       toast({
         title: "تم إرسال الطلب",
         description: "سيتم التواصل معك قريباً",
@@ -70,6 +72,11 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
       onClose();
     } catch (error) {
       console.error("Error sending order:", error);
+      toast({
+        variant: "destructive",
+        title: "خطأ",
+        description: "حدث خطأ أثناء إرسال الطلب. سيتم تحويلك إلى واتساب."
+      });
       // Fallback to WhatsApp if API fails
       onSendOrder();
     } finally {
