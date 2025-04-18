@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { X } from 'lucide-react';
+import { X, Phone, Lock } from 'lucide-react';
 import { loginUser } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 
@@ -27,17 +27,43 @@ const LoginModal: React.FC<LoginModalProps> = ({
   onSignupClick,
   onLoginSuccess
 }) => {
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  const validatePhoneNumber = (phoneNumber: string) => {
+    const phoneRegex = /^(\+222|222)?[2-9]\d{7}$/;
+    return phoneRegex.test(phoneNumber.replace(/\s+/g, ''));
+  };
+
+  const formatPhoneNumber = (value: string) => {
+    // Remove all non-digit characters
+    const digits = value.replace(/\D/g, '');
+    
+    // Add +222 prefix if not present
+    if (!digits.startsWith('222')) {
+      return '+222' + digits;
+    }
+    return '+' + digits;
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedPhone = formatPhoneNumber(e.target.value);
+    setPhone(formattedPhone);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !password) {
-      setError('الرجاء إدخال البريد الإلكتروني وكلمة المرور');
+    if (!phone || !password) {
+      setError('الرجاء إدخال رقم الهاتف وكلمة المرور');
+      return;
+    }
+
+    if (!validatePhoneNumber(phone)) {
+      setError('الرجاء إدخال رقم هاتف موريتاني صحيح');
       return;
     }
     
@@ -45,7 +71,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
     setError('');
     
     try {
-      await loginUser({ email, password });
+      await loginUser({ phone, password });
       
       if (onLoginSuccess) {
         onLoginSuccess();
@@ -79,29 +105,37 @@ const LoginModal: React.FC<LoginModalProps> = ({
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-right block">البريد الإلكتروني</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="أدخل البريد الإلكتروني"
-              dir="rtl"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={isLoading}
-            />
+            <Label htmlFor="phone" className="text-right block">رقم الهاتف</Label>
+            <div className="relative">
+              <Phone className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                id="phone"
+                type="tel"
+                placeholder="أدخل رقم الهاتف"
+                dir="rtl"
+                value={phone}
+                onChange={handlePhoneChange}
+                disabled={isLoading}
+                className="pr-10"
+              />
+            </div>
           </div>
           
           <div className="space-y-2">
             <Label htmlFor="password" className="text-right block">كلمة المرور</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="أدخل كلمة المرور"
-              dir="rtl"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={isLoading}
-            />
+            <div className="relative">
+              <Lock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                id="password"
+                type="password"
+                placeholder="أدخل كلمة المرور"
+                dir="rtl"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
+                className="pr-10"
+              />
+            </div>
           </div>
           
           {error && (

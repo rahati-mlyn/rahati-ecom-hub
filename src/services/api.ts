@@ -272,7 +272,7 @@ export const addRealEstate = async (realEstateData: any) => {
 };
 
 // Authentication API
-export const loginUser = async (credentials: { email: string; password: string }) => {
+export const loginUser = async (credentials: { phone: string; password: string }) => {
   const response = await fetchApi('/auth/login', {
     method: 'POST',
     body: JSON.stringify(credentials),
