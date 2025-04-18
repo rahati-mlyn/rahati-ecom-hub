@@ -12,6 +12,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuthContext';
 
 interface SignupModalProps {
   isOpen: boolean;
@@ -25,21 +26,60 @@ const SignupModal: React.FC<SignupModalProps> = ({
   onLoginClick
 }) => {
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
   const { toast } = useToast();
+  const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Simulate signup process
-    toast({
-      title: "تم إنشاء الحساب",
-      description: "تم إنشاء حسابك بنجاح",
-      duration: 3000,
-    });
+    if (!name || !email || !password) {
+      setError("جميع الحقول مطلوبة");
+      return;
+    }
     
-    onClose();
+    setIsSubmitting(true);
+    setError('');
+    
+    try {
+      // This is a mock signup function for now
+      // In a real app, you would call your API
+      // Simulate API call with timeout
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // For now, we'll just simulate a successful signup
+      const mockResponse = {
+        token: "mock_token_12345",
+        user: {
+          id: "user_" + Date.now(),
+          name,
+          email,
+          role: 'user' as const
+        }
+      };
+      
+      // Login the user after successful signup
+      login(mockResponse.token, mockResponse.user);
+      
+      toast({
+        title: "تم إنشاء الحساب",
+        description: "تم إنشاء حسابك بنجاح",
+        duration: 3000,
+      });
+      
+      onClose();
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('حدث خطأ أثناء إنشاء الحساب');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   
   const switchToLogin = () => {
@@ -80,16 +120,16 @@ const SignupModal: React.FC<SignupModalProps> = ({
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="phone">رقم الهاتف</Label>
+            <Label htmlFor="email">البريد الإلكتروني</Label>
             <div className="relative">
               <AtSign className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                id="phone"
-                type="tel"
-                placeholder="أدخل رقم الهاتف"
+                id="email"
+                type="email"
+                placeholder="أدخل البريد الإلكتروني"
                 className="pl-3 pr-10"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
@@ -107,12 +147,17 @@ const SignupModal: React.FC<SignupModalProps> = ({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                minLength={6}
               />
             </div>
           </div>
           
-          <Button type="submit" className="w-full bg-rahati-purple hover:bg-rahati-purple/90">
-            إنشاء حساب
+          {error && (
+            <p className="text-destructive text-sm text-right">{error}</p>
+          )}
+          
+          <Button type="submit" className="w-full bg-rahati-purple hover:bg-rahati-purple/90" disabled={isSubmitting}>
+            {isSubmitting ? 'جاري إنشاء الحساب...' : 'إنشاء حساب'}
           </Button>
         </form>
         
@@ -128,10 +173,10 @@ const SignupModal: React.FC<SignupModalProps> = ({
         </div>
         
         <div className="grid grid-cols-2 gap-3">
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full" type="button">
             Google
           </Button>
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full" type="button">
             Facebook
           </Button>
         </div>

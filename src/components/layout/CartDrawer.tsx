@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { CartItem } from '@/types/cart';
 import { formatPrice } from '@/lib/utils';
-import { createOrder, isAuthenticated } from '@/services/api';
+import { createOrder, isAuthenticated, getCurrentUser } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 
 interface CartDrawerProps {
@@ -36,6 +36,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const currentUser = getCurrentUser();
 
   const handleSendOrder = async () => {
     // If user wants to use WhatsApp
@@ -53,16 +54,18 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
           name: item.name,
           price: item.price,
           quantity: item.quantity,
-          categoryId: item.categoryId
+          categoryId: item.categoryId,
+          storeId: item.storeId || "unknown"
         })),
         total,
-        orderDate: new Date().toISOString()
+        orderDate: new Date().toISOString(),
+        userId: currentUser?.id || "guest" // Fix: Adding required userId
       };
       
       await createOrder(orderData);
       toast({
         title: "تم إرسال الطلب",
-        description: "سيتم التواصل معك قريباً",
+        description: "سيتم التواصل معك قريباً لتأكيد الطلب وتتبع حالته.",
       });
       
       // Clear cart after successful order
