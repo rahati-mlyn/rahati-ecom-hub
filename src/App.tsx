@@ -51,7 +51,7 @@ const App = () => {
             <Routes>
               <Route 
                 path="/" 
-                element={<HomePage />} 
+                element={<HomePage language={language} onLanguageChange={setLanguage} />} 
               />
               <Route 
                 path="/add-store" 
