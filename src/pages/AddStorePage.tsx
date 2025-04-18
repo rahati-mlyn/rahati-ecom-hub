@@ -1,154 +1,158 @@
 
 import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Store, UploadCloud, Building, Phone, MapPin } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Store, Upload, Building, Utensils, Car, CheckCircle } from 'lucide-react';
-import { 
-  Form, 
-  FormControl, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
   FormMessage,
-  FormDescription
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { createStore } from '@/services/api';
-import { StoreRequest } from '@/types/apiTypes';
 import { useToast } from '@/hooks/use-toast';
 
-// Form validation schema
-const storeFormSchema = z.object({
-  name: z.string()
-    .min(3, { message: "اسم المتجر يجب أن يكون 3 أحرف على الأقل" })
-    .max(50, { message: "اسم المتجر يجب أن يكون 50 حرف كحد أقصى" }),
-  description: z.string()
-    .min(20, { message: "وصف المتجر يجب أن يكون 20 حرف على الأقل" })
-    .max(500, { message: "وصف المتجر لا يمكن أن يتجاوز 500 حرف" }),
-  type: z.enum(['store', 'restaurant', 'realestate', 'car', 'clothes', 'electronics', 'homegoods'], {
-    required_error: "يرجى اختيار نوع المتجر",
-  }),
-  contactPhone: z.string()
-    .min(8, { message: "رقم الهاتف يجب أن يكون 8 أرقام على الأقل" })
-    .max(15, { message: "رقم الهاتف لا يمكن أن يتجاوز 15 رقم" }),
-  city: z.string().min(2, { message: "يرجى إدخال المدينة" }),
+const formSchema = z.object({
+  name: z.string().min(3, { message: 'يجب أن يكون اسم المتجر أكثر من 3 أحرف' }),
+  description: z.string().min(10, { message: 'يجب أن يكون الوصف أكثر من 10 أحرف' }),
+  type: z.enum(['store', 'restaurant', 'realestate', 'car', 'clothes', 'electronics', 'homegoods']),
+  contactPhone: z.string().min(8, { message: 'يرجى إدخال رقم هاتف صحيح' }),
+  city: z.string().min(2, { message: 'يرجى اختيار مدينة' }),
 });
 
 const AddStorePage = () => {
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
   const { toast } = useToast();
 
-  // Initialize form
-  const form = useForm<z.infer<typeof storeFormSchema>>({
-    resolver: zodResolver(storeFormSchema),
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      type: "store",
-      contactPhone: "",
-      city: "",
+      name: '',
+      description: '',
+      type: 'store',
+      contactPhone: '',
+      city: '',
     },
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setImageFile(file);
-      
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setImagePreview(event.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+      setSelectedImage(file);
+      setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
-  const onSubmit = async (values: z.infer<typeof storeFormSchema>) => {
-    setIsSubmitting(true);
-    
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
     try {
-      const storeData: StoreRequest = {
-        ...values,
-        image: imageFile || undefined,
+      const storeData = {
+        name: values.name,
+        description: values.description,
+        type: values.type,
+        contactPhone: values.contactPhone,
+        city: values.city,
+        image: selectedImage || undefined,
       };
-      
+
       await createStore(storeData);
-      setIsSuccess(true);
       
-      // Optional: Navigate to a success page or back to home
-      setTimeout(() => {
-        navigate('/');
-      }, 5000);
+      toast({
+        title: "تم إرسال طلبك",
+        description: "سنقوم بمراجعة طلبك وإعلامك بالقرار قريباً",
+      });
       
+      navigate('/');
     } catch (error) {
       console.error('Error creating store:', error);
-      // Error is handled by the API service
+      toast({
+        variant: "destructive",
+        title: "خطأ",
+        description: "حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى",
+      });
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
-  // Success screen
-  if (isSuccess) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-              <CheckCircle className="h-6 w-6 text-green-600" />
-            </div>
-            <CardTitle className="mt-4 text-xl">تم إرسال طلبك بنجاح</CardTitle>
-            <CardDescription>
-              سيتم مراجعة طلبك وسنتواصل معك قريباً
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-sm text-gray-500 mb-6">
-              سيتم تحويلك إلى الصفحة الرئيسية خلال لحظات...
-            </p>
-            <div className="flex justify-center space-x-4 rtl:space-x-reverse">
-              <Button onClick={() => navigate('/')}>
-                العودة للصفحة الرئيسية
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-2">إنشاء متجر جديد</h1>
-          <p className="text-gray-600">
-            قم بملئ النموذج التالي وسنتواصل معك في أقرب وقت ممكن
-          </p>
-        </div>
-        
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <Card>
-          <CardHeader>
-            <CardTitle>معلومات المتجر</CardTitle>
-            <CardDescription>
-              أدخل تفاصيل متجرك لنتمكن من إنشاء حساب لك
-            </CardDescription>
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold text-rahati-purple">إضافة متجر جديد</CardTitle>
+            <CardDescription>أنشئ متجرك الخاص وابدأ البيع على منصتنا</CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                {/* Image Upload */}
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  {previewUrl ? (
+                    <div className="relative w-full h-48 mx-auto mb-4">
+                      <img src={previewUrl} alt="Store Preview" className="h-full mx-auto object-contain" />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-2 right-2"
+                        onClick={() => {
+                          setSelectedImage(null);
+                          setPreviewUrl(null);
+                        }}
+                      >
+                        حذف
+                      </Button>
+                    </div>
+                  ) : (
+                    <UploadCloud className="h-12 w-12 mx-auto text-gray-400" />
+                  )}
+                  <label
+                    htmlFor="storeImage"
+                    className="mt-2 cursor-pointer block text-sm font-medium text-gray-700"
+                  >
+                    <span className="mt-2 block text-sm font-medium text-gray-700">
+                      {previewUrl ? 'تغيير الصورة' : 'قم بإرفاق صورة للمتجر'}
+                    </span>
+                    <span className="mt-1 block text-xs text-gray-500">
+                      PNG, JPG, GIF up to 5MB
+                    </span>
+                    <Input
+                      id="storeImage"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="sr-only"
+                    />
+                  </label>
+                </div>
+
                 {/* Store Name */}
                 <FormField
                   control={form.control}
@@ -157,35 +161,20 @@ const AddStorePage = () => {
                     <FormItem>
                       <FormLabel>اسم المتجر</FormLabel>
                       <FormControl>
-                        <Input placeholder="أدخل اسم المتجر" {...field} />
+                        <div className="relative">
+                          <Store className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+                          <Input
+                            placeholder="أدخل اسم المتجر"
+                            className="pl-3 pr-10"
+                            {...field}
+                          />
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
-                {/* Store Description */}
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>وصف المتجر</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="أدخل وصفاً مختصراً للمتجر" 
-                          className="min-h-[120px]"
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        اشرح طبيعة عمل متجرك والمنتجات أو الخدمات التي تقدمها
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
+
                 {/* Store Type */}
                 <FormField
                   control={form.control}
@@ -193,59 +182,79 @@ const AddStorePage = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>نوع المتجر</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="اختر نوع المتجر" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="store">متجر عام</SelectItem>
+                          <SelectItem value="restaurant">مطعم</SelectItem>
+                          <SelectItem value="realestate">عقارات</SelectItem>
+                          <SelectItem value="car">سيارات</SelectItem>
+                          <SelectItem value="clothes">ملابس</SelectItem>
+                          <SelectItem value="electronics">إلكترونيات</SelectItem>
+                          <SelectItem value="homegoods">منزل ومكتب</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        حدد النوع بدقة ليظهر المتجر في القسم المناسب
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Description */}
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>وصف المتجر</FormLabel>
                       <FormControl>
-                        <RadioGroup 
-                          onValueChange={field.onChange} 
-                          defaultValue={field.value}
-                          className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
-                        >
-                          <FormItem className="flex items-center space-x-3 space-y-0 rtl:space-x-reverse">
-                            <FormControl>
-                              <RadioGroupItem value="store" />
-                            </FormControl>
-                            <FormLabel className="font-normal cursor-pointer flex items-center gap-1">
-                              <Store className="h-4 w-4" />
-                              <span>متجر عام</span>
-                            </FormLabel>
-                          </FormItem>
-                          
-                          <FormItem className="flex items-center space-x-3 space-y-0 rtl:space-x-reverse">
-                            <FormControl>
-                              <RadioGroupItem value="restaurant" />
-                            </FormControl>
-                            <FormLabel className="font-normal cursor-pointer flex items-center gap-1">
-                              <Utensils className="h-4 w-4" />
-                              <span>مطعم</span>
-                            </FormLabel>
-                          </FormItem>
-                          
-                          <FormItem className="flex items-center space-x-3 space-y-0 rtl:space-x-reverse">
-                            <FormControl>
-                              <RadioGroupItem value="realestate" />
-                            </FormControl>
-                            <FormLabel className="font-normal cursor-pointer flex items-center gap-1">
-                              <Building className="h-4 w-4" />
-                              <span>عقارات</span>
-                            </FormLabel>
-                          </FormItem>
-                          
-                          <FormItem className="flex items-center space-x-3 space-y-0 rtl:space-x-reverse">
-                            <FormControl>
-                              <RadioGroupItem value="car" />
-                            </FormControl>
-                            <FormLabel className="font-normal cursor-pointer flex items-center gap-1">
-                              <Car className="h-4 w-4" />
-                              <span>سيارات</span>
-                            </FormLabel>
-                          </FormItem>
-                        </RadioGroup>
+                        <Textarea
+                          placeholder="اكتب وصفاً مختصراً عن متجرك والمنتجات التي تقدمها"
+                          className="resize-none min-h-[100px]"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
-                {/* Store City */}
+
+                {/* Contact Phone */}
+                <FormField
+                  control={form.control}
+                  name="contactPhone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>رقم التواصل</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Phone className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+                          <Input
+                            type="tel"
+                            placeholder="أدخل رقم الهاتف"
+                            className="pl-3 pr-10"
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormDescription>
+                        سيتم استخدام هذا الرقم للتواصل بخصوص الطلبات
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* City */}
                 <FormField
                   control={form.control}
                   name="city"
@@ -253,90 +262,33 @@ const AddStorePage = () => {
                     <FormItem>
                       <FormLabel>المدينة</FormLabel>
                       <FormControl>
-                        <Input placeholder="أدخل المدينة" {...field} />
+                        <div className="relative">
+                          <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+                          <Input
+                            placeholder="أدخل اسم المدينة"
+                            className="pl-3 pr-10"
+                            {...field}
+                          />
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
-                {/* Contact Phone */}
-                <FormField
-                  control={form.control}
-                  name="contactPhone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>رقم الهاتف</FormLabel>
-                      <FormControl>
-                        <Input type="tel" placeholder="أدخل رقم الهاتف" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                {/* Store Image */}
-                <div className="space-y-2">
-                  <FormLabel>صورة المتجر (اختياري)</FormLabel>
-                  <div className="flex items-center gap-4">
-                    <div className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center overflow-hidden">
-                      {imagePreview ? (
-                        <img 
-                          src={imagePreview} 
-                          alt="Store preview" 
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <Upload className="h-8 w-8 text-gray-400" />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rahati-purple/10 file:text-rahati-purple hover:file:bg-rahati-purple/20"
-                      />
-                      <p className="mt-2 text-xs text-gray-500">
-                        يفضل صورة مربعة بأبعاد 600×600 بكسل
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Form Actions */}
-                <div className="flex items-center justify-between pt-6">
-                  <Button 
-                    type="button" 
-                    variant="outline"
-                    onClick={() => navigate('/')}
+
+                <div className="pt-4">
+                  <Button
+                    type="submit"
+                    className="w-full bg-rahati-purple hover:bg-rahati-purple/90"
+                    disabled={isLoading}
                   >
-                    إلغاء
-                  </Button>
-                  <Button 
-                    type="submit" 
-                    disabled={isSubmitting}
-                    className="bg-rahati-purple hover:bg-rahati-purple/90"
-                  >
-                    {isSubmitting ? 'جارٍ الإرسال...' : 'إرسال الطلب'}
+                    {isLoading ? 'جاري الإرسال...' : 'إرسال طلب إنشاء المتجر'}
                   </Button>
                 </div>
               </form>
             </Form>
           </CardContent>
         </Card>
-        
-        <div className="mt-8 text-center text-sm text-gray-600">
-          <p>
-            لديك متجر بالفعل؟{' '}
-            <Link 
-              to="/" 
-              className="font-semibold text-rahati-purple hover:text-rahati-purple/90"
-            >
-              قم بتسجيل الدخول
-            </Link>
-          </p>
-        </div>
       </div>
     </div>
   );

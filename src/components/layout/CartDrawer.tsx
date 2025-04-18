@@ -36,7 +36,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user } = useAuth();
 
   const handleSendOrder = async () => {
     if (!isLoggedIn) {
@@ -57,7 +57,8 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
           storeId: item.storeId
         })),
         total,
-        orderDate: new Date().toISOString()
+        orderDate: new Date().toISOString(),
+        userId: user?.id || '',
       };
       
       await createOrder(orderData);

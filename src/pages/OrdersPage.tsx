@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   Card, 
@@ -18,8 +19,8 @@ import { Package, Clock, CheckCircle, XCircle, ExternalLink } from 'lucide-react
 import { getUserOrders } from '@/services/api';
 import { OrderResponse } from '@/types/apiTypes';
 import { useAuth } from '@/hooks/useAuthContext';
-import { useQuery } from 'react-query';
-import { toast } from 'react-toastify';
+import { useQuery } from '@tanstack/react-query';
+import { useToast } from '@/hooks/use-toast';
 
 const OrdersPage = () => {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const OrdersPage = () => {
   const [orders, setOrders] = useState<OrderResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
+  const { toast } = useToast();
 
   const { data: ordersData } = useQuery({
     queryKey: ['orders'],
