@@ -60,21 +60,11 @@ export interface OrderResponse {
     quantity: number;
     subtotal: number;
     storeId: string;
-    store?: {
-      id: string;
-      name: string;
-      contactPhone?: string;
-    };
   }[];
   total: number;
   status: 'pending' | 'preparing' | 'shipping' | 'delivered' | 'rejected';
   orderDate: string;
   userId: string;
-  statusHistory?: {
-    status: 'pending' | 'preparing' | 'shipping' | 'delivered' | 'rejected';
-    timestamp: string;
-    comment?: string;
-  }[];
   trackingInfo?: {
     trackingNumber?: string;
     estimatedDelivery?: string;
