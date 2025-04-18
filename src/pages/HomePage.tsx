@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -66,16 +67,18 @@ const HomePage = () => {
   }
 
   const isLoggedIn = !!user;
+  // Safe way to get username whether it's phone or other property
+  const username = user?.name || user?.phone || user?.email || '';
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header 
+        onOpenSidebar={handleSidebarOpen}
         onLoginClick={handleLoginClick}
         onSignupClick={handleSignupClick} 
         onLanguageClick={handleLanguageClick}
-        onSidebarOpen={handleSidebarOpen}
         isLoggedIn={isLoggedIn}
-        username={user?.phone}
+        username={username}
       />
       
       <EnhancedNavigation

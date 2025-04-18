@@ -8,16 +8,26 @@ import { CartItem } from '@/types/cart';
 
 interface HeaderProps {
   onOpenSidebar: () => void;
-  onOpenCart: () => void;
-  onSearch: (query: string) => void;
-  cartItems?: CartItem[]; // Make cartItems optional
+  onOpenCart?: () => void;
+  onSearch?: (query: string) => void;
+  cartItems?: CartItem[];
+  onLoginClick?: () => void;
+  onSignupClick?: () => void;
+  onLanguageClick?: () => void;
+  isLoggedIn?: boolean;
+  username?: string;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
   onOpenSidebar, 
-  onOpenCart, 
-  onSearch, 
-  cartItems = [] // Provide a default empty array
+  onOpenCart = () => {}, 
+  onSearch = () => {}, 
+  cartItems = [],
+  onLoginClick = () => {},
+  onSignupClick = () => {},
+  onLanguageClick = () => {},
+  isLoggedIn = false,
+  username = ''
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
