@@ -1,4 +1,3 @@
-
 import { Product } from "@/types/product";
 import { generateId } from "@/lib/utils";
 
@@ -202,7 +201,7 @@ export const products: Product[] = [
   {
     id: generateId(),
     name: "عباية نسائية فاخرة",
-    description: "عباية مطرزة بتصميم عصري وأنيق",
+    description: "عباية م��رزة بتصميم عصري وأنيق",
     price: 18000,
     originalPrice: 20000,
     discount: 10,
@@ -380,7 +379,69 @@ export const products: Product[] = [
     storeId: "store6",
     storeName: "متجر الألعاب",
     createdAt: new Date("2023-09-15"),
-  }
+  },
+  
+  // Adding new car parts products
+  {
+    id: generateId(),
+    name: "مجموعة فلاتر زيت وهواء",
+    description: "مجموعة فلاتر زيت وهواء عالية الجودة متوافقة مع معظم السيارات اليابانية",
+    price: 5500,
+    originalPrice: 6500,
+    discount: 15,
+    image: "https://images.unsplash.com/photo-1635783158763-57ffdda71c24?q=80&w=2070&auto=format&fit=crop",
+    category: "shopping",
+    subCategory: "car-parts",
+    city: "نواكشوط",
+    storeId: "store7",
+    storeName: "متجر قطع غيار السيارات",
+    createdAt: new Date("2023-08-15"),
+  },
+  {
+    id: generateId(),
+    name: "بطارية سيارة 12 فولت",
+    description: "بطارية سيارة عالية الأداء تدوم لفترة طويلة ومقاومة للحرارة",
+    price: 18000,
+    originalPrice: 20000,
+    discount: 10,
+    image: "https://images.unsplash.com/photo-1619124644984-8410f926b353?q=80&w=2070&auto=format&fit=crop",
+    category: "shopping",
+    subCategory: "car-parts",
+    city: "نواذيبو",
+    storeId: "store7",
+    storeName: "متجر قطع غيار السيارات",
+    createdAt: new Date("2023-09-10"),
+  },
+  {
+    id: generateId(),
+    name: "مجموعة إطارات ميشلان",
+    description: "إطارات سيارات عالية الجودة مناسبة للطرق الوعرة والصحراوية",
+    price: 65000,
+    originalPrice: 70000,
+    discount: 7,
+    image: "https://images.unsplash.com/photo-1605113096440-302039400701?q=80&w=2097&auto=format&fit=crop",
+    category: "shopping",
+    subCategory: "car-parts",
+    city: "نواكشوط",
+    storeId: "store7",
+    storeName: "متجر قطع غيار السيارات",
+    createdAt: new Date("2023-10-05"),
+  },
+  {
+    id: generateId(),
+    name: "زيت محرك سينثيتيك",
+    description: "زيت محرك عالي الجودة مناسب لجميع أنواع السيارات",
+    price: 7500,
+    originalPrice: 8500,
+    discount: 12,
+    image: "https://images.unsplash.com/photo-1603195856356-d532a4364f3a?q=80&w=2070&auto=format&fit=crop",
+    category: "shopping",
+    subCategory: "car-parts",
+    city: "نواكشوط",
+    storeId: "store8",
+    storeName: "متجر الزيوت والشحوم",
+    createdAt: new Date("2023-11-20"),
+  },
 ];
 
 export const getProductsByCategory = (category: string, subCategory?: string) => {

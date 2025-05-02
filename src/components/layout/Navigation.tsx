@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ShoppingBag, Building, Utensils, Car, Percent, Tv, Shirt, Sofa, Package } from 'lucide-react';
+import { ShoppingBag, Building, Utensils, Car, Percent, Tv, Shirt, Sofa, Package, Wrench } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   NavigationMenu,
@@ -122,6 +122,18 @@ const Navigation: React.FC<NavigationProps> = ({
                   >
                     <Sofa className="h-4 w-4" />
                     الأثاث المنزلي
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    className={cn(
+                      "px-4 py-2 text-sm font-medium flex items-center gap-2", 
+                      currentSubCategory === 'car-parts' ? "text-rahati-purple" : "text-muted-foreground"
+                    )}
+                    onClick={() => onSelectCategory('shopping', 'car-parts')}
+                  >
+                    <Wrench className="h-4 w-4" />
+                    غيار السيارات
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>

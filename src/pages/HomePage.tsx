@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/layout/Header';
 import Navigation from '@/components/layout/Navigation';
@@ -408,6 +409,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         case 'electronics': subcategoryLabel = 'الإلكترونيات'; break;
         case 'clothes': subcategoryLabel = 'الملابس'; break;
         case 'home-goods': subcategoryLabel = 'الأثاث المنزلي'; break;
+        case 'car-parts': subcategoryLabel = 'غيار السيارات'; break;
         case 'other': subcategoryLabel = 'غير ذلك'; break;
         default: subcategoryLabel = '';
       }
