@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { ShoppingCart, Heart, ZoomIn, X } from 'lucide-react';
 import { Product } from '@/types/product';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { formatPrice } from '@/lib/utils';
 import { 
@@ -30,6 +31,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
     setShowImageModal(true);
   };
 
+  const isNew = Date.now() - new Date(product.createdAt).getTime() < 7 * 24 * 60 * 60 * 1000;
+
   return (
     <>
       <Card className="overflow-hidden card-hover transition-all duration-300 hover:shadow-lg border border-gray-200">
@@ -48,14 +51,31 @@ const ProductCard: React.FC<ProductCardProps> = ({
           >
             <ZoomIn className="h-4 w-4" />
           </Button>
+          
+          {/* Product Badges */}
+          <div className="absolute top-2 left-2 flex flex-col gap-1">
+            {product.discount > 0 && (
+              <Badge className="bg-rahati-yellow text-rahati-dark">
+                خصم {product.discount}%
+              </Badge>
+            )}
+            {isNew && (
+              <Badge className="bg-rahati-purple text-white">
+                جديد
+              </Badge>
+            )}
+          </div>
         </div>
         <CardContent className="p-4 text-right">
-          <h3 
-            className="font-semibold text-lg truncate cursor-pointer hover:text-rahati-purple transition-colors"
-            onClick={() => onViewDetails(product)}
-          >
-            {product.name}
-          </h3>
+          <div className="flex justify-between items-center">
+            <p className="text-xs text-gray-500">{new Date(product.createdAt).toLocaleDateString('ar-EG')}</p>
+            <h3 
+              className="font-semibold text-lg truncate cursor-pointer hover:text-rahati-purple transition-colors"
+              onClick={() => onViewDetails(product)}
+            >
+              {product.name}
+            </h3>
+          </div>
           <div className="flex items-center justify-between mt-1">
             {product.originalPrice > 0 && (
               <span className="text-muted-foreground line-through text-sm">
@@ -65,7 +85,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <span className="font-medium text-rahati-purple">
               {formatPrice(product.price)}
             </span>
-            <p className="text-sm text-muted-foreground">{product.city}</p>
+            <p className="text-sm text-rahati-purple bg-purple-50 px-2 py-0.5 rounded-full">{product.city}</p>
           </div>
           <p className="text-muted-foreground text-sm mt-2 line-clamp-2">{product.description}</p>
         </CardContent>
@@ -77,13 +97,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <ShoppingCart className="mr-2 h-4 w-4" />
             <span>أضف للسلة</span>
           </Button>
-          <Button variant="outline" size="icon" className="hover:bg-rahati-purple/10 hover:text-rahati-purple">
+          <Button 
+            variant="outline" 
+            size="icon" 
+            className="hover:bg-rahati-purple/10 hover:text-rahati-purple"
+          >
             <Heart className="h-4 w-4" />
           </Button>
         </CardFooter>
       </Card>
 
-      {/* Image Modal with fixed accessibility issues */}
+      {/* Image Modal */}
       <Dialog open={showImageModal} onOpenChange={setShowImageModal}>
         <DialogContent className="sm:max-w-4xl p-0 bg-transparent border-none shadow-none">
           <DialogTitle className="sr-only">
