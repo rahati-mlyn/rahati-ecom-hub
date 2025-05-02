@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, ShoppingCart, Share2, Heart, MessagesSquare, ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -16,6 +16,9 @@ import {
   CarouselPrevious 
 } from '@/components/ui/carousel';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Slider } from '@/components/ui/slider';
 
 interface ProductDetailsModalProps {
   product: Product | null;
@@ -35,7 +38,28 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
   onViewDetails
 }) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [currentView, setCurrentView] = useState<'similar' | 'features'>('similar');
+  const [itemsPerView, setItemsPerView] = useState(3);
   
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setItemsPerView(1);
+      } else if (window.innerWidth < 1024) {
+        setItemsPerView(2);
+      } else {
+        setItemsPerView(3);
+      }
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   if (!product) return null;
 
   // Generate additional images for demo purposes
@@ -62,6 +86,24 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
     setActiveImageIndex(index);
   };
 
+  // Group similar products by subcategory
+  const groupedSimilarProducts = similarProducts.reduce((acc, product) => {
+    const key = product.subCategory;
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(product);
+    return acc;
+  }, {} as Record<string, Product[]>);
+
+  const categoryLabels = {
+    'electronics': 'الإلكترونيات',
+    'clothes': 'الملابس',
+    'home-goods': 'منتجات المنزل',
+    'car-parts': 'غيار السيارات',
+    'other': 'أخرى'
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-4xl p-0 max-h-[90vh] overflow-y-auto bg-white">
@@ -77,12 +119,12 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
         <div className="grid md:grid-cols-7 gap-6 p-6">
           {/* Product Images Section - 4 columns on md screens */}
           <div className="md:col-span-4">
-            <div className="bg-gray-50 rounded-lg overflow-hidden aspect-square relative">
+            <div className="bg-gray-50 rounded-lg overflow-hidden aspect-square relative group">
               {/* Main Image */}
               <img 
                 src={productImages[activeImageIndex]} 
                 alt={`${product.name} - صورة ${activeImageIndex + 1}`} 
-                className="w-full h-full object-cover transition-opacity duration-300"
+                className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
               />
               
               {/* Image Navigation Controls */}
@@ -91,7 +133,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="absolute top-1/2 left-2 -translate-y-1/2 bg-white/70 hover:bg-white rounded-full shadow-lg"
+                    className="absolute top-1/2 left-2 -translate-y-1/2 bg-white/70 hover:bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={handlePrevImage}
                   >
                     <ArrowRight className="h-4 w-4" />
@@ -99,7 +141,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="absolute top-1/2 right-2 -translate-y-1/2 bg-white/70 hover:bg-white rounded-full shadow-lg"
+                    className="absolute top-1/2 right-2 -translate-y-1/2 bg-white/70 hover:bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={handleNextImage}
                   >
                     <ArrowLeft className="h-4 w-4" />
@@ -110,25 +152,28 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
               {/* Product Badges */}
               <div className="absolute top-2 left-2 flex flex-col gap-1">
                 {product.discount > 0 && (
-                  <Badge className="bg-rahati-yellow text-rahati-dark">
+                  <Badge className="bg-rahati-yellow text-rahati-dark animate-fade-in">
                     خصم {product.discount}%
                   </Badge>
                 )}
                 {Date.now() - new Date(product.createdAt).getTime() < 7 * 24 * 60 * 60 * 1000 && (
-                  <Badge className="bg-rahati-purple text-white">
+                  <Badge className="bg-rahati-purple text-white animate-fade-in">
                     جديد
                   </Badge>
                 )}
               </div>
+
+              {/* Zoom Overlay */}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300"></div>
             </div>
 
-            {/* Thumbnails */}
+            {/* Thumbnails with active indicator */}
             {productImages.length > 1 && (
               <div className="flex gap-2 mt-3 justify-center">
                 {productImages.map((img, index) => (
                   <div 
                     key={`thumb-${index}`}
-                    className={`border-2 rounded-md overflow-hidden cursor-pointer transition-all w-16 h-16 ${activeImageIndex === index ? 'border-rahati-purple' : 'border-transparent'}`}
+                    className={`border-2 rounded-md overflow-hidden cursor-pointer transition-all w-16 h-16 hover-scale ${activeImageIndex === index ? 'border-rahati-purple ring-2 ring-purple-200' : 'border-transparent'}`}
                     onClick={() => handleThumbnailClick(index)}
                   >
                     <img 
@@ -163,9 +208,18 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                     {formatPrice(product.price)}
                   </span>
                 </div>
-                <Badge className="bg-green-100 text-green-800 hover:bg-green-100 hover:text-green-800">
-                  {product.category}
-                </Badge>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Badge className="bg-green-100 text-green-800 hover:bg-green-100 hover:text-green-800 cursor-help">
+                        {product.category}
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="bg-black text-white">
+                      <p>فئة المنتج</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
               <Badge variant="outline" className="text-gray-600">
                 {product.subCategory === 'car-parts' ? 'غيار السيارات' :
@@ -230,38 +284,97 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
           </div>
         </div>
         
-        {/* Similar Products - Updated to horizontal carousel */}
+        {/* Similar Products - Enhanced Carousel */}
         {similarProducts.length > 0 && (
           <div className="mt-2 p-6 pt-0 border-t">
-            <h3 className="text-xl font-semibold mb-4 text-right text-rahati-dark">
-              منتجات مشابهة
-            </h3>
-            
-            <div className="relative">
-              <Carousel
-                opts={{
-                  align: "start",
-                  loop: true,
-                }}
-                className="w-full"
-              >
-                <CarouselContent>
-                  {similarProducts.map((similarProduct) => (
-                    <CarouselItem key={similarProduct.id} className="md:basis-1/3 lg:basis-1/3">
-                      <div className="p-1">
-                        <ProductCard
-                          product={similarProduct}
-                          onAddToCart={onAddToCart}
-                          onViewDetails={onViewDetails}
-                        />
+            <Tabs defaultValue="similar" className="w-full">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <label htmlFor="items-slider" className="text-sm text-gray-500">عدد العناصر:</label>
+                  <Slider
+                    id="items-slider"
+                    defaultValue={[itemsPerView]}
+                    max={4}
+                    min={1}
+                    step={1}
+                    className="w-24"
+                    onValueChange={(values) => setItemsPerView(values[0])}
+                  />
+                  <span className="text-xs text-gray-500">{itemsPerView}</span>
+                </div>
+                <TabsList className="bg-gray-100">
+                  <TabsTrigger value="similar" className="text-sm">منتجات مشابهة</TabsTrigger>
+                  <TabsTrigger value="subcategory" className="text-sm">حسب الفئة</TabsTrigger>
+                </TabsList>
+              </div>
+              
+              <TabsContent value="similar" className="mt-0">
+                <div className="relative">
+                  <Carousel
+                    opts={{
+                      align: "start",
+                      loop: true,
+                    }}
+                    className="w-full"
+                  >
+                    <CarouselContent>
+                      {similarProducts.map((similarProduct) => (
+                        <CarouselItem key={similarProduct.id} className={`md:basis-1/${itemsPerView}`}>
+                          <div className="p-1 h-full">
+                            <ProductCard
+                              product={similarProduct}
+                              onAddToCart={onAddToCart}
+                              onViewDetails={onViewDetails}
+                            />
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="-left-4 bg-white shadow-lg border border-gray-200" />
+                    <CarouselNext className="-right-4 bg-white shadow-lg border border-gray-200" />
+                  </Carousel>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="subcategory" className="mt-0">
+                {Object.entries(groupedSimilarProducts).length > 0 ? (
+                  <div className="space-y-6">
+                    {Object.entries(groupedSimilarProducts).map(([category, products]) => (
+                      <div key={category} className="space-y-3">
+                        <h4 className="text-right font-medium text-rahati-dark">
+                          {categoryLabels[category as keyof typeof categoryLabels] || category}
+                        </h4>
+                        <Carousel
+                          opts={{
+                            align: "start",
+                            loop: true,
+                          }}
+                          className="w-full"
+                        >
+                          <CarouselContent>
+                            {products.map((similarProduct) => (
+                              <CarouselItem key={similarProduct.id} className={`md:basis-1/${itemsPerView}`}>
+                                <div className="p-1 h-full">
+                                  <ProductCard
+                                    product={similarProduct}
+                                    onAddToCart={onAddToCart}
+                                    onViewDetails={onViewDetails}
+                                  />
+                                </div>
+                              </CarouselItem>
+                            ))}
+                          </CarouselContent>
+                          <CarouselPrevious className="-left-4 bg-white shadow-lg border border-gray-200" />
+                          <CarouselNext className="-right-4 bg-white shadow-lg border border-gray-200" />
+                        </Carousel>
                       </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="hidden md:flex -left-4 bg-white" />
-                <CarouselNext className="hidden md:flex -right-4 bg-white" />
-              </Carousel>
-            </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-center text-gray-500 py-4">لا توجد منتجات متاحة في هذه الفئة</p>
+                )}
+              </TabsContent>
+            </Tabs>
           </div>
         )}
       </DialogContent>

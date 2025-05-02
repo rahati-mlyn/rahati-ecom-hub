@@ -12,6 +12,7 @@ import {
   DialogClose, 
   DialogTitle 
 } from '@/components/ui/dialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface ProductCardProps {
   product: Product;
@@ -25,6 +26,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onViewDetails
 }) => {
   const [showImageModal, setShowImageModal] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const openImageModal = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -35,7 +37,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <>
-      <Card className="overflow-hidden card-hover transition-all duration-300 hover:shadow-lg border border-gray-200 h-full">
+      <Card 
+        className="overflow-hidden transition-all duration-300 hover:shadow-lg border border-gray-200 h-full bg-white"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         <div className="aspect-square relative overflow-hidden bg-gray-100 group">
           <img 
             src={product.image} 
@@ -43,24 +49,71 @@ const ProductCard: React.FC<ProductCardProps> = ({
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             onClick={() => onViewDetails(product)}
           />
-          <Button 
-            className="absolute bottom-2 right-2 bg-white/80 text-rahati-purple hover:bg-white" 
-            size="sm" 
-            variant="outline"
-            onClick={openImageModal}
-          >
-            <ZoomIn className="h-4 w-4" />
-          </Button>
+          
+          {/* Quick Action Buttons */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
+            <div className="flex gap-2">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      className="bg-white text-rahati-purple hover:bg-white shadow-md" 
+                      size="sm" 
+                      onClick={() => onAddToCart(product)}
+                    >
+                      <ShoppingCart className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">
+                    <p>أضف للسلة</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      className="bg-white text-rahati-purple hover:bg-white shadow-md" 
+                      size="sm" 
+                      onClick={openImageModal}
+                    >
+                      <ZoomIn className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">
+                    <p>تكبير الصورة</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      className="bg-white text-rahati-purple hover:bg-white shadow-md" 
+                      size="sm"
+                    >
+                      <Heart className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">
+                    <p>إضافة للمفضلة</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          </div>
           
           {/* Product Badges */}
           <div className="absolute top-2 left-2 flex flex-col gap-1">
             {product.discount > 0 && (
-              <Badge className="bg-rahati-yellow text-rahati-dark">
+              <Badge className="bg-rahati-yellow text-rahati-dark animate-fade-in">
                 خصم {product.discount}%
               </Badge>
             )}
             {isNew && (
-              <Badge className="bg-rahati-purple text-white">
+              <Badge className="bg-rahati-purple text-white animate-fade-in">
                 جديد
               </Badge>
             )}
