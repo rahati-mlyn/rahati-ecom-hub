@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, ShoppingCart, Share2, Heart, MessagesSquare, ArrowLeft, ArrowRight, Images, Image } from 'lucide-react';
+import { X, ShoppingCart, Share2, Heart, MessagesSquare, ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +8,14 @@ import { Separator } from '@/components/ui/separator';
 import { Product } from '@/types/product';
 import { formatPrice } from '@/lib/utils';
 import ProductCard from '../cards/ProductCard';
+import { 
+  Carousel, 
+  CarouselContent, 
+  CarouselItem, 
+  CarouselNext, 
+  CarouselPrevious 
+} from '@/components/ui/carousel';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface ProductDetailsModalProps {
   product: Product | null;
@@ -222,22 +230,37 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
           </div>
         </div>
         
-        {/* Similar Products */}
+        {/* Similar Products - Updated to horizontal carousel */}
         {similarProducts.length > 0 && (
           <div className="mt-2 p-6 pt-0 border-t">
-            <h3 className="text-xl font-semibold mb-4 text-right text-rahati-dark flex items-center justify-end">
-              <span>منتجات مشابهة</span>
-              <Images className="mr-2 h-5 w-5 text-rahati-purple" />
+            <h3 className="text-xl font-semibold mb-4 text-right text-rahati-dark">
+              منتجات مشابهة
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {similarProducts.slice(0, 3).map(product => (
-                <ProductCard 
-                  key={product.id} 
-                  product={product} 
-                  onAddToCart={onAddToCart}
-                  onViewDetails={onViewDetails} 
-                />
-              ))}
+            
+            <div className="relative">
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                className="w-full"
+              >
+                <CarouselContent>
+                  {similarProducts.map((similarProduct) => (
+                    <CarouselItem key={similarProduct.id} className="md:basis-1/3 lg:basis-1/3">
+                      <div className="p-1">
+                        <ProductCard
+                          product={similarProduct}
+                          onAddToCart={onAddToCart}
+                          onViewDetails={onViewDetails}
+                        />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="hidden md:flex -left-4 bg-white" />
+                <CarouselNext className="hidden md:flex -right-4 bg-white" />
+              </Carousel>
             </div>
           </div>
         )}
