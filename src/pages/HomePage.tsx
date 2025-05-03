@@ -118,11 +118,9 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         
         if (currentCategory === 'real-estate' || currentCategory === 'all') {
           if (currentSubCategory) {
-            const properties = getMockRealEstateByTypeAndCity(currentSubCategory as 'rent' | 'sale', selectedCity);
-            setRealEstateData(properties);
+            setRealEstateData(getMockRealEstateByTypeAndCity(currentSubCategory as 'rent' | 'sale', selectedCity));
           } else {
-            const properties = selectedCity ? getRealEstateByCity(selectedCity) : mockRealEstate;
-            setRealEstateData(properties);
+            setRealEstateData(selectedCity ? getRealEstateByCity(selectedCity) : mockRealEstate);
           }
         }
         
@@ -135,11 +133,9 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         
         if (currentCategory === 'cars' || currentCategory === 'all') {
           if (currentSubCategory) {
-            const cars = getMockCarsByTypeAndCity(currentSubCategory as 'rent' | 'sale', selectedCity);
-            setCarsData(cars);
+            setCarsData(getMockCarsByTypeAndCity(currentSubCategory as 'rent' | 'sale', selectedCity));
           } else {
-            const cars = selectedCity ? getCarsByCity(selectedCity) : mockCars;
-            setCarsData(cars);
+            setCarsData(selectedCity ? getCarsByCity(selectedCity) : mockCars);
           }
         }
         

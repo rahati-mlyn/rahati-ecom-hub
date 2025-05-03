@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { ShoppingBag, Building, Utensils, Car, Percent } from 'lucide-react';
+import { ShoppingBag, Building, Utensils, Car, Percent, Tv, Shirt, Sofa, Wrench, Package } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   NavigationMenu,
