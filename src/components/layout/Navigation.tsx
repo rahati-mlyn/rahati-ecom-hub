@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ShoppingBag, Building, Utensils, Car, Percent, Tv, Shirt, Sofa, Wrench, Package } from 'lucide-react';
+import { ShoppingBag, Building, Utensils, Car, Percent, Tv, Shirt, Sofa, Wrench, Package, MapPin } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   NavigationMenu,
@@ -10,8 +10,30 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from '@/lib/utils';
-import CitySelector from './CitySelector';
+
+// List of Mauritanian cities
+const mauritanianCities = [
+  'نواكشوط',
+  'نواذيبو',
+  'روصو',
+  'كيفة',
+  'عطار',
+  'توجنين',
+  'سيلبابي',
+  'النعمة',
+  'ازويرات',
+  'أكجوجت',
+  'كرمسين',
+  'بوتلميت'
+];
 
 interface NavigationProps {
   onSelectCategory: (category: string, subCategory?: string) => void;
@@ -76,11 +98,32 @@ const Navigation: React.FC<NavigationProps> = ({
         </Tabs>
       </div>
       
-      {currentCategory === 'shopping' && (
-        <div className="border-t bg-gray-50">
-          <div className="container mx-auto overflow-auto">
-            <div className="flex justify-between items-center">
-              <CitySelector selectedCity={selectedCity} onCityChange={onCityChange} />
+      <div className="border-t bg-gray-50">
+        <div className="container mx-auto overflow-auto">
+          <div className="flex justify-between items-center">
+            <NavigationMenu dir="rtl" className="justify-center">
+              <NavigationMenuList className="px-2">
+                {/* City selector integrated directly in the navigation */}
+                <NavigationMenuItem>
+                  <Select value={selectedCity} onValueChange={onCityChange}>
+                    <SelectTrigger className="w-[150px] flex items-center gap-2 bg-transparent border-none shadow-none focus:ring-0">
+                      <MapPin className="h-4 w-4" />
+                      <SelectValue placeholder="جميع المدن" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      <SelectItem value="">جميع المدن</SelectItem>
+                      {mauritanianCities.map((city) => (
+                        <SelectItem key={city} value={city}>
+                          {city}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+            
+            {currentCategory === 'shopping' && (
               <NavigationMenu dir="rtl" className="justify-center">
                 <NavigationMenuList className="px-2">
                   <NavigationMenuItem>
@@ -156,16 +199,9 @@ const Navigation: React.FC<NavigationProps> = ({
                   </NavigationMenuItem>
                 </NavigationMenuList>
               </NavigationMenu>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      {currentCategory === 'real-estate' && (
-        <div className="border-t bg-gray-50">
-          <div className="container mx-auto overflow-auto">
-            <div className="flex justify-between items-center">
-              <CitySelector selectedCity={selectedCity} onCityChange={onCityChange} />
+            )}
+            
+            {currentCategory === 'real-estate' && (
               <NavigationMenu dir="rtl" className="justify-center">
                 <NavigationMenuList className="px-2">
                   <NavigationMenuItem>
@@ -203,16 +239,9 @@ const Navigation: React.FC<NavigationProps> = ({
                   </NavigationMenuItem>
                 </NavigationMenuList>
               </NavigationMenu>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      {currentCategory === 'cars' && (
-        <div className="border-t bg-gray-50">
-          <div className="container mx-auto overflow-auto">
-            <div className="flex justify-between items-center">
-              <CitySelector selectedCity={selectedCity} onCityChange={onCityChange} />
+            )}
+            
+            {currentCategory === 'cars' && (
               <NavigationMenu dir="rtl" className="justify-center">
                 <NavigationMenuList className="px-2">
                   <NavigationMenuItem>
@@ -250,16 +279,9 @@ const Navigation: React.FC<NavigationProps> = ({
                   </NavigationMenuItem>
                 </NavigationMenuList>
               </NavigationMenu>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      {currentCategory === 'restaurants' && (
-        <div className="border-t bg-gray-50">
-          <div className="container mx-auto overflow-auto">
-            <div className="flex justify-between items-center">
-              <CitySelector selectedCity={selectedCity} onCityChange={onCityChange} />
+            )}
+            
+            {currentCategory === 'restaurants' && (
               <NavigationMenu dir="rtl" className="justify-center">
                 <NavigationMenuList className="px-2">
                   <NavigationMenuItem>
@@ -271,10 +293,10 @@ const Navigation: React.FC<NavigationProps> = ({
                   </NavigationMenuItem>
                 </NavigationMenuList>
               </NavigationMenu>
-            </div>
+            )}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

@@ -86,27 +86,27 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
       
       try {
         if (currentCategory === 'shopping' || currentCategory === 'all') {
-          const data = await getProducts(currentSubCategory, selectedCity);
+          const data = await getProducts();
           setProductsData(data);
         }
         
         if (currentCategory === 'real-estate' || currentCategory === 'all') {
-          const data = await getRealEstate(currentSubCategory, selectedCity);
+          const data = await getRealEstate();
           setRealEstateData(data);
         }
         
         if (currentCategory === 'restaurants' || currentCategory === 'all') {
-          const data = await getRestaurants(selectedCity);
+          const data = await getRestaurants();
           setRestaurantsData(data);
         }
         
         if (currentCategory === 'cars' || currentCategory === 'all') {
-          const data = await getCars(currentSubCategory, selectedCity);
+          const data = await getCars();
           setCarsData(data);
         }
         
         if (currentCategory === 'discounts' || currentCategory === 'all') {
-          const data = await getOffers(selectedCity);
+          const data = await getOffers();
           setOffersData(data);
         }
       } catch (error) {
@@ -755,6 +755,11 @@ const getMockRealEstateByTypeAndCity = (type: 'rent' | 'sale', city: string) => 
     filtered = filtered.filter((property) => property.city === city);
   }
   return filtered;
+};
+
+const getCarsByCity = (city: string) => {
+  if (!city) return mockCars;
+  return mockCars.filter((car) => car.city === city);
 };
 
 export default HomePage;
