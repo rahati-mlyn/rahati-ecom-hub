@@ -26,13 +26,13 @@ interface CitySelectorProps {
 
 const CitySelector: React.FC<CitySelectorProps> = ({ selectedCity, onCityChange }) => {
   return (
-    <div className="flex items-center gap-2">
-      <MapPin className="h-4 w-4 text-rahati-yellow" />
+    <div className="flex items-center gap-2 justify-end pb-2 pt-1">
+      <MapPin className="h-4 w-4 text-rahati-purple" />
       <Select defaultValue={selectedCity} onValueChange={onCityChange} dir="rtl">
-        <SelectTrigger className="w-full bg-white/10 border-rahati-yellow/50 text-white h-10">
+        <SelectTrigger className="w-48 bg-white border-rahati-purple/30 text-rahati-purple h-9 focus:ring-rahati-purple/30">
           <SelectValue placeholder="اختر المدينة" />
         </SelectTrigger>
-        <SelectContent className="z-50">
+        <SelectContent className="z-50 border-rahati-purple/20">
           {MAURITANIAN_CITIES.map((city) => (
             <SelectItem key={city.id} value={city.id} className="text-right">
               {city.name}

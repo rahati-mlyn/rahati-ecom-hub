@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { CartItem } from '@/types/cart';
-import CitySelector from '@/components/ui/CitySelector';
 
 interface HeaderProps {
   onOpenSidebar: () => void;
@@ -45,11 +44,6 @@ const Header: React.FC<HeaderProps> = ({
         {/* Logo */}
         <div className="text-2xl font-bold">
           <span className="text-rahati-yellow">راحتي</span>
-        </div>
-        
-        {/* City selector */}
-        <div className="flex-shrink-0 w-full sm:w-auto sm:mr-4">
-          <CitySelector selectedCity={selectedCity} onCityChange={onCityChange} />
         </div>
         
         {/* Search */}

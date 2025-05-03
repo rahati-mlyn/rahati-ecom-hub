@@ -11,12 +11,14 @@ import {
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
+import CitySelector from '@/components/ui/CitySelector';
 
 interface NavigationProps {
   onSelectCategory: (category: string, subCategory?: string) => void;
   currentCategory: string;
   currentSubCategory?: string;
   selectedCity: string;
+  onCityChange: (city: string) => void;
 }
 
 const Navigation: React.FC<NavigationProps> = ({
@@ -24,11 +26,15 @@ const Navigation: React.FC<NavigationProps> = ({
   currentCategory,
   currentSubCategory,
   selectedCity,
+  onCityChange,
 }) => {
   const showCityFilter = selectedCity !== 'all' && selectedCity !== '';
 
   return (
     <div className="sticky top-0 z-10 bg-white shadow-sm border-b">
+      <div className="container mx-auto px-4 py-1">
+        <CitySelector selectedCity={selectedCity} onCityChange={onCityChange} />
+      </div>
       <div className="container mx-auto flex justify-center overflow-auto">
         <Tabs 
           value={currentCategory} 
