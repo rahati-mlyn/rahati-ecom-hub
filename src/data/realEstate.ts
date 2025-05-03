@@ -1,3 +1,4 @@
+
 import { RealEstate } from "@/types/realEstate";
 import { generateId } from "@/lib/utils";
 
@@ -110,15 +111,34 @@ export const getRealEstateByType = (type: 'rent' | 'sale') => {
   return realEstateListings.filter((property) => property.type === type);
 };
 
-export const searchRealEstate = (query: string) => {
+export const getRealEstateByCity = (city: string) => {
+  if (!city) return realEstateListings;
+  return realEstateListings.filter((property) => property.city === city);
+};
+
+export const getRealEstateByTypeAndCity = (type: 'rent' | 'sale', city: string) => {
+  let filtered = realEstateListings.filter((property) => property.type === type);
+  if (city) {
+    filtered = filtered.filter((property) => property.city === city);
+  }
+  return filtered;
+};
+
+export const searchRealEstate = (query: string, city: string = '') => {
   const searchTerm = query.toLowerCase();
-  return realEstateListings.filter(
+  let filtered = realEstateListings.filter(
     (property) =>
       property.title.toLowerCase().includes(searchTerm) ||
       property.description.toLowerCase().includes(searchTerm) ||
       property.city.toLowerCase().includes(searchTerm) ||
       property.location.toLowerCase().includes(searchTerm)
   );
+
+  if (city) {
+    filtered = filtered.filter((property) => property.city === city);
+  }
+
+  return filtered;
 };
 
 export const getRealEstateById = (id: string) => {

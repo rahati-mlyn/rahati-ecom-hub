@@ -1,3 +1,4 @@
+
 import { Car } from "@/types/car";
 import { generateId } from "@/lib/utils";
 
@@ -110,15 +111,34 @@ export const getCarsByType = (type: 'rent' | 'sale') => {
   return cars.filter((car) => car.type === type);
 };
 
-export const searchCars = (query: string) => {
+export const getCarsByCity = (city: string) => {
+  if (!city) return cars;
+  return cars.filter((car) => car.city === city);
+};
+
+export const getCarsByTypeAndCity = (type: 'rent' | 'sale', city: string) => {
+  let filtered = cars.filter((car) => car.type === type);
+  if (city) {
+    filtered = filtered.filter((car) => car.city === city);
+  }
+  return filtered;
+};
+
+export const searchCars = (query: string, city: string = '') => {
   const searchTerm = query.toLowerCase();
-  return cars.filter(
+  let filtered = cars.filter(
     (car) =>
       car.make.toLowerCase().includes(searchTerm) ||
       car.model.toLowerCase().includes(searchTerm) ||
       car.description.toLowerCase().includes(searchTerm) ||
       car.city.toLowerCase().includes(searchTerm)
   );
+
+  if (city) {
+    filtered = filtered.filter((car) => car.city === city);
+  }
+
+  return filtered;
 };
 
 export const getCarById = (id: string) => {

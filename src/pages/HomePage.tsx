@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/layout/Header';
 import Navigation from '@/components/layout/Navigation';
@@ -58,6 +57,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   
   const [currentCategory, setCurrentCategory] = useState('shopping');
   const [currentSubCategory, setCurrentSubCategory] = useState<string | undefined>(undefined);
+  const [selectedCity, setSelectedCity] = useState('');
   
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   
@@ -79,34 +79,34 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     setIsLoggedIn(isAuthenticated());
   }, []);
 
-  // Fetch data based on the current category
+  // Fetch data based on the current category and selected city
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       
       try {
         if (currentCategory === 'shopping' || currentCategory === 'all') {
-          const data = await getProducts(currentSubCategory);
+          const data = await getProducts(currentSubCategory, selectedCity);
           setProductsData(data);
         }
         
         if (currentCategory === 'real-estate' || currentCategory === 'all') {
-          const data = await getRealEstate(currentSubCategory);
+          const data = await getRealEstate(currentSubCategory, selectedCity);
           setRealEstateData(data);
         }
         
         if (currentCategory === 'restaurants' || currentCategory === 'all') {
-          const data = await getRestaurants();
+          const data = await getRestaurants(selectedCity);
           setRestaurantsData(data);
         }
         
         if (currentCategory === 'cars' || currentCategory === 'all') {
-          const data = await getCars(currentSubCategory);
+          const data = await getCars(currentSubCategory, selectedCity);
           setCarsData(data);
         }
         
         if (currentCategory === 'discounts' || currentCategory === 'all') {
-          const data = await getOffers();
+          const data = await getOffers(selectedCity);
           setOffersData(data);
         }
       } catch (error) {
@@ -117,25 +117,37 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         }
         
         if (currentCategory === 'real-estate' || currentCategory === 'all') {
-          setRealEstateData(currentSubCategory ? 
-            getMockRealEstateByType(currentSubCategory as 'rent' | 'sale') : 
-            mockRealEstate
-          );
+          if (currentSubCategory) {
+            const properties = getMockRealEstateByTypeAndCity(currentSubCategory as 'rent' | 'sale', selectedCity);
+            setRealEstateData(properties);
+          } else {
+            const properties = selectedCity ? getRealEstateByCity(selectedCity) : mockRealEstate;
+            setRealEstateData(properties);
+          }
         }
         
         if (currentCategory === 'restaurants' || currentCategory === 'all') {
-          setRestaurantsData(mockRestaurants);
+          const restaurants = selectedCity 
+            ? mockRestaurants.filter(r => r.city === selectedCity)
+            : mockRestaurants;
+          setRestaurantsData(restaurants);
         }
         
         if (currentCategory === 'cars' || currentCategory === 'all') {
-          setCarsData(currentSubCategory ? 
-            getMockCarsByType(currentSubCategory as 'rent' | 'sale') : 
-            mockCars
-          );
+          if (currentSubCategory) {
+            const cars = getMockCarsByTypeAndCity(currentSubCategory as 'rent' | 'sale', selectedCity);
+            setCarsData(cars);
+          } else {
+            const cars = selectedCity ? getCarsByCity(selectedCity) : mockCars;
+            setCarsData(cars);
+          }
         }
         
         if (currentCategory === 'discounts' || currentCategory === 'all') {
-          setOffersData(mockProducts.filter(product => product.discount > 0));
+          const products = mockProducts.filter(product => product.discount > 0);
+          setOffersData(selectedCity 
+            ? products.filter(p => p.city === selectedCity) 
+            : products);
         }
       } finally {
         setIsLoading(false);
@@ -143,12 +155,16 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     };
     
     fetchData();
-  }, [currentCategory, currentSubCategory]);
+  }, [currentCategory, currentSubCategory, selectedCity]);
 
   const handleSelectCategory = (category: string, subCategory?: string) => {
     setCurrentCategory(category);
     setCurrentSubCategory(subCategory);
     setSearchQuery('');
+  };
+
+  const handleCityChange = (city: string) => {
+    setSelectedCity(city);
   };
 
   const handleViewProductDetails = (product: Product) => {
@@ -257,31 +273,34 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
       return;
     }
     
-    // For a real implementation, we'd use a search API endpoint
-    // Here, we'll just search through the currently loaded data
+    // Filter by search query and selected city
     const searchResults = [
       ...productsData.filter(p => 
-        p.name.toLowerCase().includes(query.toLowerCase()) || 
+        (p.name.toLowerCase().includes(query.toLowerCase()) || 
         p.description.toLowerCase().includes(query.toLowerCase()) ||
-        p.city.toLowerCase().includes(query.toLowerCase())
+        p.city.toLowerCase().includes(query.toLowerCase())) &&
+        (!selectedCity || p.city === selectedCity)
       ),
       ...realEstateData.filter(r => 
-        r.title.toLowerCase().includes(query.toLowerCase()) || 
+        (r.title.toLowerCase().includes(query.toLowerCase()) || 
         r.description.toLowerCase().includes(query.toLowerCase()) ||
         r.city.toLowerCase().includes(query.toLowerCase()) ||
-        r.location.toLowerCase().includes(query.toLowerCase())
+        r.location.toLowerCase().includes(query.toLowerCase())) &&
+        (!selectedCity || r.city === selectedCity)
       ),
       ...restaurantsData.filter(r => 
-        r.name.toLowerCase().includes(query.toLowerCase()) || 
+        (r.name.toLowerCase().includes(query.toLowerCase()) || 
         r.description.toLowerCase().includes(query.toLowerCase()) ||
         r.city.toLowerCase().includes(query.toLowerCase()) ||
-        (r.cuisine && r.cuisine.some(c => c.toLowerCase().includes(query.toLowerCase())))
+        (r.cuisine && r.cuisine.some(c => c.toLowerCase().includes(query.toLowerCase())))) &&
+        (!selectedCity || r.city === selectedCity)
       ),
       ...carsData.filter(c => 
-        c.make.toLowerCase().includes(query.toLowerCase()) || 
+        (c.make.toLowerCase().includes(query.toLowerCase()) || 
         c.model.toLowerCase().includes(query.toLowerCase()) ||
         c.description.toLowerCase().includes(query.toLowerCase()) ||
-        c.city.toLowerCase().includes(query.toLowerCase())
+        c.city.toLowerCase().includes(query.toLowerCase())) &&
+        (!selectedCity || c.city === selectedCity)
       )
     ];
     
@@ -646,6 +665,8 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         onSelectCategory={handleSelectCategory}
         currentCategory={currentCategory}
         currentSubCategory={currentSubCategory}
+        selectedCity={selectedCity}
+        onCityChange={handleCityChange}
       />
       
       <main className="flex-grow">
@@ -716,6 +737,28 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
       />
     </div>
   );
+};
+
+// Helper functions for mock data filtering with city support
+const getMockCarsByTypeAndCity = (type: 'rent' | 'sale', city: string) => {
+  let filtered = mockCars.filter((car) => car.type === type);
+  if (city) {
+    filtered = filtered.filter((car) => car.city === city);
+  }
+  return filtered;
+};
+
+const getRealEstateByCity = (city: string) => {
+  if (!city) return mockRealEstate;
+  return mockRealEstate.filter((property) => property.city === city);
+};
+
+const getMockRealEstateByTypeAndCity = (type: 'rent' | 'sale', city: string) => {
+  let filtered = mockRealEstate.filter((property) => property.type === type);
+  if (city) {
+    filtered = filtered.filter((property) => property.city === city);
+  }
+  return filtered;
 };
 
 export default HomePage;
