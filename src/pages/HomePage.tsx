@@ -761,6 +761,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         currentCategory={currentCategory}
         currentSubCategory={currentSubCategory}
         selectedCity={selectedCity}
+        onCityChange={handleCityChange}
       />
       
       <main className="flex-grow">
