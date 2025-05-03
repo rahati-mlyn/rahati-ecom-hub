@@ -1,4 +1,3 @@
-
 import { Car } from "@/types/car";
 import { generateId } from "@/lib/utils";
 
@@ -124,51 +123,4 @@ export const searchCars = (query: string) => {
 
 export const getCarById = (id: string) => {
   return cars.find((car) => car.id === id);
-};
-
-export const getCarsByCity = (city: string) => {
-  // Return all cars if city is "all" or empty
-  if (!city || city === 'all') {
-    return cars;
-  }
-  
-  // Map city ID to Arabic name
-  const cityNameMap = {
-    'nouakchott': 'نواكشوط',
-    'nouadhibou': 'نواذيبو',
-    'rosso': 'روصو',
-    'kiffa': 'كيفة',
-    'atar': 'عطار',
-    'akjoujt': 'أكجوجت'
-  };
-  
-  const cityName = cityNameMap[city as keyof typeof cityNameMap] || '';
-  
-  return cars.filter((car) => car.city === cityName);
-};
-
-export const getFilteredCars = (type?: 'rent' | 'sale', city?: string) => {
-  let filteredCars = [...cars];
-  
-  // Filter by type if specified
-  if (type) {
-    filteredCars = filteredCars.filter((car) => car.type === type);
-  }
-  
-  // Filter by city if specified
-  if (city && city !== 'all') {
-    const cityNameMap = {
-      'nouakchott': 'نواكشوط',
-      'nouadhibou': 'نواذيبو',
-      'rosso': 'روصو',
-      'kiffa': 'كيفة',
-      'atar': 'عطار',
-      'akjoujt': 'أكجوجت'
-    };
-    
-    const cityName = cityNameMap[city as keyof typeof cityNameMap] || '';
-    filteredCars = filteredCars.filter((car) => car.city === cityName);
-  }
-  
-  return filteredCars;
 };
