@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/layout/Header';
 import Navigation from '@/components/layout/Navigation';
@@ -24,9 +23,17 @@ import { MenuItem } from '@/types/restaurant';
 
 // Import the mock data as fallback
 import { products as mockProducts, getProductsByCategory as getMockProductsByCategory } from '@/data/products';
-import { realEstateListings as mockRealEstate, getRealEstateByType as getMockRealEstateByType } from '@/data/realEstate';
+import { 
+  realEstateListings as mockRealEstate, 
+  getRealEstateByType as getMockRealEateByType,
+  getFilteredRealEstate
+} from '@/data/realEstate';
 import { restaurants as mockRestaurants } from '@/data/restaurants';
-import { cars as mockCars, getCarsByType as getMockCarsByType } from '@/data/cars';
+import { 
+  cars as mockCars, 
+  getCarsByType as getMockCarsByType,
+  getFilteredCars
+} from '@/data/cars';
 
 // Import API services
 import {
@@ -58,6 +65,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   
   const [currentCategory, setCurrentCategory] = useState('shopping');
   const [currentSubCategory, setCurrentSubCategory] = useState<string | undefined>(undefined);
+  const [selectedCity, setSelectedCity] = useState('all'); // Default to all cities
   
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   
@@ -74,68 +82,146 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
+  // Map for city names
+  const cityNameMap = {
+    'nouakchott': 'نواكشوط',
+    'nouadhibou': 'نواذيبو',
+    'rosso': 'روصو',
+    'kiffa': 'كيفة',
+    'atar': 'عطار',
+    'akjoujt': 'أكجوجت'
+  };
+
   // Check if user is logged in on component mount
   useEffect(() => {
     setIsLoggedIn(isAuthenticated());
   }, []);
 
-  // Fetch data based on the current category
+  // Fetch data based on the current category and city
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       
       try {
         if (currentCategory === 'shopping' || currentCategory === 'all') {
+          // In a real app, you'd pass both parameters to API
           const data = await getProducts(currentSubCategory);
-          setProductsData(data);
+          
+          // Filter by city (would normally be done on server)
+          if (selectedCity !== 'all') {
+            const cityName = cityNameMap[selectedCity as keyof typeof cityNameMap];
+            setProductsData(data.filter(product => product.city === cityName));
+          } else {
+            setProductsData(data);
+          }
         }
         
         if (currentCategory === 'real-estate' || currentCategory === 'all') {
-          const data = await getRealEstate(currentSubCategory);
+          // Use our new filtered function
+          let data;
+          try {
+            data = await getRealEstate(currentSubCategory as any);
+            
+            if (selectedCity !== 'all') {
+              const cityName = cityNameMap[selectedCity as keyof typeof cityNameMap];
+              data = data.filter(property => property.city === cityName);
+            }
+          } catch (error) {
+            // Fallback to mock data with filtering
+            data = getFilteredRealEstate(
+              currentSubCategory as 'rent' | 'sale' | undefined, 
+              selectedCity
+            );
+          }
           setRealEstateData(data);
         }
         
         if (currentCategory === 'restaurants' || currentCategory === 'all') {
-          const data = await getRestaurants();
+          let data = await getRestaurants();
+          
+          // Filter restaurants by city
+          if (selectedCity !== 'all') {
+            const cityName = cityNameMap[selectedCity as keyof typeof cityNameMap];
+            data = data.filter(restaurant => restaurant.city === cityName);
+          }
           setRestaurantsData(data);
         }
         
         if (currentCategory === 'cars' || currentCategory === 'all') {
-          const data = await getCars(currentSubCategory);
+          // Use our new filtered function
+          let data;
+          try {
+            data = await getCars(currentSubCategory as any);
+            
+            if (selectedCity !== 'all') {
+              const cityName = cityNameMap[selectedCity as keyof typeof cityNameMap];
+              data = data.filter(car => car.city === cityName);
+            }
+          } catch (error) {
+            // Fallback to mock data with filtering
+            data = getFilteredCars(
+              currentSubCategory as 'rent' | 'sale' | undefined, 
+              selectedCity
+            );
+          }
           setCarsData(data);
         }
         
         if (currentCategory === 'discounts' || currentCategory === 'all') {
-          const data = await getOffers();
+          let data = await getOffers();
+          
+          // Filter offers by city
+          if (selectedCity !== 'all') {
+            const cityName = cityNameMap[selectedCity as keyof typeof cityNameMap];
+            data = data.filter(product => product.city === cityName);
+          }
           setOffersData(data);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
         // Fallback to mock data if API fails
         if (currentCategory === 'shopping' || currentCategory === 'all') {
-          setProductsData(getMockProductsByCategory(currentCategory, currentSubCategory));
+          let productsFiltered = getMockProductsByCategory(currentCategory, currentSubCategory);
+          
+          if (selectedCity !== 'all') {
+            const cityName = cityNameMap[selectedCity as keyof typeof cityNameMap];
+            productsFiltered = productsFiltered.filter(product => product.city === cityName);
+          }
+          setProductsData(productsFiltered);
         }
         
         if (currentCategory === 'real-estate' || currentCategory === 'all') {
-          setRealEstateData(currentSubCategory ? 
-            getMockRealEstateByType(currentSubCategory as 'rent' | 'sale') : 
-            mockRealEstate
-          );
+          setRealEstateData(getFilteredRealEstate(
+            currentSubCategory as 'rent' | 'sale' | undefined, 
+            selectedCity
+          ));
         }
         
         if (currentCategory === 'restaurants' || currentCategory === 'all') {
-          setRestaurantsData(mockRestaurants);
+          let restaurantsFiltered = [...mockRestaurants];
+          
+          if (selectedCity !== 'all') {
+            const cityName = cityNameMap[selectedCity as keyof typeof cityNameMap];
+            restaurantsFiltered = restaurantsFiltered.filter(restaurant => restaurant.city === cityName);
+          }
+          setRestaurantsData(restaurantsFiltered);
         }
         
         if (currentCategory === 'cars' || currentCategory === 'all') {
-          setCarsData(currentSubCategory ? 
-            getMockCarsByType(currentSubCategory as 'rent' | 'sale') : 
-            mockCars
-          );
+          setCarsData(getFilteredCars(
+            currentSubCategory as 'rent' | 'sale' | undefined, 
+            selectedCity
+          ));
         }
         
         if (currentCategory === 'discounts' || currentCategory === 'all') {
-          setOffersData(mockProducts.filter(product => product.discount > 0));
+          let offersFiltered = mockProducts.filter(product => product.discount > 0);
+          
+          if (selectedCity !== 'all') {
+            const cityName = cityNameMap[selectedCity as keyof typeof cityNameMap];
+            offersFiltered = offersFiltered.filter(product => product.city === cityName);
+          }
+          setOffersData(offersFiltered);
         }
       } finally {
         setIsLoading(false);
@@ -143,12 +229,30 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     };
     
     fetchData();
-  }, [currentCategory, currentSubCategory]);
+  }, [currentCategory, currentSubCategory, selectedCity]);
 
   const handleSelectCategory = (category: string, subCategory?: string) => {
     setCurrentCategory(category);
     setCurrentSubCategory(subCategory);
     setSearchQuery('');
+  };
+
+  const handleCityChange = (city: string) => {
+    setSelectedCity(city);
+    if (city !== 'all') {
+      const cityName = cityNameMap[city as keyof typeof cityNameMap] || '';
+      toast({
+        title: "تم تغيير المدينة",
+        description: `تم تعيين المدينة إلى: ${cityName}`,
+        duration: 2000,
+      });
+    } else {
+      toast({
+        title: "تم تغيير المدينة",
+        description: "تم عرض جميع المدن",
+        duration: 2000,
+      });
+    }
   };
 
   const handleViewProductDetails = (product: Product) => {
@@ -258,8 +362,8 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     }
     
     // For a real implementation, we'd use a search API endpoint
-    // Here, we'll just search through the currently loaded data
-    const searchResults = [
+    // Here, we'll just search through the currently loaded data and filter by city if needed
+    let searchResults = [
       ...productsData.filter(p => 
         p.name.toLowerCase().includes(query.toLowerCase()) || 
         p.description.toLowerCase().includes(query.toLowerCase()) ||
@@ -284,6 +388,14 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         c.city.toLowerCase().includes(query.toLowerCase())
       )
     ];
+    
+    // Apply city filter to search results if a city is selected
+    if (selectedCity !== 'all') {
+      const cityName = cityNameMap[selectedCity as keyof typeof cityNameMap] || '';
+      searchResults = searchResults.filter(item => 
+        'city' in item && item.city === cityName
+      );
+    }
     
     setFilteredItems(searchResults);
   };
@@ -639,6 +751,8 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         onOpenSidebar={() => setIsSidebarOpen(true)} 
         onOpenCart={() => setIsCartOpen(true)}
         onSearch={handleSearch}
+        onCityChange={handleCityChange}
+        selectedCity={selectedCity}
         cartItems={cartItems}
       />
       
@@ -646,6 +760,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         onSelectCategory={handleSelectCategory}
         currentCategory={currentCategory}
         currentSubCategory={currentSubCategory}
+        selectedCity={selectedCity}
       />
       
       <main className="flex-grow">

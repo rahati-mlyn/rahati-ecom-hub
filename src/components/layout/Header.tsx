@@ -5,19 +5,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { CartItem } from '@/types/cart';
+import CitySelector from '@/components/ui/CitySelector';
 
 interface HeaderProps {
   onOpenSidebar: () => void;
   onOpenCart: () => void;
   onSearch: (query: string) => void;
-  cartItems?: CartItem[]; // Make cartItems optional
+  onCityChange: (city: string) => void;
+  selectedCity: string;
+  cartItems?: CartItem[];
 }
 
 const Header: React.FC<HeaderProps> = ({ 
   onOpenSidebar, 
   onOpenCart, 
-  onSearch, 
-  cartItems = [] // Provide a default empty array
+  onSearch,
+  onCityChange,
+  selectedCity,
+  cartItems = []
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
@@ -36,14 +41,19 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="bg-rahati-purple text-white sticky top-0 z-50 border-b border-rahati-yellow/50">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div className="container mx-auto px-4 py-3 flex flex-col sm:flex-row items-center gap-3">
         {/* Logo */}
         <div className="text-2xl font-bold">
           <span className="text-rahati-yellow">راحتي</span>
         </div>
         
+        {/* City selector */}
+        <div className="flex-shrink-0 w-full sm:w-auto sm:mr-4">
+          <CitySelector selectedCity={selectedCity} onCityChange={onCityChange} />
+        </div>
+        
         {/* Search */}
-        <form onSubmit={handleSearch} className="flex-grow mx-4 max-w-2xl">
+        <form onSubmit={handleSearch} className="flex-grow mx-0 sm:mx-4 w-full sm:w-auto max-w-2xl">
           <div className="relative flex">
             <Input
               type="text"

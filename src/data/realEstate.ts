@@ -1,3 +1,4 @@
+
 import { RealEstate } from "@/types/realEstate";
 import { generateId } from "@/lib/utils";
 
@@ -123,4 +124,51 @@ export const searchRealEstate = (query: string) => {
 
 export const getRealEstateById = (id: string) => {
   return realEstateListings.find((property) => property.id === id);
+};
+
+export const getRealEstateByCity = (city: string) => {
+  // Return all properties if city is "all" or empty
+  if (!city || city === 'all') {
+    return realEstateListings;
+  }
+  
+  // Map city ID to Arabic name
+  const cityNameMap = {
+    'nouakchott': 'نواكشوط',
+    'nouadhibou': 'نواذيبو',
+    'rosso': 'روصو',
+    'kiffa': 'كيفة',
+    'atar': 'عطار',
+    'akjoujt': 'أكجوجت'
+  };
+  
+  const cityName = cityNameMap[city as keyof typeof cityNameMap] || '';
+  
+  return realEstateListings.filter((property) => property.city === cityName);
+};
+
+export const getFilteredRealEstate = (type?: 'rent' | 'sale', city?: string) => {
+  let filteredProperties = [...realEstateListings];
+  
+  // Filter by type if specified
+  if (type) {
+    filteredProperties = filteredProperties.filter((property) => property.type === type);
+  }
+  
+  // Filter by city if specified
+  if (city && city !== 'all') {
+    const cityNameMap = {
+      'nouakchott': 'نواكشوط',
+      'nouadhibou': 'نواذيبو',
+      'rosso': 'روصو',
+      'kiffa': 'كيفة',
+      'atar': 'عطار',
+      'akjoujt': 'أكجوجت'
+    };
+    
+    const cityName = cityNameMap[city as keyof typeof cityNameMap] || '';
+    filteredProperties = filteredProperties.filter((property) => property.city === cityName);
+  }
+  
+  return filteredProperties;
 };

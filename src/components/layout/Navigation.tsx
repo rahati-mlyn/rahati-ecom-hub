@@ -16,13 +16,17 @@ interface NavigationProps {
   onSelectCategory: (category: string, subCategory?: string) => void;
   currentCategory: string;
   currentSubCategory?: string;
+  selectedCity: string;
 }
 
 const Navigation: React.FC<NavigationProps> = ({
   onSelectCategory,
   currentCategory,
   currentSubCategory,
+  selectedCity,
 }) => {
+  const showCityFilter = selectedCity !== 'all' && selectedCity !== '';
+
   return (
     <div className="sticky top-0 z-10 bg-white shadow-sm border-b">
       <div className="container mx-auto flex justify-center overflow-auto">
@@ -70,6 +74,20 @@ const Navigation: React.FC<NavigationProps> = ({
           </TabsList>
         </Tabs>
       </div>
+      
+      {showCityFilter && (
+        <div className="bg-rahati-yellow/10 py-1 px-4">
+          <div className="container mx-auto text-center text-sm">
+            <span className="text-rahati-purple font-medium">تصفية النتائج حسب مدينة: </span>
+            <span className="font-bold">{selectedCity === 'nouakchott' ? 'نواكشوط' : 
+              selectedCity === 'nouadhibou' ? 'نواذيبو' : 
+              selectedCity === 'rosso' ? 'روصو' : 
+              selectedCity === 'kiffa' ? 'كيفة' : 
+              selectedCity === 'atar' ? 'عطار' : 
+              selectedCity === 'akjoujt' ? 'أكجوجت' : ''}</span>
+          </div>
+        </div>
+      )}
       
       {currentCategory === 'shopping' && (
         <div className="border-t bg-gray-50">
@@ -154,6 +172,7 @@ const Navigation: React.FC<NavigationProps> = ({
         </div>
       )}
       
+      {/* real-estate subcategories */}
       {currentCategory === 'real-estate' && (
         <div className="border-t bg-gray-50">
           <div className="container mx-auto overflow-auto">
@@ -198,6 +217,7 @@ const Navigation: React.FC<NavigationProps> = ({
         </div>
       )}
       
+      {/* cars subcategories */}
       {currentCategory === 'cars' && (
         <div className="border-t bg-gray-50">
           <div className="container mx-auto overflow-auto">
