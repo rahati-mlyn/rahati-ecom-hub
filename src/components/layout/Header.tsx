@@ -40,7 +40,7 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="bg-rahati-purple text-white sticky top-0 z-50 border-b border-rahati-yellow/50">
+    <header className="bg-rahati-purple dark:bg-gray-900 text-white sticky top-0 z-50 border-b border-rahati-yellow/50 dark:border-gray-800">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <div className="text-2xl font-bold">
@@ -53,7 +53,7 @@ const Header: React.FC<HeaderProps> = ({
             <Input
               type="text"
               placeholder="البحث عن"
-              className="w-full border-rahati-yellow/50 bg-white/10 placeholder:text-white/70 text-white"
+              className="w-full border-rahati-yellow/50 dark:border-gray-700 bg-white/10 dark:bg-black/20 placeholder:text-white/70 text-white"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               dir="rtl"
@@ -74,15 +74,15 @@ const Header: React.FC<HeaderProps> = ({
             isDarkMode={isDarkMode}
             onToggle={onToggleDarkMode}
           />
-          <Button variant="ghost" size="icon" onClick={onOpenCart} className="hover:bg-white/10 relative">
+          <Button variant="ghost" size="icon" onClick={onOpenCart} className="hover:bg-white/10 dark:hover:bg-white/5 relative">
             <ShoppingCart className="h-5 w-5" />
             {totalItems > 0 && (
-              <span className="absolute -top-2 -right-2 bg-rahati-yellow text-rahati-dark rounded-full text-xs w-5 h-5 flex items-center justify-center">
+              <span className="absolute -top-2 -right-2 bg-rahati-yellow text-rahati-dark dark:bg-yellow-400 dark:text-gray-900 rounded-full text-xs w-5 h-5 flex items-center justify-center">
                 {totalItems}
               </span>
             )}
           </Button>
-          <Button variant="ghost" size="icon" onClick={onOpenSidebar} className="hover:bg-white/10">
+          <Button variant="ghost" size="icon" onClick={onOpenSidebar} className="hover:bg-white/10 dark:hover:bg-white/5">
             <Menu className="h-5 w-5" />
           </Button>
         </div>

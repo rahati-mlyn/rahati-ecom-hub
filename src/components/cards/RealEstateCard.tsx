@@ -17,8 +17,8 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({
   onViewDetails
 }) => {
   return (
-    <Card className="overflow-hidden card-hover border border-gray-200">
-      <div className="aspect-video relative overflow-hidden bg-gray-100">
+    <Card className="overflow-hidden card-hover border border-gray-200 dark:border-gray-800 dark:bg-gray-900 dark:text-white">
+      <div className="aspect-video relative overflow-hidden bg-gray-100 dark:bg-gray-800">
         <img 
           src={property.image} 
           alt={property.title} 
@@ -35,23 +35,23 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({
       </div>
       <CardContent className="p-4 text-right">
         <h3 
-          className="font-semibold text-lg truncate cursor-pointer hover:text-rahati-purple transition-colors"
+          className="font-semibold text-lg truncate cursor-pointer hover:text-rahati-purple dark:hover:text-purple-300 transition-colors"
           onClick={() => onViewDetails(property)}
         >
           {property.title}
         </h3>
         <div className="flex items-center justify-between mt-1">
-          <span className="font-medium text-rahati-purple">
+          <span className="font-medium text-rahati-purple dark:text-purple-300">
             {formatPrice(property.price)}
             {property.type === 'rent' && '/شهريًا'}
           </span>
-          <div className="flex items-center gap-1 text-muted-foreground">
+          <div className="flex items-center gap-1 text-muted-foreground dark:text-gray-300">
             <MapPin className="h-4 w-4" />
             <span className="text-sm">{property.city}</span>
           </div>
         </div>
         
-        <div className="flex gap-2 mt-2 text-sm text-muted-foreground">
+        <div className="flex gap-2 mt-2 text-sm text-muted-foreground dark:text-gray-400">
           <span>{property.area} م²</span>
           <span>•</span>
           <span>{property.bedrooms} غرف</span>
@@ -59,9 +59,9 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({
           <span>{property.bathrooms} حمام</span>
         </div>
         
-        <p className="text-muted-foreground text-sm mt-2 line-clamp-2">{property.description}</p>
+        <p className="text-muted-foreground dark:text-gray-300 text-sm mt-2 line-clamp-2">{property.description}</p>
         
-        <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground dark:text-gray-300">
           <Phone className="h-4 w-4" />
           <span dir="ltr" className="font-medium">{property.contactPhone}</span>
         </div>

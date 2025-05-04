@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/layout/Header';
 import Navigation from '@/components/layout/Navigation';
@@ -12,6 +11,8 @@ import LoginModal from '@/components/modals/LoginModal';
 import SignupModal from '@/components/modals/SignupModal';
 import LanguageModal from '@/components/modals/LanguageModal';
 import ProductDetailsModal from '@/components/modals/ProductDetailsModal';
+import CarDetailsModal from '@/components/modals/CarDetailsModal';
+import RealEstateDetailsModal from '@/components/modals/RealEstateDetailsModal';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
@@ -58,8 +59,8 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   const [selectedCar, setSelectedCar] = useState<Car | null>(null);
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [isProductDetailsModalOpen, setIsProductDetailsModalOpen] = useState(false);
-  const [isRealEstateModalOpen, setIsRealEstateModalOpen] = useState(false);
-  const [isCarModalOpen, setIsCarModalOpen] = useState(false);
+  const [isCarDetailsModalOpen, setIsCarDetailsModalOpen] = useState(false);
+  const [isRealEstateDetailsModalOpen, setIsRealEateDetailsModalOpen] = useState(false);
   const [isRestaurantModalOpen, setIsRestaurantModalOpen] = useState(false);
   
   const [currentCategory, setCurrentCategory] = useState('shopping');
@@ -189,12 +190,12 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
 
   const handleViewRealEstateDetails = (property: RealEstate) => {
     setSelectedRealEstate(property);
-    setIsRealEstateModalOpen(true);
+    setIsRealEstateDetailsModalOpen(true);
   };
 
   const handleViewCarDetails = (car: Car) => {
     setSelectedCar(car);
-    setIsCarModalOpen(true);
+    setIsCarDetailsModalOpen(true);
   };
 
   const handleViewRestaurantDetails = (restaurant: Restaurant) => {
@@ -683,7 +684,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   };
 
   return (
-    <div className={`min-h-screen bg-gray-50 flex flex-col ${isDarkMode ? 'dark' : ''}`}>
+    <div className={`min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col ${isDarkMode ? 'dark' : ''}`}>
       <Header 
         onOpenSidebar={() => setIsSidebarOpen(true)} 
         onOpenCart={() => setIsCartOpen(true)}
@@ -701,7 +702,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         onCityChange={handleCityChange}
       />
       
-      <main className="flex-grow">
+      <main className="flex-grow dark:text-white">
         {renderContent()}
       </main>
       
@@ -733,6 +734,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         onSendOrder={handleSendOrder}
       />
       
+      {/* Product Details Modal */}
       <ProductDetailsModal
         product={selectedProduct}
         isOpen={isProductDetailsModalOpen}
@@ -740,6 +742,20 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
         onAddToCart={handleAddToCart}
         similarProducts={getSimilarProducts(selectedProduct)}
         onViewDetails={handleViewProductDetails}
+      />
+      
+      {/* Car Details Modal */}
+      <CarDetailsModal
+        car={selectedCar}
+        isOpen={isCarDetailsModalOpen}
+        onClose={() => setIsCarDetailsModalOpen(false)}
+      />
+      
+      {/* Real Estate Details Modal */}
+      <RealEstateDetailsModal
+        property={selectedRealEstate}
+        isOpen={isRealEstateDetailsModalOpen}
+        onClose={() => setIsRealEstateDetailsModalOpen(false)}
       />
       
       <LoginModal 

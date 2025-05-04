@@ -34,15 +34,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const isNew = Date.now() - new Date(product.createdAt).getTime() < 7 * 24 * 60 * 60 * 1000;
+  
+  // Add a "best discount" indicator for products with discounts >= 20%
+  const isBestDiscount = product.discount >= 20;
 
   return (
     <>
       <Card 
-        className="overflow-hidden transition-all duration-300 hover:shadow-lg border border-gray-200 h-full bg-white hover:translate-y-[-5px]"
+        className="overflow-hidden transition-all duration-300 hover:shadow-lg border border-gray-200 h-full bg-white dark:bg-gray-900 dark:border-gray-800 hover:translate-y-[-5px]"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="aspect-square relative overflow-hidden bg-gradient-to-b from-gray-50 to-white group">
+        <div className="aspect-square relative overflow-hidden bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 group">
           <img 
             src={product.image} 
             alt={product.name} 
@@ -105,8 +108,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </div>
           </div>
           
-          {/* Product Badges - Removed sale tags */}
+          {/* Product Badges - Show best discount badge when applicable */}
           <div className="absolute top-2 left-2 flex flex-col gap-1">
+            {product.discount > 0 && (
+              <Badge className={`${isBestDiscount ? 'bg-red-500 text-white' : 'bg-rahati-yellow text-rahati-dark'} animate-fade-in`}>
+                {isBestDiscount ? 'أفضل خصم! ' : 'خصم '}{product.discount}%
+              </Badge>
+            )}
             {isNew && (
               <Badge className="bg-rahati-purple text-white animate-fade-in">
                 جديد
@@ -114,11 +122,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </div>
         </div>
-        <CardContent className="p-4 text-right">
+        <CardContent className="p-4 text-right dark:text-white">
           <div className="flex justify-between items-center">
-            <p className="text-xs text-gray-500">{new Date(product.createdAt).toLocaleDateString('ar-EG')}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(product.createdAt).toLocaleDateString('ar-EG')}</p>
             <h3 
-              className="font-semibold text-lg truncate cursor-pointer hover:text-rahati-purple transition-colors"
+              className="font-semibold text-lg truncate cursor-pointer hover:text-rahati-purple dark:hover:text-purple-300 transition-colors"
               onClick={() => onViewDetails(product)}
             >
               {product.name}
@@ -130,12 +138,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 {formatPrice(product.originalPrice)}
               </span>
             )}
-            <span className="font-medium text-rahati-purple">
+            <span className="font-medium text-rahati-purple dark:text-purple-300">
               {formatPrice(product.price)}
             </span>
-            <p className="text-sm bg-purple-50 text-rahati-purple px-2 py-0.5 rounded-full">{product.city}</p>
+            <p className="text-sm bg-purple-50 dark:bg-purple-900/30 text-rahati-purple dark:text-purple-300 px-2 py-0.5 rounded-full">{product.city}</p>
           </div>
-          <p className="text-muted-foreground text-sm mt-2 line-clamp-2">{product.description}</p>
+          <p className="text-muted-foreground dark:text-gray-300 text-sm mt-2 line-clamp-2">{product.description}</p>
         </CardContent>
         <CardFooter className="p-4 pt-0 gap-2">
           <Button 
@@ -148,7 +156,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <Button 
             variant="outline" 
             size="icon" 
-            className="hover:bg-rahati-purple/10 hover:text-rahati-purple transition-colors"
+            className="hover:bg-rahati-purple/10 hover:text-rahati-purple dark:hover:text-purple-300 transition-colors"
           >
             <Heart className="h-4 w-4" />
           </Button>
@@ -161,9 +169,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <DialogTitle className="sr-only">
             {product.name}
           </DialogTitle>
-          <div className="relative bg-white p-1 rounded-lg overflow-hidden">
+          <div className="relative bg-white dark:bg-gray-900 p-1 rounded-lg overflow-hidden">
             <DialogClose className="absolute top-2 right-2 z-10">
-              <Button variant="ghost" size="icon" className="hover:bg-black/10 rounded-full h-8 w-8">
+              <Button variant="ghost" size="icon" className="hover:bg-black/10 dark:hover:bg-white/10 rounded-full h-8 w-8">
                 <X className="h-4 w-4" />
               </Button>
             </DialogClose>

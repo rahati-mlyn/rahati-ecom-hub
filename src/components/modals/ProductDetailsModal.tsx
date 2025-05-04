@@ -105,17 +105,18 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
   };
 
   const isNew = Date.now() - new Date(product.createdAt).getTime() < 7 * 24 * 60 * 60 * 1000;
+  const isBestDiscount = product.discount >= 20; // Products with 20% or more discount are marked as best discount
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-5xl p-0 max-h-[90vh] overflow-y-auto bg-white">
+      <DialogContent className="sm:max-w-5xl p-0 max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 dark:text-white">
         <DialogTitle className="sr-only">{product.name}</DialogTitle>
         <DialogDescription className="sr-only">تفاصيل المنتج</DialogDescription>
         
-        <div className="sticky top-0 z-10 bg-white p-4 flex justify-between items-center border-b">
-          <h2 className="text-xl font-bold text-rahati-dark truncate flex-1 text-right">{product.name}</h2>
+        <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 p-4 flex justify-between items-center border-b dark:border-gray-800">
+          <h2 className="text-xl font-bold text-rahati-dark dark:text-white truncate flex-1 text-right">{product.name}</h2>
           <DialogClose>
-            <Button variant="ghost" size="icon" className="hover:bg-gray-100 rounded-full">
+            <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full">
               <X className="h-4 w-4" />
             </Button>
           </DialogClose>
@@ -124,7 +125,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
         <div className="grid md:grid-cols-7 gap-8 p-6">
           {/* Product Images Section - 4 columns on md screens */}
           <div className="md:col-span-4">
-            <div className="bg-gradient-to-b from-gray-50 to-white rounded-xl overflow-hidden aspect-square relative group shadow-sm">
+            <div className="bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 rounded-xl overflow-hidden aspect-square relative group shadow-sm">
               {/* Main Image */}
               <img 
                 src={productImages[activeImageIndex]} 
@@ -138,7 +139,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="absolute top-1/2 left-2 -translate-y-1/2 bg-white/70 hover:bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-1/2 left-2 -translate-y-1/2 bg-white/70 dark:bg-black/40 hover:bg-white dark:hover:bg-black/60 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={handlePrevImage}
                   >
                     <ArrowRight className="h-4 w-4" />
@@ -146,7 +147,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="absolute top-1/2 right-2 -translate-y-1/2 bg-white/70 hover:bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-1/2 right-2 -translate-y-1/2 bg-white/70 dark:bg-black/40 hover:bg-white dark:hover:bg-black/60 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={handleNextImage}
                   >
                     <ArrowLeft className="h-4 w-4" />
@@ -157,8 +158,8 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
               {/* Product Badges */}
               <div className="absolute top-2 left-2 flex flex-col gap-1">
                 {product.discount > 0 && (
-                  <Badge className="bg-rahati-yellow text-rahati-dark animate-fade-in">
-                    خصم {product.discount}%
+                  <Badge className={`${isBestDiscount ? 'bg-red-500' : 'bg-rahati-yellow text-rahati-dark'} animate-fade-in`}>
+                    {isBestDiscount ? 'أفضل خصم! ' : 'خصم '}{product.discount}%
                   </Badge>
                 )}
                 {isNew && (
@@ -195,13 +196,13 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
           {/* Product Info - 3 columns on md screens */}
           <div className="md:col-span-3 text-right flex flex-col">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-sm text-rahati-purple bg-purple-50 px-3 py-1 rounded-full">
+              <p className="text-sm text-rahati-purple bg-purple-50 dark:bg-purple-900/30 dark:text-purple-300 px-3 py-1 rounded-full">
                 {product.city}
               </p>
-              <p className="text-sm text-gray-500">{new Date(product.createdAt).toLocaleDateString('ar-EG')}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{new Date(product.createdAt).toLocaleDateString('ar-EG')}</p>
             </div>
 
-            <div className="mb-6 bg-gradient-to-r from-white to-purple-50 p-4 rounded-xl shadow-sm">
+            <div className="mb-6 bg-gradient-to-r from-white to-purple-50 dark:from-gray-800 dark:to-purple-900/20 p-4 rounded-xl shadow-sm">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   {product.originalPrice > 0 && (
@@ -209,14 +210,14 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                       {formatPrice(product.originalPrice)}
                     </span>
                   )}
-                  <span className="font-bold text-2xl text-rahati-purple">
+                  <span className="font-bold text-2xl text-rahati-purple dark:text-purple-300">
                     {formatPrice(product.price)}
                   </span>
                 </div>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Badge className="bg-green-100 text-green-800 hover:bg-green-100 hover:text-green-800 cursor-help">
+                      <Badge className="bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300 hover:bg-green-100 hover:text-green-800 dark:hover:bg-green-900/40 dark:hover:text-green-300 cursor-help">
                         {product.category}
                       </Badge>
                     </TooltipTrigger>
@@ -226,31 +227,31 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                   </Tooltip>
                 </TooltipProvider>
               </div>
-              <Badge variant="outline" className="text-gray-600">
+              <Badge variant="outline" className="text-gray-600 dark:text-gray-300 dark:border-gray-600">
                 {categoryLabels[product.subCategory as keyof typeof categoryLabels] || product.subCategory}
               </Badge>
             </div>
               
             <div className="flex-grow mb-6">
-              <h3 className="font-semibold text-gray-700 mb-2">الوصف:</h3>
-              <ScrollArea className="h-[120px] rounded-md border p-4 bg-gray-50">
-                <p className="text-gray-600 leading-relaxed">
+              <h3 className="font-semibold text-gray-700 dark:text-gray-200 mb-2">الوصف:</h3>
+              <ScrollArea className="h-[120px] rounded-md border p-4 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                   {product.description}
                 </p>
               </ScrollArea>
             </div>
               
             {product.storeId && (
-              <div className="bg-gradient-to-l from-white to-purple-50 p-4 rounded-xl mb-6 flex justify-between items-center shadow-sm">
+              <div className="bg-gradient-to-l from-white to-purple-50 dark:from-gray-800 dark:to-purple-900/20 p-4 rounded-xl mb-6 flex justify-between items-center shadow-sm">
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="text-rahati-purple hover:bg-purple-50"
+                  className="text-rahati-purple dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/30"
                   onClick={() => {/* Navigate to store */}}
                 >
                   عرض المتجر
                 </Button>
-                <p className="font-semibold text-rahati-dark flex items-center gap-1">
+                <p className="font-semibold text-rahati-dark dark:text-gray-200 flex items-center gap-1">
                   <span>المتجر:</span>
                   <span>{product.storeName || 'متجر'}</span>
                 </p>
@@ -259,7 +260,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
               
             <div className="flex gap-2 mt-3">
               <Button 
-                className="flex-1 bg-gradient-to-r from-rahati-purple to-purple-600 hover:opacity-90 transition-opacity shadow-md"
+                className="flex-1 bg-gradient-to-r from-rahati-purple to-purple-600 hover:opacity-90 transition-opacity shadow-md dark:text-white"
                 onClick={() => onAddToCart(product)}
               >
                 <ShoppingCart className="mr-2 h-4 w-4" />
@@ -267,7 +268,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
               </Button>
               <Button 
                 variant="outline" 
-                className="flex-1 border-green-500 text-green-600 hover:bg-green-50 transition-colors shadow-sm"
+                className="flex-1 border-green-500 text-green-600 dark:text-green-400 dark:border-green-700 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors shadow-sm"
                 onClick={handleContactStore}
               >
                 <MessagesSquare className="mr-2 h-4 w-4" />
@@ -278,14 +279,14 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
             <div className="flex gap-2 mt-2">
               <Button 
                 variant="outline" 
-                className="flex-1 transition-all duration-300 hover:border-rahati-purple hover:text-rahati-purple"
+                className="flex-1 transition-all duration-300 hover:border-rahati-purple hover:text-rahati-purple dark:hover:text-purple-300 dark:hover:border-purple-600"
               >
                 <Heart className="mr-2 h-4 w-4" />
                 <span>أضف للمفضلة</span>
               </Button>
               <Button 
                 variant="outline" 
-                className="flex-1 transition-all duration-300 hover:border-blue-500 hover:text-blue-500"
+                className="flex-1 transition-all duration-300 hover:border-blue-500 hover:text-blue-500 dark:hover:text-blue-400"
               >
                 <Share2 className="mr-2 h-4 w-4" />
                 <span>مشاركة</span>
@@ -296,11 +297,11 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
         
         {/* Similar Products - Enhanced Carousel */}
         {similarProducts.length > 0 && (
-          <div className="mt-2 p-6 pt-0 border-t">
+          <div className="mt-2 p-6 pt-0 border-t dark:border-gray-800">
             <Tabs defaultValue="similar" className="w-full">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <label htmlFor="items-slider" className="text-sm text-gray-500">عدد العناصر:</label>
+                  <label htmlFor="items-slider" className="text-sm text-gray-500 dark:text-gray-400">عدد العناصر:</label>
                   <Slider
                     id="items-slider"
                     defaultValue={[itemsPerView]}
@@ -310,9 +311,9 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                     className="w-24"
                     onValueChange={(values) => setItemsPerView(values[0])}
                   />
-                  <span className="text-xs text-gray-500">{itemsPerView}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{itemsPerView}</span>
                 </div>
-                <TabsList className="bg-gray-100">
+                <TabsList className="bg-gray-100 dark:bg-gray-800">
                   <TabsTrigger value="similar" className="text-sm">منتجات مشابهة</TabsTrigger>
                   <TabsTrigger value="subcategory" className="text-sm">حسب الفئة</TabsTrigger>
                 </TabsList>
@@ -340,8 +341,8 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                         </CarouselItem>
                       ))}
                     </CarouselContent>
-                    <CarouselPrevious className="-left-4 bg-white shadow-lg border border-gray-200" />
-                    <CarouselNext className="-right-4 bg-white shadow-lg border border-gray-200" />
+                    <CarouselPrevious className="-left-4 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700" />
+                    <CarouselNext className="-right-4 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700" />
                   </Carousel>
                 </div>
               </TabsContent>
@@ -351,7 +352,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                   <div className="space-y-6">
                     {Object.entries(groupedSimilarProducts).map(([category, products]) => (
                       <div key={category} className="space-y-3">
-                        <h4 className="text-right font-medium text-rahati-dark">
+                        <h4 className="text-right font-medium text-rahati-dark dark:text-white">
                           {categoryLabels[category as keyof typeof categoryLabels] || category}
                         </h4>
                         <Carousel
@@ -374,14 +375,14 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                               </CarouselItem>
                             ))}
                           </CarouselContent>
-                          <CarouselPrevious className="-left-4 bg-white shadow-lg border border-gray-200" />
-                          <CarouselNext className="-right-4 bg-white shadow-lg border border-gray-200" />
+                          <CarouselPrevious className="-left-4 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700" />
+                          <CarouselNext className="-right-4 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700" />
                         </Carousel>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-center text-gray-500 py-4">لا توجد منتجات متاحة في هذه الفئة</p>
+                  <p className="text-center text-gray-500 dark:text-gray-400 py-4">لا توجد منتجات متاحة في هذه الفئة</p>
                 )}
               </TabsContent>
             </Tabs>
