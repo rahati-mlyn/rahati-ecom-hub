@@ -60,7 +60,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [isProductDetailsModalOpen, setIsProductDetailsModalOpen] = useState(false);
   const [isCarDetailsModalOpen, setIsCarDetailsModalOpen] = useState(false);
-  const [isRealEstateDetailsModalOpen, setIsRealEateDetailsModalOpen] = useState(false);
+  const [isRealEstateDetailsModalOpen, setIsRealEstateDetailsModalOpen] = useState(false);
   const [isRestaurantModalOpen, setIsRestaurantModalOpen] = useState(false);
   
   const [currentCategory, setCurrentCategory] = useState('shopping');

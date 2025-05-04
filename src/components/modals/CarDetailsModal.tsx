@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, Calendar, MapPin, Phone, ExternalLink, Share2, ArrowLeft, ArrowRight } from 'lucide-react';
+import { X, MapPin, Phone, ExternalLink, Share2, Calendar, ArrowLeft, ArrowRight, Fuel, Settings } from 'lucide-react';
 import { Dialog, DialogContent, DialogClose, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -72,7 +72,7 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
               <img 
                 src={carImages[activeImageIndex]} 
                 alt={`${car.make} ${car.model} - صورة ${activeImageIndex + 1}`} 
-                className="w-full h-full object-contain transition-all duration-500 group-hover:scale-105 p-4"
+                className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
               />
               
               {/* Image Navigation Controls */}
@@ -103,6 +103,14 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
                   {car.type === 'rent' ? 'للإيجار' : 'للبيع'}
                 </Badge>
               </div>
+              
+              {/* Location badge */}
+              <div className="absolute bottom-2 right-2">
+                <Badge variant="outline" className="bg-white/80 dark:bg-black/50 text-gray-700 dark:text-white backdrop-blur-sm">
+                  <MapPin className="h-3 w-3 mr-1" />
+                  {car.city}
+                </Badge>
+              </div>
             </div>
 
             {/* Thumbnails with active indicator */}
@@ -131,9 +139,9 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
               <p className="text-sm text-rahati-purple bg-purple-50 dark:bg-purple-900/30 dark:text-purple-300 px-3 py-1 rounded-full">
                 {car.city}
               </p>
-              <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-                <Calendar className="h-4 w-4" />
-                <span>{car.year}</span>
+              <div className="flex items-center gap-1">
+                <Calendar className="h-4 w-4 text-gray-500" />
+                <p className="text-sm text-gray-500 dark:text-gray-400">{car.year}</p>
               </div>
             </div>
 
@@ -143,39 +151,42 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
                   {formatPrice(car.price)}
                   {car.type === 'rent' && '/يوميًا'}
                 </span>
-                <div className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                  <span className="text-gray-600 dark:text-gray-300">{car.city}</span>
-                </div>
               </div>
               
               <div className="grid grid-cols-2 gap-2 mt-3">
-                <div className="bg-gray-50 dark:bg-gray-800 p-2 rounded">
+                <div className="bg-gray-50 dark:bg-gray-800 p-2 rounded text-center">
                   <p className="text-xs text-gray-500 dark:text-gray-400">المسافة المقطوعة</p>
                   <p className="font-medium">{car.mileage} كم</p>
                 </div>
-                <div className="bg-gray-50 dark:bg-gray-800 p-2 rounded">
+                <div className="bg-gray-50 dark:bg-gray-800 p-2 rounded text-center">
                   <p className="text-xs text-gray-500 dark:text-gray-400">ناقل الحركة</p>
                   <p className="font-medium">{car.transmission}</p>
-                </div>
-                <div className="bg-gray-50 dark:bg-gray-800 p-2 rounded">
-                  <p className="text-xs text-gray-500 dark:text-gray-400">اللون</p>
-                  <p className="font-medium">{car.color || 'غير محدد'}</p>
-                </div>
-                <div className="bg-gray-50 dark:bg-gray-800 p-2 rounded">
-                  <p className="text-xs text-gray-500 dark:text-gray-400">الوقود</p>
-                  <p className="font-medium">{car.fuelType || 'بنزين'}</p>
                 </div>
               </div>
             </div>
               
             <div className="flex-grow mb-6">
               <h3 className="font-semibold text-gray-700 dark:text-gray-200 mb-2">الوصف:</h3>
-              <ScrollArea className="h-[120px] rounded-md border p-4 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+              <ScrollArea className="h-[100px] rounded-md border p-4 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                   {car.description}
                 </p>
               </ScrollArea>
+            </div>
+            
+            {/* Additional details */}
+            <div className="mb-6">
+              <h3 className="font-semibold text-gray-700 dark:text-gray-200 mb-2">التفاصيل:</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-2 rounded">
+                  <span className="text-sm text-gray-500">نوع الوقود</span>
+                  <span className="font-medium">{car.fuelType || 'بنزين'}</span>
+                </div>
+                <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-2 rounded">
+                  <span className="text-sm text-gray-500">عدد المقاعد</span>
+                  <span className="font-medium">{car.seats || '5'}</span>
+                </div>
+              </div>
             </div>
               
             <div className="bg-gradient-to-l from-white to-purple-50 dark:from-gray-800 dark:to-purple-900/20 p-4 rounded-xl mb-6 flex justify-between items-center shadow-sm">

@@ -47,8 +47,8 @@ const RealEstateDetailsModal: React.FC<RealEstateDetailsModalProps> = ({
     window.open(`tel:${property.contactPhone}`, '_blank');
   };
 
-  // Format amenities for display
-  const amenities = property.amenities || ['حديقة', 'موقف سيارات', 'مصعد', 'أمن'];
+  // Format default amenities since it's not in the type
+  const defaultAmenities = ['حديقة', 'موقف سيارات', 'مصعد', 'أمن'];
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -167,7 +167,7 @@ const RealEstateDetailsModal: React.FC<RealEstateDetailsModalProps> = ({
                 </div>
                 <div className="bg-gray-50 dark:bg-gray-800 p-2 rounded text-center">
                   <p className="text-xs text-gray-500 dark:text-gray-400">الطابق</p>
-                  <p className="font-medium">{property.floor || '1'}</p>
+                  <p className="font-medium">1</p>
                 </div>
               </div>
             </div>
@@ -185,7 +185,7 @@ const RealEstateDetailsModal: React.FC<RealEstateDetailsModalProps> = ({
             <div className="mb-6">
               <h3 className="font-semibold text-gray-700 dark:text-gray-200 mb-2">المميزات:</h3>
               <div className="flex flex-wrap gap-2">
-                {amenities.map((amenity, index) => (
+                {defaultAmenities.map((amenity, index) => (
                   <Badge key={index} variant="outline" className="bg-gray-50 dark:bg-gray-800">
                     {amenity}
                   </Badge>

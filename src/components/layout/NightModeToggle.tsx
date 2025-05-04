@@ -17,13 +17,13 @@ const NightModeToggle: React.FC<NightModeToggleProps> = ({ isDarkMode, onToggle 
           <Toggle 
             pressed={isDarkMode}
             onPressedChange={onToggle}
-            className="rounded-full p-2 transition-colors hover:bg-white/10 dark:hover:bg-white/5"
+            className="rounded-full p-2 transition-all hover:bg-white/10 dark:hover:bg-white/5 hover:scale-110"
             aria-label={isDarkMode ? "تبديل للوضع النهاري" : "تبديل للوضع الليلي"}
           >
             {isDarkMode ? (
-              <Sun className="h-5 w-5 text-yellow-300" />
+              <Sun className="h-5 w-5 text-yellow-300 animate-pulse" />
             ) : (
-              <Moon className="h-5 w-5" />
+              <Moon className="h-5 w-5 transition-transform hover:rotate-12" />
             )}
           </Toggle>
         </TooltipTrigger>

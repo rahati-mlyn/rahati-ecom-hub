@@ -17,13 +17,12 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({
   onViewDetails
 }) => {
   return (
-    <Card className="overflow-hidden card-hover border border-gray-200 dark:border-gray-800 dark:bg-gray-900 dark:text-white">
-      <div className="aspect-video relative overflow-hidden bg-gray-100 dark:bg-gray-800">
+    <Card className="overflow-hidden card-hover border border-gray-200 dark:border-gray-800 dark:bg-gray-900 dark:text-white transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1">
+      <div className="aspect-video relative overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-pointer" onClick={() => onViewDetails(property)}>
         <img 
           src={property.image} 
           alt={property.title} 
           className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-          onClick={() => onViewDetails(property)}
         />
         <Badge 
           className={`absolute top-2 left-2 ${
@@ -32,6 +31,10 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({
         >
           {property.type === 'rent' ? 'للإيجار' : 'للبيع'}
         </Badge>
+        
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-4">
+          <span className="text-white text-sm font-medium">اضغط للتفاصيل</span>
+        </div>
       </div>
       <CardContent className="p-4 text-right">
         <h3 
@@ -68,7 +71,7 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({
       </CardContent>
       <CardFooter className="p-4 pt-0">
         <Button 
-          className="w-full bg-rahati-purple hover:bg-rahati-purple/90"
+          className="w-full bg-rahati-purple hover:bg-rahati-purple/90 transition-all duration-300 transform hover:scale-105"
           onClick={() => onViewDetails(property)}
         >
           <ExternalLink className="mr-2 h-4 w-4" />
