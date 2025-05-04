@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ShoppingBag, Building, Utensils, Car, Percent, Tv, Shirt, Sofa, Wrench, Package, MapPin } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -111,7 +110,7 @@ const Navigation: React.FC<NavigationProps> = ({
                       <SelectValue placeholder="جميع المدن" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
-                      <SelectItem value="">جميع المدن</SelectItem>
+                      <SelectItem value="all">جميع المدن</SelectItem>
                       {mauritanianCities.map((city) => (
                         <SelectItem key={city} value={city}>
                           {city}

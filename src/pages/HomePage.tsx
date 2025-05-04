@@ -160,7 +160,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   };
 
   const handleCityChange = (city: string) => {
-    setSelectedCity(city);
+    setSelectedCity(city === 'all' ? '' : city);
   };
 
   const handleViewProductDetails = (product: Product) => {
