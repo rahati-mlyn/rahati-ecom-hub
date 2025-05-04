@@ -38,11 +38,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <>
       <Card 
-        className="overflow-hidden transition-all duration-300 hover:shadow-lg border border-gray-200 h-full bg-white"
+        className="overflow-hidden transition-all duration-300 hover:shadow-lg border border-gray-200 h-full bg-white hover:translate-y-[-5px]"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="aspect-square relative overflow-hidden bg-gray-100 group">
+        <div className="aspect-square relative overflow-hidden bg-gradient-to-b from-gray-50 to-white group">
           <img 
             src={product.image} 
             alt={product.name} 
@@ -52,7 +52,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           
           {/* Quick Action Buttons */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
-            <div className="flex gap-2">
+            <div className="flex gap-2 animate-fade-in">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -107,7 +107,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
           
           {/* Product Badges */}
           <div className="absolute top-2 left-2 flex flex-col gap-1">
-            {/* Removed discount badge */}
+            {product.discount > 0 && (
+              <Badge className="bg-rahati-yellow text-rahati-dark animate-fade-in">
+                خصم {product.discount}%
+              </Badge>
+            )}
             {isNew && (
               <Badge className="bg-rahati-purple text-white animate-fade-in">
                 جديد
@@ -126,7 +130,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </h3>
           </div>
           <div className="flex items-center justify-between mt-1">
-            {product.originalPrice > 0 && (
+            {product.originalPrice > 0 && product.originalPrice > product.price && (
               <span className="text-muted-foreground line-through text-sm">
                 {formatPrice(product.originalPrice)}
               </span>
@@ -134,13 +138,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <span className="font-medium text-rahati-purple">
               {formatPrice(product.price)}
             </span>
-            <p className="text-sm text-rahati-purple bg-purple-50 px-2 py-0.5 rounded-full">{product.city}</p>
+            <p className="text-sm bg-purple-50 text-rahati-purple px-2 py-0.5 rounded-full">{product.city}</p>
           </div>
           <p className="text-muted-foreground text-sm mt-2 line-clamp-2">{product.description}</p>
         </CardContent>
         <CardFooter className="p-4 pt-0 gap-2">
           <Button 
-            className="flex-1 bg-rahati-purple hover:bg-rahati-purple/90"
+            className="flex-1 bg-gradient-to-r from-rahati-purple to-purple-600 hover:opacity-90 transition-opacity"
             onClick={() => onAddToCart(product)}
           >
             <ShoppingCart className="mr-2 h-4 w-4" />
@@ -149,7 +153,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <Button 
             variant="outline" 
             size="icon" 
-            className="hover:bg-rahati-purple/10 hover:text-rahati-purple"
+            className="hover:bg-rahati-purple/10 hover:text-rahati-purple transition-colors"
           >
             <Heart className="h-4 w-4" />
           </Button>

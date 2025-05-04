@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, ShoppingCart, Share2, Heart, MessagesSquare, ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogClose, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -104,9 +104,14 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
     'other': 'أخرى'
   };
 
+  const isNew = Date.now() - new Date(product.createdAt).getTime() < 7 * 24 * 60 * 60 * 1000;
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-4xl p-0 max-h-[90vh] overflow-y-auto bg-white">
+      <DialogContent className="sm:max-w-5xl p-0 max-h-[90vh] overflow-y-auto bg-white">
+        <DialogTitle className="sr-only">{product.name}</DialogTitle>
+        <DialogDescription className="sr-only">تفاصيل المنتج</DialogDescription>
+        
         <div className="sticky top-0 z-10 bg-white p-4 flex justify-between items-center border-b">
           <h2 className="text-xl font-bold text-rahati-dark truncate flex-1 text-right">{product.name}</h2>
           <DialogClose>
@@ -116,15 +121,15 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
           </DialogClose>
         </div>
           
-        <div className="grid md:grid-cols-7 gap-6 p-6">
+        <div className="grid md:grid-cols-7 gap-8 p-6">
           {/* Product Images Section - 4 columns on md screens */}
           <div className="md:col-span-4">
-            <div className="bg-gray-50 rounded-lg overflow-hidden aspect-square relative group">
+            <div className="bg-gradient-to-b from-gray-50 to-white rounded-xl overflow-hidden aspect-square relative group shadow-sm">
               {/* Main Image */}
               <img 
                 src={productImages[activeImageIndex]} 
                 alt={`${product.name} - صورة ${activeImageIndex + 1}`} 
-                className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+                className="w-full h-full object-contain transition-all duration-500 group-hover:scale-105 p-4"
               />
               
               {/* Image Navigation Controls */}
@@ -156,7 +161,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                     خصم {product.discount}%
                   </Badge>
                 )}
-                {Date.now() - new Date(product.createdAt).getTime() < 7 * 24 * 60 * 60 * 1000 && (
+                {isNew && (
                   <Badge className="bg-rahati-purple text-white animate-fade-in">
                     جديد
                   </Badge>
@@ -169,11 +174,11 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
 
             {/* Thumbnails with active indicator */}
             {productImages.length > 1 && (
-              <div className="flex gap-2 mt-3 justify-center">
+              <div className="flex gap-2 mt-4 justify-center">
                 {productImages.map((img, index) => (
                   <div 
                     key={`thumb-${index}`}
-                    className={`border-2 rounded-md overflow-hidden cursor-pointer transition-all w-16 h-16 hover-scale ${activeImageIndex === index ? 'border-rahati-purple ring-2 ring-purple-200' : 'border-transparent'}`}
+                    className={`border-2 rounded-lg overflow-hidden cursor-pointer transition-all w-16 h-16 hover:scale-105 ${activeImageIndex === index ? 'border-rahati-purple ring-2 ring-purple-200' : 'border-transparent'}`}
                     onClick={() => handleThumbnailClick(index)}
                   >
                     <img 
@@ -196,7 +201,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
               <p className="text-sm text-gray-500">{new Date(product.createdAt).toLocaleDateString('ar-EG')}</p>
             </div>
 
-            <div className="mb-4 bg-gray-50 p-3 rounded-lg">
+            <div className="mb-6 bg-gradient-to-r from-white to-purple-50 p-4 rounded-xl shadow-sm">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   {product.originalPrice > 0 && (
@@ -204,7 +209,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                       {formatPrice(product.originalPrice)}
                     </span>
                   )}
-                  <span className="font-bold text-xl text-rahati-purple">
+                  <span className="font-bold text-2xl text-rahati-purple">
                     {formatPrice(product.price)}
                   </span>
                 </div>
@@ -222,22 +227,21 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                 </TooltipProvider>
               </div>
               <Badge variant="outline" className="text-gray-600">
-                {product.subCategory === 'car-parts' ? 'غيار السيارات' :
-                 product.subCategory === 'electronics' ? 'الإلكترونيات' :
-                 product.subCategory === 'clothes' ? 'الملابس' :
-                 product.subCategory === 'home-goods' ? 'منتجات المنزل' : 'أخرى'}
+                {categoryLabels[product.subCategory as keyof typeof categoryLabels] || product.subCategory}
               </Badge>
             </div>
               
-            <div className="flex-grow">
+            <div className="flex-grow mb-6">
               <h3 className="font-semibold text-gray-700 mb-2">الوصف:</h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                {product.description}
-              </p>
+              <ScrollArea className="h-[120px] rounded-md border p-4 bg-gray-50">
+                <p className="text-gray-600 leading-relaxed">
+                  {product.description}
+                </p>
+              </ScrollArea>
             </div>
               
             {product.storeId && (
-              <div className="bg-gray-50 p-4 rounded-lg mb-4 flex justify-between items-center">
+              <div className="bg-gradient-to-l from-white to-purple-50 p-4 rounded-xl mb-6 flex justify-between items-center shadow-sm">
                 <Button 
                   variant="ghost" 
                   size="sm"
@@ -255,7 +259,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
               
             <div className="flex gap-2 mt-3">
               <Button 
-                className="flex-1 bg-rahati-purple hover:bg-rahati-purple/90"
+                className="flex-1 bg-gradient-to-r from-rahati-purple to-purple-600 hover:opacity-90 transition-opacity shadow-md"
                 onClick={() => onAddToCart(product)}
               >
                 <ShoppingCart className="mr-2 h-4 w-4" />
@@ -263,7 +267,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
               </Button>
               <Button 
                 variant="outline" 
-                className="flex-1 border-green-500 text-green-600 hover:bg-green-50"
+                className="flex-1 border-green-500 text-green-600 hover:bg-green-50 transition-colors shadow-sm"
                 onClick={handleContactStore}
               >
                 <MessagesSquare className="mr-2 h-4 w-4" />
@@ -272,11 +276,17 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
             </div>
             
             <div className="flex gap-2 mt-2">
-              <Button variant="outline" className="flex-1">
+              <Button 
+                variant="outline" 
+                className="flex-1 transition-all duration-300 hover:border-rahati-purple hover:text-rahati-purple"
+              >
                 <Heart className="mr-2 h-4 w-4" />
                 <span>أضف للمفضلة</span>
               </Button>
-              <Button variant="outline" className="flex-1">
+              <Button 
+                variant="outline" 
+                className="flex-1 transition-all duration-300 hover:border-blue-500 hover:text-blue-500"
+              >
                 <Share2 className="mr-2 h-4 w-4" />
                 <span>مشاركة</span>
               </Button>
@@ -308,7 +318,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                 </TabsList>
               </div>
               
-              <TabsContent value="similar" className="mt-0">
+              <TabsContent value="similar" className="mt-4">
                 <div className="relative">
                   <Carousel
                     opts={{
@@ -336,7 +346,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                 </div>
               </TabsContent>
               
-              <TabsContent value="subcategory" className="mt-0">
+              <TabsContent value="subcategory" className="mt-4">
                 {Object.entries(groupedSimilarProducts).length > 0 ? (
                   <div className="space-y-6">
                     {Object.entries(groupedSimilarProducts).map(([category, products]) => (
