@@ -5,19 +5,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { CartItem } from '@/types/cart';
+import NightModeToggle from './NightModeToggle';
 
 interface HeaderProps {
   onOpenSidebar: () => void;
   onOpenCart: () => void;
   onSearch: (query: string) => void;
   cartItems?: CartItem[]; // Make cartItems optional
+  isDarkMode: boolean;
+  onToggleDarkMode: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
   onOpenSidebar, 
   onOpenCart, 
   onSearch, 
-  cartItems = [] // Provide a default empty array
+  cartItems = [], // Provide a default empty array
+  isDarkMode,
+  onToggleDarkMode
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
@@ -65,6 +70,10 @@ const Header: React.FC<HeaderProps> = ({
         
         {/* Icons */}
         <div className="flex items-center gap-2">
+          <NightModeToggle 
+            isDarkMode={isDarkMode}
+            onToggle={onToggleDarkMode}
+          />
           <Button variant="ghost" size="icon" onClick={onOpenCart} className="hover:bg-white/10 relative">
             <ShoppingCart className="h-5 w-5" />
             {totalItems > 0 && (

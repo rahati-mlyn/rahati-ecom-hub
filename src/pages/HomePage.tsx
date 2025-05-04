@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/layout/Header';
 import Navigation from '@/components/layout/Navigation';
@@ -53,7 +54,13 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedRealEstate, setSelectedRealEstate] = useState<RealEstate | null>(null);
+  const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+  const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [isProductDetailsModalOpen, setIsProductDetailsModalOpen] = useState(false);
+  const [isRealEstateModalOpen, setIsRealEstateModalOpen] = useState(false);
+  const [isCarModalOpen, setIsCarModalOpen] = useState(false);
+  const [isRestaurantModalOpen, setIsRestaurantModalOpen] = useState(false);
   
   const [currentCategory, setCurrentCategory] = useState('shopping');
   const [currentSubCategory, setCurrentSubCategory] = useState<string | undefined>(undefined);
@@ -73,6 +80,9 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+
+  // Dark mode state
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Check if user is logged in on component mount
   useEffect(() => {
@@ -153,6 +163,15 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
     fetchData();
   }, [currentCategory, currentSubCategory, selectedCity]);
 
+  const handleToggleDarkMode = () => {
+    setIsDarkMode(prev => !prev);
+    if (!isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
+
   const handleSelectCategory = (category: string, subCategory?: string) => {
     setCurrentCategory(category);
     setCurrentSubCategory(subCategory);
@@ -166,6 +185,21 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   const handleViewProductDetails = (product: Product) => {
     setSelectedProduct(product);
     setIsProductDetailsModalOpen(true);
+  };
+
+  const handleViewRealEstateDetails = (property: RealEstate) => {
+    setSelectedRealEstate(property);
+    setIsRealEstateModalOpen(true);
+  };
+
+  const handleViewCarDetails = (car: Car) => {
+    setSelectedCar(car);
+    setIsCarModalOpen(true);
+  };
+
+  const handleViewRestaurantDetails = (restaurant: Restaurant) => {
+    setSelectedRestaurant(restaurant);
+    setIsRestaurantModalOpen(true);
   };
 
   const getSimilarProducts = (product: Product | null): Product[] => {
@@ -488,7 +522,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
                 <RealEstateCard 
                   key={property.id} 
                   property={property} 
-                  onViewDetails={() => {}}
+                  onViewDetails={() => handleViewRealEstateDetails(property)}
                 />
               ))}
             </div>
@@ -510,7 +544,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
                 <RealEstateCard 
                   key={property.id} 
                   property={property} 
-                  onViewDetails={() => {}}
+                  onViewDetails={() => handleViewRealEstateDetails(property)}
                 />
               ))}
             </div>
@@ -527,7 +561,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
             <RealEstateCard 
               key={property.id} 
               property={property} 
-              onViewDetails={() => {}}
+              onViewDetails={() => handleViewRealEstateDetails(property)}
             />
           ))}
         </div>
@@ -564,7 +598,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
                 <CarCard 
                   key={car.id} 
                   car={car} 
-                  onViewDetails={() => {}}
+                  onViewDetails={() => handleViewCarDetails(car)}
                 />
               ))}
             </div>
@@ -586,7 +620,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
                 <CarCard 
                   key={car.id} 
                   car={car} 
-                  onViewDetails={() => {}}
+                  onViewDetails={() => handleViewCarDetails(car)}
                 />
               ))}
             </div>
@@ -603,7 +637,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
             <CarCard 
               key={car.id} 
               car={car} 
-              onViewDetails={() => {}}
+              onViewDetails={() => handleViewCarDetails(car)}
             />
           ))}
         </div>
@@ -638,7 +672,7 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
             <RestaurantCardWrapper 
               key={restaurant.id} 
               restaurant={restaurant} 
-              onViewDetails={() => {}}
+              onViewDetails={() => handleViewRestaurantDetails(restaurant)}
               onAddToCart={handleAddMenuItemToCart}
               isLoggedIn={isLoggedIn}
             />
@@ -649,12 +683,14 @@ const HomePage: React.FC<HomePageProps> = ({ language, onLanguageChange }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className={`min-h-screen bg-gray-50 flex flex-col ${isDarkMode ? 'dark' : ''}`}>
       <Header 
         onOpenSidebar={() => setIsSidebarOpen(true)} 
         onOpenCart={() => setIsCartOpen(true)}
         onSearch={handleSearch}
         cartItems={cartItems}
+        isDarkMode={isDarkMode}
+        onToggleDarkMode={handleToggleDarkMode}
       />
       
       <Navigation 

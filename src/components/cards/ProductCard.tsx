@@ -105,13 +105,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </div>
           </div>
           
-          {/* Product Badges */}
+          {/* Product Badges - Removed sale tags */}
           <div className="absolute top-2 left-2 flex flex-col gap-1">
-            {product.discount > 0 && (
-              <Badge className="bg-rahati-yellow text-rahati-dark animate-fade-in">
-                خصم {product.discount}%
-              </Badge>
-            )}
             {isNew && (
               <Badge className="bg-rahati-purple text-white animate-fade-in">
                 جديد
