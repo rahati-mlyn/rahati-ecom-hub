@@ -1,13 +1,12 @@
+
 import React from 'react';
 import { ShoppingBag, Building, Utensils, Car, Percent, Tv, Shirt, Sofa, Wrench, Package, MapPin } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
 import {
   Select,
@@ -100,31 +99,25 @@ const Navigation: React.FC<NavigationProps> = ({
       <div className="border-t bg-gray-50">
         <div className="container mx-auto overflow-auto">
           <div className="flex justify-between items-center">
-            <NavigationMenu dir="rtl" className="justify-center">
-              <NavigationMenuList className="px-2">
-                {/* City selector integrated directly in the navigation */}
-                <NavigationMenuItem>
-                  <Select value={selectedCity} onValueChange={onCityChange}>
-                    <SelectTrigger className="w-[150px] flex items-center gap-2 bg-transparent border-none shadow-none focus:ring-0">
-                      <MapPin className="h-4 w-4" />
-                      <SelectValue placeholder="جميع المدن" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white">
-                      <SelectItem value="all">جميع المدن</SelectItem>
-                      {mauritanianCities.map((city) => (
-                        <SelectItem key={city} value={city}>
-                          {city}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
-            
             {currentCategory === 'shopping' && (
               <NavigationMenu dir="rtl" className="justify-center">
                 <NavigationMenuList className="px-2">
+                  <NavigationMenuItem>
+                    <Select value={selectedCity} onValueChange={onCityChange}>
+                      <SelectTrigger className="w-[150px] flex items-center gap-2 bg-transparent border-none shadow-none focus:ring-0">
+                        <MapPin className="h-4 w-4" />
+                        <SelectValue placeholder="جميع المدن" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="all">جميع المدن</SelectItem>
+                        {mauritanianCities.map((city) => (
+                          <SelectItem key={city} value={city}>
+                            {city}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </NavigationMenuItem>
                   <NavigationMenuItem>
                     <NavigationMenuLink
                       className={cn(
@@ -204,6 +197,22 @@ const Navigation: React.FC<NavigationProps> = ({
               <NavigationMenu dir="rtl" className="justify-center">
                 <NavigationMenuList className="px-2">
                   <NavigationMenuItem>
+                    <Select value={selectedCity} onValueChange={onCityChange}>
+                      <SelectTrigger className="w-[150px] flex items-center gap-2 bg-transparent border-none shadow-none focus:ring-0">
+                        <MapPin className="h-4 w-4" />
+                        <SelectValue placeholder="جميع المدن" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="all">جميع المدن</SelectItem>
+                        {mauritanianCities.map((city) => (
+                          <SelectItem key={city} value={city}>
+                            {city}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
                     <NavigationMenuLink
                       className={cn(
                         "px-4 py-2 text-sm font-medium", 
@@ -243,6 +252,22 @@ const Navigation: React.FC<NavigationProps> = ({
             {currentCategory === 'cars' && (
               <NavigationMenu dir="rtl" className="justify-center">
                 <NavigationMenuList className="px-2">
+                  <NavigationMenuItem>
+                    <Select value={selectedCity} onValueChange={onCityChange}>
+                      <SelectTrigger className="w-[150px] flex items-center gap-2 bg-transparent border-none shadow-none focus:ring-0">
+                        <MapPin className="h-4 w-4" />
+                        <SelectValue placeholder="جميع المدن" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="all">جميع المدن</SelectItem>
+                        {mauritanianCities.map((city) => (
+                          <SelectItem key={city} value={city}>
+                            {city}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </NavigationMenuItem>
                   <NavigationMenuItem>
                     <NavigationMenuLink
                       className={cn(
@@ -284,10 +309,56 @@ const Navigation: React.FC<NavigationProps> = ({
               <NavigationMenu dir="rtl" className="justify-center">
                 <NavigationMenuList className="px-2">
                   <NavigationMenuItem>
+                    <Select value={selectedCity} onValueChange={onCityChange}>
+                      <SelectTrigger className="w-[150px] flex items-center gap-2 bg-transparent border-none shadow-none focus:ring-0">
+                        <MapPin className="h-4 w-4" />
+                        <SelectValue placeholder="جميع المدن" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="all">جميع المدن</SelectItem>
+                        {mauritanianCities.map((city) => (
+                          <SelectItem key={city} value={city}>
+                            {city}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
                     <NavigationMenuLink
                       className="px-4 py-2 text-sm font-medium text-rahati-purple"
                     >
                       المطاعم
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
+            )}
+            
+            {currentCategory === 'discounts' && (
+              <NavigationMenu dir="rtl" className="justify-center">
+                <NavigationMenuList className="px-2">
+                  <NavigationMenuItem>
+                    <Select value={selectedCity} onValueChange={onCityChange}>
+                      <SelectTrigger className="w-[150px] flex items-center gap-2 bg-transparent border-none shadow-none focus:ring-0">
+                        <MapPin className="h-4 w-4" />
+                        <SelectValue placeholder="جميع المدن" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="all">جميع المدن</SelectItem>
+                        {mauritanianCities.map((city) => (
+                          <SelectItem key={city} value={city}>
+                            {city}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <NavigationMenuLink
+                      className="px-4 py-2 text-sm font-medium text-rahati-purple"
+                    >
+                      التخفيضات
                     </NavigationMenuLink>
                   </NavigationMenuItem>
                 </NavigationMenuList>
