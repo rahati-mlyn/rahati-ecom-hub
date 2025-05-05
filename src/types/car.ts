@@ -5,14 +5,16 @@ export interface Car {
   model: string;
   year: number;
   price: number;
-  type: 'rent' | 'sale';
   mileage: number;
-  transmission: 'automatic' | 'manual';
-  fuelType: 'petrol' | 'diesel' | 'electric' | 'hybrid';
-  description: string;
   image: string;
+  description: string;
+  type: 'rent' | 'sale';
+  transmission: string;
   city: string;
   contactPhone: string;
-  ownerId?: string;
-  createdAt: Date;
+  fuelType?: string;
+  seats?: number; // Adding this optional field to fix the error
+  color?: string;
+  createdAt: string;
+  updatedAt: string;
 }

@@ -1,10 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
-import { X, ShoppingCart, Share2, Heart, MessagesSquare, ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, ShoppingCart, Share2, Heart, MessagesSquare, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Dialog, DialogContent, DialogClose, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { Product } from '@/types/product';
 import { formatPrice } from '@/lib/utils';
 import ProductCard from '../cards/ProductCard';
@@ -113,7 +112,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
         <DialogTitle className="sr-only">{product.name}</DialogTitle>
         <DialogDescription className="sr-only">تفاصيل المنتج</DialogDescription>
         
-        <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 p-4 flex justify-between items-center border-b dark:border-gray-800">
+        <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 p-4 flex justify-between items-center border-b dark:border-gray-800 shadow-sm">
           <h2 className="text-xl font-bold text-rahati-dark dark:text-white truncate flex-1 text-right">{product.name}</h2>
           <DialogClose>
             <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full">
@@ -122,15 +121,16 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
           </DialogClose>
         </div>
           
-        <div className="grid md:grid-cols-7 gap-8 p-6">
+        <div className="grid md:grid-cols-7 gap-4 lg:gap-8 p-4 lg:p-6">
           {/* Product Images Section - 4 columns on md screens */}
           <div className="md:col-span-4">
-            <div className="bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 rounded-xl overflow-hidden aspect-square relative group shadow-sm">
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-xl overflow-hidden aspect-square relative group shadow-sm">
               {/* Main Image */}
               <img 
                 src={productImages[activeImageIndex]} 
                 alt={`${product.name} - صورة ${activeImageIndex + 1}`} 
-                className="w-full h-full object-contain transition-all duration-500 group-hover:scale-105 p-4"
+                className="w-full h-full object-contain p-4"
+                loading="lazy"
               />
               
               {/* Image Navigation Controls */}
@@ -139,7 +139,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="absolute top-1/2 left-2 -translate-y-1/2 bg-white/70 dark:bg-black/40 hover:bg-white dark:hover:bg-black/60 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-1/2 left-2 -translate-y-1/2 bg-white/90 dark:bg-black/60 hover:bg-white dark:hover:bg-black/80 rounded-full shadow-lg opacity-80 hover:opacity-100 transition-opacity"
                     onClick={handlePrevImage}
                   >
                     <ArrowRight className="h-4 w-4" />
@@ -147,7 +147,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="absolute top-1/2 right-2 -translate-y-1/2 bg-white/70 dark:bg-black/40 hover:bg-white dark:hover:bg-black/60 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-1/2 right-2 -translate-y-1/2 bg-white/90 dark:bg-black/60 hover:bg-white dark:hover:bg-black/80 rounded-full shadow-lg opacity-80 hover:opacity-100 transition-opacity"
                     onClick={handleNextImage}
                   >
                     <ArrowLeft className="h-4 w-4" />
@@ -158,19 +158,16 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
               {/* Product Badges */}
               <div className="absolute top-2 left-2 flex flex-col gap-1">
                 {product.discount > 0 && (
-                  <Badge className={`${isBestDiscount ? 'bg-red-500' : 'bg-rahati-yellow text-rahati-dark'} animate-fade-in`}>
+                  <Badge className={`${isBestDiscount ? 'bg-red-500 text-white dark:bg-red-600' : 'bg-rahati-yellow text-rahati-dark dark:bg-yellow-600 dark:text-white'} animate-fade-in shadow-md text-sm`}>
                     {isBestDiscount ? 'أفضل خصم! ' : 'خصم '}{product.discount}%
                   </Badge>
                 )}
                 {isNew && (
-                  <Badge className="bg-rahati-purple text-white animate-fade-in">
+                  <Badge className="bg-rahati-purple text-white dark:bg-purple-600 animate-fade-in shadow-md text-sm">
                     جديد
                   </Badge>
                 )}
               </div>
-
-              {/* Zoom Overlay */}
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300"></div>
             </div>
 
             {/* Thumbnails with active indicator */}
@@ -179,13 +176,14 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                 {productImages.map((img, index) => (
                   <div 
                     key={`thumb-${index}`}
-                    className={`border-2 rounded-lg overflow-hidden cursor-pointer transition-all w-16 h-16 hover:scale-105 ${activeImageIndex === index ? 'border-rahati-purple ring-2 ring-purple-200' : 'border-transparent'}`}
+                    className={`border-2 rounded-lg overflow-hidden cursor-pointer transition-all w-16 h-16 hover:scale-105 ${activeImageIndex === index ? 'border-rahati-purple ring-2 ring-purple-200 dark:ring-purple-800' : 'border-transparent'}`}
                     onClick={() => handleThumbnailClick(index)}
                   >
                     <img 
                       src={img} 
                       alt={`${product.name} thumbnail ${index + 1}`} 
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   </div>
                 ))}
@@ -202,7 +200,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
               <p className="text-sm text-gray-500 dark:text-gray-400">{new Date(product.createdAt).toLocaleDateString('ar-EG')}</p>
             </div>
 
-            <div className="mb-6 bg-gradient-to-r from-white to-purple-50 dark:from-gray-800 dark:to-purple-900/20 p-4 rounded-xl shadow-sm">
+            <div className="mb-6 bg-gray-50 dark:bg-gray-800 p-4 rounded-xl shadow-sm">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   {product.originalPrice > 0 && (
@@ -217,7 +215,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Badge className="bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300 hover:bg-green-100 hover:text-green-800 dark:hover:bg-green-900/40 dark:hover:text-green-300 cursor-help">
+                      <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 hover:bg-green-100 hover:text-green-800 dark:hover:bg-green-900 dark:hover:text-green-300 cursor-help shadow-sm">
                         {product.category}
                       </Badge>
                     </TooltipTrigger>
@@ -227,7 +225,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                   </Tooltip>
                 </TooltipProvider>
               </div>
-              <Badge variant="outline" className="text-gray-600 dark:text-gray-300 dark:border-gray-600">
+              <Badge variant="outline" className="text-gray-600 dark:text-gray-300 dark:border-gray-600 mt-2">
                 {categoryLabels[product.subCategory as keyof typeof categoryLabels] || product.subCategory}
               </Badge>
             </div>
@@ -242,12 +240,11 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
             </div>
               
             {product.storeId && (
-              <div className="bg-gradient-to-l from-white to-purple-50 dark:from-gray-800 dark:to-purple-900/20 p-4 rounded-xl mb-6 flex justify-between items-center shadow-sm">
+              <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl mb-6 flex justify-between items-center shadow-sm">
                 <Button 
                   variant="ghost" 
                   size="sm"
                   className="text-rahati-purple dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/30"
-                  onClick={() => {/* Navigate to store */}}
                 >
                   عرض المتجر
                 </Button>
@@ -260,7 +257,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
               
             <div className="flex gap-2 mt-3">
               <Button 
-                className="flex-1 bg-gradient-to-r from-rahati-purple to-purple-600 hover:opacity-90 transition-opacity shadow-md dark:text-white"
+                className="flex-1 bg-rahati-purple hover:bg-purple-700 transition-colors shadow-md text-white"
                 onClick={() => onAddToCart(product)}
               >
                 <ShoppingCart className="mr-2 h-4 w-4" />
@@ -319,6 +316,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                 </TabsList>
               </div>
               
+              {/* Similar Products Tab */}
               <TabsContent value="similar" className="mt-4">
                 <div className="relative">
                   <Carousel
@@ -347,6 +345,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                 </div>
               </TabsContent>
               
+              {/* By Category Tab */}
               <TabsContent value="subcategory" className="mt-4">
                 {Object.entries(groupedSimilarProducts).length > 0 ? (
                   <div className="space-y-6">

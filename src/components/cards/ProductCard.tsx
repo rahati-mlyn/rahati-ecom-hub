@@ -13,6 +13,7 @@ import {
   DialogTitle 
 } from '@/components/ui/dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ProductCardProps {
   product: Product;
@@ -27,6 +28,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const isMobile = useIsMobile();
 
   const openImageModal = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -34,8 +36,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const isNew = Date.now() - new Date(product.createdAt).getTime() < 7 * 24 * 60 * 60 * 1000;
-  
-  // Add a "best discount" indicator for products with discounts >= 20%
   const isBestDiscount = product.discount >= 20;
 
   return (
@@ -49,20 +49,24 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <img 
             src={product.image} 
             alt={product.name} 
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105 p-2"
             onClick={() => onViewDetails(product)}
+            loading="lazy"
           />
           
-          {/* Quick Action Buttons */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
+          {/* Quick Action Buttons - Show on mobile or when hovered */}
+          <div className={`absolute inset-0 bg-gradient-to-t from-black/30 to-transparent ${isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity duration-300 flex items-end justify-center pb-4`}>
             <div className="flex gap-2 animate-fade-in">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button 
-                      className="bg-white text-rahati-purple hover:bg-white shadow-md" 
+                      className="bg-white/90 text-rahati-purple hover:bg-white shadow-md" 
                       size="sm" 
-                      onClick={() => onAddToCart(product)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onAddToCart(product);
+                      }}
                     >
                       <ShoppingCart className="h-4 w-4" />
                     </Button>
@@ -77,7 +81,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button 
-                      className="bg-white text-rahati-purple hover:bg-white shadow-md" 
+                      className="bg-white/90 text-rahati-purple hover:bg-white shadow-md" 
                       size="sm" 
                       onClick={openImageModal}
                     >
@@ -94,8 +98,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button 
-                      className="bg-white text-rahati-purple hover:bg-white shadow-md" 
+                      className="bg-white/90 text-rahati-purple hover:bg-white shadow-md" 
                       size="sm"
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <Heart className="h-4 w-4" />
                     </Button>
@@ -108,21 +113,21 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </div>
           </div>
           
-          {/* Product Badges - Show best discount badge when applicable */}
+          {/* Product Badges */}
           <div className="absolute top-2 left-2 flex flex-col gap-1">
             {product.discount > 0 && (
-              <Badge className={`${isBestDiscount ? 'bg-red-500 text-white' : 'bg-rahati-yellow text-rahati-dark'} animate-fade-in`}>
+              <Badge className={`${isBestDiscount ? 'bg-red-500 text-white dark:bg-red-600 dark:text-white' : 'bg-rahati-yellow text-rahati-dark dark:bg-yellow-600 dark:text-white'} animate-fade-in shadow-sm`}>
                 {isBestDiscount ? 'أفضل خصم! ' : 'خصم '}{product.discount}%
               </Badge>
             )}
             {isNew && (
-              <Badge className="bg-rahati-purple text-white animate-fade-in">
+              <Badge className="bg-rahati-purple text-white dark:bg-purple-600 dark:text-white animate-fade-in shadow-sm">
                 جديد
               </Badge>
             )}
           </div>
         </div>
-        <CardContent className="p-4 text-right dark:text-white">
+        <CardContent className="p-4 text-right dark:text-white bg-white dark:bg-gray-900">
           <div className="flex justify-between items-center">
             <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(product.createdAt).toLocaleDateString('ar-EG')}</p>
             <h3 
@@ -132,23 +137,28 @@ const ProductCard: React.FC<ProductCardProps> = ({
               {product.name}
             </h3>
           </div>
-          <div className="flex items-center justify-between mt-1">
-            {product.originalPrice > 0 && product.originalPrice > product.price && (
-              <span className="text-muted-foreground line-through text-sm">
-                {formatPrice(product.originalPrice)}
+          <div className="flex items-center justify-between mt-2">
+            <div className="flex flex-col items-end">
+              {product.originalPrice > 0 && product.originalPrice > product.price && (
+                <span className="text-muted-foreground line-through text-sm">
+                  {formatPrice(product.originalPrice)}
+                </span>
+              )}
+              <span className="font-bold text-lg text-rahati-purple dark:text-purple-300">
+                {formatPrice(product.price)}
               </span>
-            )}
-            <span className="font-medium text-rahati-purple dark:text-purple-300">
-              {formatPrice(product.price)}
-            </span>
+            </div>
             <p className="text-sm bg-purple-50 dark:bg-purple-900/30 text-rahati-purple dark:text-purple-300 px-2 py-0.5 rounded-full">{product.city}</p>
           </div>
-          <p className="text-muted-foreground dark:text-gray-300 text-sm mt-2 line-clamp-2">{product.description}</p>
+          <p className="text-muted-foreground dark:text-gray-300 text-sm mt-2 line-clamp-2 min-h-[2.5rem]">{product.description}</p>
         </CardContent>
-        <CardFooter className="p-4 pt-0 gap-2">
+        <CardFooter className="p-4 pt-0 gap-2 bg-white dark:bg-gray-900">
           <Button 
-            className="flex-1 bg-gradient-to-r from-rahati-purple to-purple-600 hover:opacity-90 transition-opacity"
-            onClick={() => onAddToCart(product)}
+            className="flex-1 bg-gradient-to-r from-rahati-purple to-purple-600 hover:opacity-90 transition-opacity shadow-sm text-white"
+            onClick={(e) => {
+              e.stopPropagation();
+              onAddToCart(product);
+            }}
           >
             <ShoppingCart className="mr-2 h-4 w-4" />
             <span>أضف للسلة</span>
@@ -179,6 +189,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               src={product.image} 
               alt={product.name} 
               className="w-full h-full object-contain max-h-[80vh]"
+              loading="lazy"
             />
           </div>
         </DialogContent>
