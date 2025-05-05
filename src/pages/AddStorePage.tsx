@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -38,7 +37,7 @@ import { useToast } from '@/hooks/use-toast';
 const formSchema = z.object({
   name: z.string().min(3, { message: 'يجب أن يكون اسم المتجر أكثر من 3 أحرف' }),
   description: z.string().min(10, { message: 'يجب أن يكون الوصف أكثر من 10 أحرف' }),
-  type: z.enum(['store', 'restaurant', 'realestate', 'car', 'clothes', 'electronics', 'homegoods']),
+  type: z.enum(['store', 'restaurant', 'realestate', 'car']),
   contactPhone: z.string().min(8, { message: 'يرجى إدخال رقم هاتف صحيح' }),
   city: z.string().min(2, { message: 'يرجى اختيار مدينة' }),
 });
@@ -196,9 +195,6 @@ const AddStorePage = () => {
                           <SelectItem value="restaurant">مطعم</SelectItem>
                           <SelectItem value="realestate">عقارات</SelectItem>
                           <SelectItem value="car">سيارات</SelectItem>
-                          <SelectItem value="clothes">ملابس</SelectItem>
-                          <SelectItem value="electronics">إلكترونيات</SelectItem>
-                          <SelectItem value="homegoods">منزل ومكتب</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormDescription>

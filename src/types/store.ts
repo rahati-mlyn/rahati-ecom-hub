@@ -3,7 +3,7 @@ export interface Store {
   id: string;
   name: string;
   description: string;
-  type: 'store' | 'restaurant' | 'realestate' | 'car' | 'clothes' | 'electronics' | 'homegoods';
+  type: 'store' | 'restaurant' | 'realestate' | 'car';
   image: string;
   city: string;
   contactPhone: string;

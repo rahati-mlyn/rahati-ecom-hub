@@ -75,7 +75,7 @@ export interface OrderResponse {
 export interface StoreRequest {
   name: string;
   description: string;
-  type: 'store' | 'restaurant' | 'realestate' | 'car' | 'clothes' | 'electronics' | 'homegoods';
+  type: 'store' | 'restaurant' | 'realestate' | 'car';
   contactPhone: string;
   city: string;
   image?: File;
