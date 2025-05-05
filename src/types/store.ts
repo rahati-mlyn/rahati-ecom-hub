@@ -15,4 +15,7 @@ export interface Store {
     rating: number;
     ratingCount: number;
   };
+  featuredProducts?: number;
+  established?: string;
+  verified?: boolean;
 }

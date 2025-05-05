@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ShoppingCart, Heart, ZoomIn, X } from 'lucide-react';
+import { ShoppingCart, Heart, ZoomIn, X, Star, Clock } from 'lucide-react';
 import { Product } from '@/types/product';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -129,7 +129,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </div>
         <CardContent className="p-4 text-right dark:text-white bg-white dark:bg-gray-900">
           <div className="flex justify-between items-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(product.createdAt).toLocaleDateString('ar-EG')}</p>
+            <div className="flex items-center text-yellow-500">
+              <Star className="h-4 w-4 fill-yellow-500" />
+              <span className="text-xs ml-1">{(product.rating || 4.5).toFixed(1)}</span>
+            </div>
             <h3 
               className="font-semibold text-lg truncate cursor-pointer hover:text-rahati-purple dark:hover:text-purple-300 transition-colors"
               onClick={() => onViewDetails(product)}
@@ -148,7 +151,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 {formatPrice(product.price)}
               </span>
             </div>
-            <p className="text-sm bg-purple-50 dark:bg-purple-900/30 text-rahati-purple dark:text-purple-300 px-2 py-0.5 rounded-full">{product.city}</p>
+            <div className="flex items-center gap-1 bg-purple-50 dark:bg-purple-900/30 text-rahati-purple dark:text-purple-300 px-2 py-0.5 rounded-full">
+              <Clock className="h-3 w-3" />
+              <p className="text-xs">{product.city}</p>
+            </div>
           </div>
           <p className="text-muted-foreground dark:text-gray-300 text-sm mt-2 line-clamp-2 min-h-[2.5rem]">{product.description}</p>
         </CardContent>

@@ -13,7 +13,7 @@ export interface Car {
   city: string;
   contactPhone: string;
   fuelType?: string;
-  seats?: number; // Adding this optional field to fix the error
+  seats?: number;
   color?: string;
   createdAt: string;
   updatedAt: string;
