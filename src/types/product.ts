@@ -13,4 +13,5 @@ export interface Product {
   storeId: string;
   storeName: string;
   createdAt: Date;
+  rating?: number; // Adding rating property to fix the error
 }

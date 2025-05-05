@@ -37,9 +37,9 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
   onViewDetails
 }) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [currentView, setCurrentView] = useState<'similar' | 'features'>('similar');
   const [itemsPerView, setItemsPerView] = useState(3);
   
+  // Adjust items per view based on screen size
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 640) {
@@ -104,7 +104,6 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
   };
 
   const isNew = Date.now() - new Date(product.createdAt).getTime() < 7 * 24 * 60 * 60 * 1000;
-  const isBestDiscount = product.discount >= 20; // Products with 20% or more discount are marked as best discount
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -112,6 +111,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
         <DialogTitle className="sr-only">{product.name}</DialogTitle>
         <DialogDescription className="sr-only">تفاصيل المنتج</DialogDescription>
         
+        {/* Header - Sticky for better mobile experience */}
         <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 p-4 flex justify-between items-center border-b dark:border-gray-800 shadow-sm">
           <h2 className="text-xl font-bold text-rahati-dark dark:text-white truncate flex-1 text-right">{product.name}</h2>
           <DialogClose>
@@ -121,8 +121,9 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
           </DialogClose>
         </div>
           
-        <div className="grid md:grid-cols-7 gap-4 lg:gap-8 p-4 lg:p-6">
-          {/* Product Images Section - 4 columns on md screens */}
+        {/* Responsive Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-7 gap-4 lg:gap-8 p-4 lg:p-6">
+          {/* Product Images Section - Stacked on mobile, 4 columns on md screens */}
           <div className="md:col-span-4">
             <div className="bg-gray-50 dark:bg-gray-800 rounded-xl overflow-hidden aspect-square relative group shadow-sm">
               {/* Main Image */}
@@ -155,13 +156,8 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                 </>
               )}
 
-              {/* Product Badges */}
+              {/* Product Badges - Only showing "New" badge, removed discount badge */}
               <div className="absolute top-2 left-2 flex flex-col gap-1">
-                {product.discount > 0 && (
-                  <Badge className={`${isBestDiscount ? 'bg-red-500 text-white dark:bg-red-600' : 'bg-rahati-yellow text-rahati-dark dark:bg-yellow-600 dark:text-white'} animate-fade-in shadow-md text-sm`}>
-                    {isBestDiscount ? 'أفضل خصم! ' : 'خصم '}{product.discount}%
-                  </Badge>
-                )}
                 {isNew && (
                   <Badge className="bg-rahati-purple text-white dark:bg-purple-600 animate-fade-in shadow-md text-sm">
                     جديد
@@ -191,7 +187,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
             )}
           </div>
           
-          {/* Product Info - 3 columns on md screens */}
+          {/* Product Info - Stacked on mobile, 3 columns on md screens */}
           <div className="md:col-span-3 text-right flex flex-col">
             <div className="flex items-center justify-between mb-3">
               <p className="text-sm text-rahati-purple bg-purple-50 dark:bg-purple-900/30 dark:text-purple-300 px-3 py-1 rounded-full">
@@ -203,7 +199,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
             <div className="mb-6 bg-gray-50 dark:bg-gray-800 p-4 rounded-xl shadow-sm">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  {product.originalPrice > 0 && (
+                  {product.originalPrice > 0 && product.originalPrice > product.price && (
                     <span className="text-muted-foreground line-through text-sm">
                       {formatPrice(product.originalPrice)}
                     </span>
@@ -255,7 +251,8 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
               </div>
             )}
               
-            <div className="flex gap-2 mt-3">
+            {/* Action Buttons - Better mobile layout */}
+            <div className="flex flex-col sm:flex-row gap-2 mt-3">
               <Button 
                 className="flex-1 bg-rahati-purple hover:bg-purple-700 transition-colors shadow-md text-white"
                 onClick={() => onAddToCart(product)}
@@ -273,7 +270,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
               </Button>
             </div>
             
-            <div className="flex gap-2 mt-2">
+            <div className="flex flex-col sm:flex-row gap-2 mt-2">
               <Button 
                 variant="outline" 
                 className="flex-1 transition-all duration-300 hover:border-rahati-purple hover:text-rahati-purple dark:hover:text-purple-300 dark:hover:border-purple-600"
@@ -292,13 +289,13 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
           </div>
         </div>
         
-        {/* Similar Products - Enhanced Carousel */}
+        {/* Similar Products - Enhanced Carousel with better mobile support */}
         {similarProducts.length > 0 && (
-          <div className="mt-2 p-6 pt-0 border-t dark:border-gray-800">
+          <div className="mt-2 p-4 sm:p-6 pt-0 border-t dark:border-gray-800">
             <Tabs defaultValue="similar" className="w-full">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
                 <div className="flex items-center gap-2">
-                  <label htmlFor="items-slider" className="text-sm text-gray-500 dark:text-gray-400">عدد العناصر:</label>
+                  <label htmlFor="items-slider" className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">عدد العناصر:</label>
                   <Slider
                     id="items-slider"
                     defaultValue={[itemsPerView]}
@@ -310,7 +307,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                   />
                   <span className="text-xs text-gray-500 dark:text-gray-400">{itemsPerView}</span>
                 </div>
-                <TabsList className="bg-gray-100 dark:bg-gray-800">
+                <TabsList className="bg-gray-100 dark:bg-gray-800 self-center sm:self-auto">
                   <TabsTrigger value="similar" className="text-sm">منتجات مشابهة</TabsTrigger>
                   <TabsTrigger value="subcategory" className="text-sm">حسب الفئة</TabsTrigger>
                 </TabsList>
@@ -339,8 +336,8 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                         </CarouselItem>
                       ))}
                     </CarouselContent>
-                    <CarouselPrevious className="-left-4 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700" />
-                    <CarouselNext className="-right-4 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700" />
+                    <CarouselPrevious className="-left-2 sm:-left-4 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700" />
+                    <CarouselNext className="-right-2 sm:-right-4 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700" />
                   </Carousel>
                 </div>
               </TabsContent>
@@ -374,8 +371,8 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                               </CarouselItem>
                             ))}
                           </CarouselContent>
-                          <CarouselPrevious className="-left-4 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700" />
-                          <CarouselNext className="-right-4 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700" />
+                          <CarouselPrevious className="-left-2 sm:-left-4 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700" />
+                          <CarouselNext className="-right-2 sm:-right-4 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700" />
                         </Carousel>
                       </div>
                     ))}

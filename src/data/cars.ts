@@ -1,4 +1,3 @@
-
 import { Car } from "@/types/car";
 import { generateId } from "@/lib/utils";
 
@@ -18,7 +17,7 @@ export const cars: Car[] = [
     city: "نواكشوط",
     contactPhone: "0512345678",
     ownerId: "user11",
-    createdAt: new Date("2023-09-10"),
+    createdAt: new Date("2023-09-10").toISOString(),
   },
   {
     id: generateId(),
@@ -35,7 +34,7 @@ export const cars: Car[] = [
     city: "نواذيبو",
     contactPhone: "0523456789",
     ownerId: "user12",
-    createdAt: new Date("2023-08-25"),
+    createdAt: new Date("2023-08-25").toISOString(),
   },
   {
     id: generateId(),
@@ -52,7 +51,7 @@ export const cars: Car[] = [
     city: "روصو",
     contactPhone: "0534567890",
     ownerId: "user13",
-    createdAt: new Date("2023-10-05"),
+    createdAt: new Date("2023-10-05").toISOString(),
   },
   {
     id: generateId(),
@@ -69,7 +68,7 @@ export const cars: Car[] = [
     city: "كيفة",
     contactPhone: "0545678901",
     ownerId: "user14",
-    createdAt: new Date("2023-11-02"),
+    createdAt: new Date("2023-11-02").toISOString(),
   },
   {
     id: generateId(),
@@ -86,7 +85,7 @@ export const cars: Car[] = [
     city: "عطار",
     contactPhone: "0556789012",
     ownerId: "user15",
-    createdAt: new Date("2023-07-15"),
+    createdAt: new Date("2023-07-15").toISOString(),
   },
   {
     id: generateId(),
@@ -103,7 +102,7 @@ export const cars: Car[] = [
     city: "نواكشوط",
     contactPhone: "0567890123",
     ownerId: "user16",
-    createdAt: new Date("2023-06-20"),
+    createdAt: new Date("2023-06-20").toISOString(),
   },
 ];
 

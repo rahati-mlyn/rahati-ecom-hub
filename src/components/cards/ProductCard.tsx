@@ -36,7 +36,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const isNew = Date.now() - new Date(product.createdAt).getTime() < 7 * 24 * 60 * 60 * 1000;
-  const isBestDiscount = product.discount >= 20;
 
   return (
     <>
@@ -113,13 +112,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </div>
           </div>
           
-          {/* Product Badges */}
+          {/* Product Badges - Only showing "New" badge, removing discount badge */}
           <div className="absolute top-2 left-2 flex flex-col gap-1">
-            {product.discount > 0 && (
-              <Badge className={`${isBestDiscount ? 'bg-red-500 text-white dark:bg-red-600 dark:text-white' : 'bg-rahati-yellow text-rahati-dark dark:bg-yellow-600 dark:text-white'} animate-fade-in shadow-sm`}>
-                {isBestDiscount ? 'أفضل خصم! ' : 'خصم '}{product.discount}%
-              </Badge>
-            )}
             {isNew && (
               <Badge className="bg-rahati-purple text-white dark:bg-purple-600 dark:text-white animate-fade-in shadow-sm">
                 جديد
